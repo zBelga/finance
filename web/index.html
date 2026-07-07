@@ -262,7 +262,17 @@
       <div class="calendar-strip" id="calendarStrip"></div>
     </section>
 
-    <section style="animation-delay:.16s">
+    <section style="animation-delay:.13s">
+      <div class="glass" style="padding:14px 16px; display:flex; align-items:flex-start; gap:12px;">
+        <div id="insightIcon" style="width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0;"></div>
+        <div>
+          <p id="insightText" style="margin:0; font-size:13.5px; line-height:1.45; color:var(--ink-primary); font-weight:500;"></p>
+          <p id="insightSub" style="margin:4px 0 0; font-size:12px; line-height:1.4; color:var(--ink-tertiary);"></p>
+        </div>
+      </div>
+    </section>
+
+    <section style="animation-delay:.20s">
       <div class="section-header"><h2 style="margin:0">Fluxo de caixa</h2></div>
       <div class="tabs glass" id="rangeTabs">
         <button class="active">Semana</button>
@@ -630,6 +640,49 @@
     document.getElementById("expenseAmt").textContent = fmt(computeExpense());
   }
 
+  function topExpenseCategory(){
+    const totals = {};
+    ledger.filter(t => t.amount < 0).forEach(t => {
+      totals[t.category] = (totals[t.category] || 0) + Math.abs(t.amount);
+    });
+    let top = null, max = 0;
+    for (const key in totals) { if (totals[key] > max) { max = totals[key]; top = key; } }
+    return top ? { category: top, value: max } : null;
+  }
+
+  function renderInsight(){
+    const income = computeIncome();
+    const expense = computeExpense();
+    const net = income - expense;
+    const iconEl = document.getElementById("insightIcon");
+    const textEl = document.getElementById("insightText");
+    const subEl = document.getElementById("insightSub");
+    let icon, bg, color, text;
+
+    if (ledger.length === 0) {
+      icon = "✏️"; bg = "rgba(217,183,118,.14)"; color = "var(--gold)";
+      text = "Adicione seus primeiros lançamentos pra acompanhar sua situação aqui.";
+    } else if (net > 0) {
+      const rate = income > 0 ? Math.round((net / income) * 100) : 0;
+      icon = "🌱"; bg = "rgba(61,220,145,.14)"; color = "var(--emerald)";
+      text = `Você está no azul: sobrou ${fmt(net)}${income > 0 ? ` (${rate}% da sua renda)` : ""} até agora.`;
+    } else if (net < 0) {
+      icon = "⚠️"; bg = "rgba(255,122,110,.14)"; color = "var(--coral)";
+      text = `Suas despesas passaram as receitas em ${fmt(Math.abs(net))}. Vale dar uma olhada.`;
+    } else {
+      icon = "⚖️"; bg = "rgba(111,184,255,.14)"; color = "var(--azure)";
+      text = "Suas receitas e despesas estão empatadas até agora.";
+    }
+
+    iconEl.textContent = icon;
+    iconEl.style.background = bg;
+    iconEl.style.color = color;
+    textEl.textContent = text;
+
+    const top = topExpenseCategory();
+    subEl.textContent = top ? `Maior gasto até agora: ${top.category} (${fmt(top.value)}).` : "";
+  }
+
   function renderTxnList(){
     const list = document.getElementById("txnList");
     list.innerHTML = "";
@@ -664,6 +717,7 @@
   function renderAll(){
     renderSummary();
     renderTxnList();
+    renderInsight();
   }
 
   document.getElementById("txnFilterTabs").addEventListener("click", (e) => {
