@@ -187,6 +187,58 @@
   @keyframes breathe{ 50%{ transform:scale(1.05); } }
   .fab.hidden{ display:none; }
 
+  .backdrop{
+    position:fixed; inset:0; z-index:20; background:rgba(0,0,0,.5);
+    -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+    opacity:0; pointer-events:none; transition: opacity .25s ease;
+  }
+  .backdrop.active{ opacity:1; pointer-events:auto; }
+
+  .sheet{
+    position:fixed; left:0; right:0; bottom:0; z-index:21; max-width:520px; margin:0 auto;
+    background: rgba(19,19,23,.92);
+    -webkit-backdrop-filter: blur(28px); backdrop-filter: blur(28px);
+    border:1px solid var(--glass-border); border-bottom:none;
+    border-radius: 28px 28px 0 0;
+    padding: 10px 20px calc(24px + env(safe-area-inset-bottom));
+    transform: translateY(105%);
+    transition: transform .38s cubic-bezier(.22,1,.36,1);
+    box-shadow: 0 -24px 48px -8px rgba(0,0,0,.5);
+  }
+  .sheet.active{ transform: translateY(0); }
+  .sheet .handle{ width:36px; height:5px; border-radius:99px; background:var(--ink-quaternary); margin:0 auto 18px; }
+  .sheet h3{ font-size:19px; font-weight:700; margin:0 0 18px; }
+
+  .type-toggle{ display:flex; gap:4px; padding:4px; border-radius:var(--radius-pill); background:var(--bg-elevated-2); margin-bottom:18px; }
+  .type-toggle button{ flex:1; border:none; background:none; padding:10px 0; border-radius:var(--radius-pill); font-size:14px; font-weight:600; color:var(--ink-tertiary); cursor:pointer; transition: all .2s; }
+  .type-toggle button.active[data-type="despesa"]{ background:var(--coral); color:#1a0a08; }
+  .type-toggle button.active[data-type="receita"]{ background:var(--emerald); color:#04150c; }
+
+  .field{ margin-bottom:16px; }
+  .field label{ display:block; font-size:12px; color:var(--ink-tertiary); margin-bottom:6px; font-weight:500; }
+  .field input{
+    width:100%; background:var(--bg-elevated-2); border:1.5px solid transparent; border-radius:var(--radius-md, 16px);
+    color:var(--ink-primary); font-size:16px; padding:13px 14px; font-family:inherit; outline:none;
+    transition: border-color .2s; -webkit-appearance:none;
+  }
+  .field input:focus{ border-color:var(--gold); }
+  .field input::placeholder{ color:var(--ink-tertiary); }
+
+  .cat-chips{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px; }
+  .cat-chip{ display:flex; align-items:center; gap:6px; padding:8px 12px; border-radius:var(--radius-pill); background:var(--bg-elevated-2); border:1.5px solid transparent; font-size:13px; color:var(--ink-secondary); cursor:pointer; transition: all .15s; }
+  .cat-chip.active{ border-color:currentColor; background:rgba(255,255,255,.06); color:var(--ink-primary); }
+
+  .save-btn{
+    width:100%; border:none; padding:15px 0; border-radius:var(--radius-pill); font-size:16px; font-weight:700;
+    background:linear-gradient(135deg, var(--gold), var(--gold-glow)); color:var(--bg-base); cursor:pointer;
+    box-shadow:0 16px 32px -8px rgba(0,0,0,.4);
+  }
+  .save-btn:active{ transform:scale(.97); }
+
+  .sheet-close{ position:absolute; top:14px; right:16px; background:none; border:none; color:var(--ink-tertiary); font-size:20px; cursor:pointer; padding:6px; }
+
+  .swipe-hint{ font-size:11px; color:var(--ink-quaternary); text-align:center; margin-top:2px; }
+
   a, button{ -webkit-user-select:none; user-select:none; }
   ::selection{ background:rgba(217,183,118,.3); }
 </style>
@@ -206,34 +258,11 @@
       <div class="avatar">F</div>
     </header>
 
-    <section class="hero glass" style="animation-delay:.08s">
-      <div class="row">
-        <span class="label">Patrimônio total</span>
-        <button class="eye" id="eyeBtn">👁️</button>
-      </div>
-      <div class="value-row">
-        <span class="value" id="netWorth">R$ 0,00</span>
-        <span class="trend up">↗ +4,8%</span>
-      </div>
-      <div class="spark">
-        <svg viewBox="0 0 300 60" width="100%" height="60" preserveAspectRatio="none">
-          <defs>
-            <linearGradient id="sparkFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#D9B776" stop-opacity=".35"/>
-              <stop offset="100%" stop-color="#D9B776" stop-opacity="0"/>
-            </linearGradient>
-          </defs>
-          <path d="M0,45 L40,38 L80,42 L120,25 L160,30 L200,15 L240,20 L300,5 L300,60 L0,60 Z" fill="url(#sparkFill)"/>
-          <path d="M0,45 L40,38 L80,42 L120,25 L160,30 L200,15 L240,20 L300,5" fill="none" stroke="#D9B776" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-    </section>
-
-    <section style="animation-delay:.16s">
+    <section style="animation-delay:.08s">
       <div class="calendar-strip" id="calendarStrip"></div>
     </section>
 
-    <section style="animation-delay:.24s">
+    <section style="animation-delay:.16s">
       <div class="section-header"><h2 style="margin:0">Fluxo de caixa</h2></div>
       <div class="tabs glass" id="rangeTabs">
         <button class="active">Semana</button>
@@ -261,12 +290,12 @@
     <section class="row-2" style="animation-delay:.30s">
       <div class="tile glass">
         <div class="top"><span>Receitas</span><div class="icon" style="background:rgba(61,220,145,.14); color:var(--emerald)">↙</div></div>
-        <div class="amount">R$ 9.800</div>
+        <div class="amount" id="incomeAmt">R$ 0</div>
         <span class="trend up">↗ +6,2%</span>
       </div>
       <div class="tile glass">
         <div class="top"><span>Despesas</span><div class="icon" style="background:rgba(255,122,110,.14); color:var(--coral)">↗</div></div>
-        <div class="amount">R$ 5.140</div>
+        <div class="amount" id="expenseAmt">R$ 0</div>
         <span class="trend down">↘ -3,1%</span>
       </div>
     </section>
@@ -381,26 +410,11 @@
   <!-- TRANSAÇÕES -->
   <div class="view" id="view-transactions">
     <header class="top"><h1>Transações</h1></header>
-    <div class="tabs glass" style="margin-bottom:18px">
-      <button class="active">Todas</button><button>Receitas</button><button>Despesas</button>
+    <div class="tabs glass" id="txnFilterTabs" style="margin-bottom:18px">
+      <button class="active" data-filter="all">Todas</button><button data-filter="income">Receitas</button><button data-filter="expense">Despesas</button>
     </div>
-    <div class="sub-list glass">
-      <div class="sub-row">
-        <div class="sub-icon" style="background:rgba(61,220,145,.14); color:var(--emerald)">🛒</div>
-        <div><div class="name">Supermercado Pão de Ouro</div><div class="renew">Alimentação</div></div>
-        <div class="amt">-R$ 284,30</div>
-      </div>
-      <div class="sub-row">
-        <div class="sub-icon" style="background:rgba(61,220,145,.14); color:var(--emerald)">⬇️</div>
-        <div><div class="name">Salário</div><div class="renew">Receita</div></div>
-        <div class="amt" style="color:var(--emerald)">+R$ 9.800,00</div>
-      </div>
-      <div class="sub-row">
-        <div class="sub-icon" style="background:rgba(111,184,255,.14); color:var(--azure)">🚗</div>
-        <div><div class="name">Uber</div><div class="renew">Transporte</div></div>
-        <div class="amt">-R$ 38,50</div>
-      </div>
-    </div>
+    <div class="sub-list glass" id="txnList"></div>
+    <p class="swipe-hint">Toque em um lançamento pra excluir</p>
   </div>
 
   <!-- METAS -->
@@ -462,6 +476,27 @@
 
 <button class="fab" id="fab">+</button>
 
+<div class="backdrop" id="sheetBackdrop"></div>
+<div class="sheet" id="addSheet">
+  <button class="sheet-close" id="sheetClose">✕</button>
+  <div class="handle"></div>
+  <h3>Novo lançamento</h3>
+  <div class="type-toggle" id="typeToggle">
+    <button class="active" data-type="despesa">Despesa</button>
+    <button data-type="receita">Receita</button>
+  </div>
+  <div class="field">
+    <label>Descrição</label>
+    <input type="text" id="txnDesc" placeholder="Ex: Supermercado, Salário..." autocomplete="off" />
+  </div>
+  <div class="field">
+    <label>Valor (R$)</label>
+    <input type="number" id="txnAmount" inputmode="decimal" step="0.01" min="0" placeholder="0,00" />
+  </div>
+  <div class="cat-chips" id="catChips"></div>
+  <button class="save-btn" id="txnSave">Salvar lançamento</button>
+</div>
+
 <nav class="tabbar" id="tabbar">
   <button class="active" data-view="dashboard">
     <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>
@@ -491,28 +526,180 @@
   const greetText = hour < 12 ? "Bom dia" : hour < 18 ? "Boa tarde" : "Boa noite";
   document.getElementById("greeting").textContent = greetText + ", Fabricio";
 
-  // Animated net worth count-up
-  const target = 184320.55;
-  const el = document.getElementById("netWorth");
   const fmt = v => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-  let start = null;
-  const duration = 900;
-  function step(ts){
-    if(!start) start = ts;
-    const p = Math.min((ts - start) / duration, 1);
-    const eased = 1 - Math.pow(1 - p, 3);
-    el.textContent = fmt(target * eased);
-    if(p < 1) requestAnimationFrame(step);
-  }
-  requestAnimationFrame(step);
 
-  // Hide balance toggle
-  let hidden = false;
-  document.getElementById("eyeBtn").addEventListener("click", () => {
-    hidden = !hidden;
-    el.classList.toggle("blurred", hidden);
-    document.getElementById("eyeBtn").textContent = hidden ? "🙈" : "👁️";
-    if (navigator.vibrate) navigator.vibrate(8);
+  // ---------- Ledger (persisted on-device with localStorage) ----------
+  const STORAGE_KEY = "aurum_ledger_v1";
+
+  const CATEGORIES = [
+    { key: "alimentacao", label: "Alimentação", icon: "🛒", hex: "#3DDC91", bg: "rgba(61,220,145,.14)" },
+    { key: "transporte",  label: "Transporte",  icon: "🚗", hex: "#6FB8FF", bg: "rgba(111,184,255,.14)" },
+    { key: "moradia",     label: "Moradia",      icon: "🏠", hex: "#D9B776", bg: "rgba(217,183,118,.14)" },
+    { key: "lazer",       label: "Lazer",        icon: "🎬", hex: "#B79CFF", bg: "rgba(183,156,255,.14)" },
+    { key: "outros",      label: "Outros",       icon: "📦", hex: "#FF7A6E", bg: "rgba(255,122,110,.14)" }
+  ];
+  const RECEITA_CAT = { label: "Receita", icon: "⬇️", hex: "#3DDC91", bg: "rgba(61,220,145,.14)" };
+
+  const SEED_LEDGER = [
+    { id: 1, desc: "Supermercado Pão de Ouro", category: "Alimentação", icon: "🛒", hex: "#3DDC91", bg: "rgba(61,220,145,.14)", amount: -284.30, date: Date.now() - 86400000 * 0 },
+    { id: 2, desc: "Salário", category: "Receita", icon: "⬇️", hex: RECEITA_CAT.hex, bg: RECEITA_CAT.bg, amount: 9800, date: Date.now() - 86400000 * 1 },
+    { id: 3, desc: "Uber", category: "Transporte", icon: "🚗", hex: "#6FB8FF", bg: "rgba(111,184,255,.14)", amount: -38.50, date: Date.now() - 86400000 * 2 }
+  ];
+
+  function loadLedger(){
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) { try { return JSON.parse(raw); } catch(e) { /* fall through to seed */ } }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED_LEDGER));
+    return SEED_LEDGER.slice();
+  }
+  function saveLedger(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(ledger)); }
+
+  let ledger = loadLedger();
+  let currentFilter = "all";
+
+  function computeIncome(){ return ledger.filter(t => t.amount > 0).reduce((s, t) => s + t.amount, 0); }
+  function computeExpense(){ return Math.abs(ledger.filter(t => t.amount < 0).reduce((s, t) => s + t.amount, 0)); }
+
+  function renderSummary(){
+    document.getElementById("incomeAmt").textContent = fmt(computeIncome());
+    document.getElementById("expenseAmt").textContent = fmt(computeExpense());
+  }
+
+  function renderTxnList(){
+    const list = document.getElementById("txnList");
+    list.innerHTML = "";
+    const sorted = ledger.slice().sort((a, b) => b.date - a.date);
+    const filtered = sorted.filter(t => currentFilter === "all" || (currentFilter === "income" && t.amount > 0) || (currentFilter === "expense" && t.amount < 0));
+    if (filtered.length === 0) {
+      list.innerHTML = `<div class="empty"><div class="circle">🗂️</div><h3>Nada por aqui</h3><p>Toque no botão dourado para adicionar um lançamento.</p></div>`;
+      return;
+    }
+    filtered.forEach(t => {
+      const row = document.createElement("div");
+      row.className = "sub-row";
+      row.style.cursor = "pointer";
+      const isIncome = t.amount > 0;
+      row.innerHTML = `
+        <div class="sub-icon" style="background:${t.bg}; color:${t.hex}">${t.icon}</div>
+        <div><div class="name">${t.desc}</div><div class="renew">${t.category}</div></div>
+        <div class="amt" style="color:${isIncome ? "var(--emerald)" : "var(--ink-primary)"}">${isIncome ? "+" : "-"}${fmt(Math.abs(t.amount))}</div>
+      `;
+      row.addEventListener("click", () => {
+        if (confirm(`Excluir "${t.desc}"?`)) {
+          ledger = ledger.filter(x => x.id !== t.id);
+          saveLedger();
+          renderAll();
+          if (navigator.vibrate) navigator.vibrate(12);
+        }
+      });
+      list.appendChild(row);
+    });
+  }
+
+  function renderAll(){
+    renderSummary();
+    renderTxnList();
+  }
+
+  document.getElementById("txnFilterTabs").addEventListener("click", (e) => {
+    const btn = e.target.closest("button");
+    if (!btn) return;
+    document.querySelectorAll("#txnFilterTabs button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentFilter = btn.dataset.filter;
+    renderTxnList();
+    if (navigator.vibrate) navigator.vibrate(6);
+  });
+
+  renderAll();
+
+  // ---------- Add-transaction sheet ----------
+  const sheet = document.getElementById("addSheet");
+  const sheetBackdrop = document.getElementById("sheetBackdrop");
+  const catChips = document.getElementById("catChips");
+  const typeToggle = document.getElementById("typeToggle");
+  let currentType = "despesa";
+
+  function renderCatChips(){
+    catChips.innerHTML = "";
+    if (currentType === "receita") { catChips.style.display = "none"; return; }
+    catChips.style.display = "flex";
+    CATEGORIES.forEach((cat, i) => {
+      const chip = document.createElement("div");
+      chip.className = "cat-chip" + (i === 0 ? " active" : "");
+      chip.style.color = cat.hex;
+      chip.dataset.key = cat.key;
+      chip.innerHTML = `<span>${cat.icon}</span><span>${cat.label}</span>`;
+      chip.addEventListener("click", () => {
+        catChips.querySelectorAll(".cat-chip").forEach(c => c.classList.remove("active"));
+        chip.classList.add("active");
+        if (navigator.vibrate) navigator.vibrate(5);
+      });
+      catChips.appendChild(chip);
+    });
+  }
+  renderCatChips();
+
+  typeToggle.addEventListener("click", (e) => {
+    const btn = e.target.closest("button");
+    if (!btn) return;
+    typeToggle.querySelectorAll("button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentType = btn.dataset.type;
+    renderCatChips();
+    if (navigator.vibrate) navigator.vibrate(6);
+  });
+
+  function openSheet(){
+    sheet.classList.add("active");
+    sheetBackdrop.classList.add("active");
+    document.getElementById("txnDesc").value = "";
+    document.getElementById("txnAmount").value = "";
+    typeToggle.querySelectorAll("button").forEach(b => b.classList.remove("active"));
+    typeToggle.querySelector('[data-type="despesa"]').classList.add("active");
+    currentType = "despesa";
+    renderCatChips();
+  }
+  function closeSheet(){
+    sheet.classList.remove("active");
+    sheetBackdrop.classList.remove("active");
+  }
+
+  document.getElementById("fab").addEventListener("click", () => {
+    if (navigator.vibrate) navigator.vibrate(10);
+    openSheet();
+  });
+  document.getElementById("sheetClose").addEventListener("click", closeSheet);
+  sheetBackdrop.addEventListener("click", closeSheet);
+
+  document.getElementById("txnSave").addEventListener("click", () => {
+    const desc = document.getElementById("txnDesc").value.trim();
+    const rawAmount = parseFloat(document.getElementById("txnAmount").value.replace(",", "."));
+    if (!desc || !rawAmount || rawAmount <= 0) {
+      if (navigator.vibrate) navigator.vibrate([10, 40, 10]);
+      document.getElementById("txnDesc").style.borderColor = !desc ? "var(--coral)" : "";
+      document.getElementById("txnAmount").style.borderColor = (!rawAmount || rawAmount <= 0) ? "var(--coral)" : "";
+      return;
+    }
+    let category, icon, hex, bg;
+    if (currentType === "receita") {
+      category = RECEITA_CAT.label; icon = RECEITA_CAT.icon; hex = RECEITA_CAT.hex; bg = RECEITA_CAT.bg;
+    } else {
+      const activeChip = catChips.querySelector(".cat-chip.active");
+      const catDef = CATEGORIES.find(c => c.key === activeChip?.dataset.key) || CATEGORIES[0];
+      category = catDef.label; icon = catDef.icon; hex = catDef.hex; bg = catDef.bg;
+    }
+    ledger.unshift({
+      id: Date.now(),
+      desc,
+      category, icon, hex, bg,
+      amount: currentType === "receita" ? Math.abs(rawAmount) : -Math.abs(rawAmount),
+      date: Date.now()
+    });
+    saveLedger();
+    renderAll();
+    closeSheet();
+    if (navigator.vibrate) navigator.vibrate(15);
   });
 
   // Calendar strip
@@ -538,7 +725,6 @@
 
   // Tab bar navigation
   const tabbar = document.getElementById("tabbar");
-  const fab = document.getElementById("fab");
   tabbar.addEventListener("click", (e) => {
     const btn = e.target.closest("button");
     if (!btn) return;
@@ -546,13 +732,9 @@
     btn.classList.add("active");
     document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
     document.getElementById("view-" + btn.dataset.view).classList.add("active");
-    fab.classList.toggle("hidden", btn.dataset.view !== "goals");
     window.scrollTo({ top: 0, behavior: "smooth" });
     if (navigator.vibrate) navigator.vibrate(6);
   });
-  fab.classList.add("hidden");
-
-  fab.addEventListener("click", () => { if (navigator.vibrate) navigator.vibrate(10); });
 
   // Pull to refresh (simple, mobile-friendly)
   let touchStartY = 0;
