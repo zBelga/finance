@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+<title>Aurum — Clareza para o seu dinheiro</title>
+<meta name="theme-color" content="#0A0A0C" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Aurum" />
+<link rel="manifest" href="manifest.json" />
+<link rel="apple-touch-icon" href="icon.svg" />
+<style>
+  :root{
+    --bg-base:#0A0A0C;
+    --bg-elevated-1:#131317;
+    --bg-elevated-2:#1B1B20;
+    --bg-elevated-3:#24242B;
+    --ink-primary:rgba(245,245,247,.92);
+    --ink-secondary:rgba(245,245,247,.64);
+    --ink-tertiary:rgba(245,245,247,.40);
+    --ink-quaternary:rgba(245,245,247,.18);
+    --gold:#D9B776;
+    --gold-glow:#F0D9A8;
+    --emerald:#3DDC91;
+    --coral:#FF7A6E;
+    --azure:#6FB8FF;
+    --violet:#B79CFF;
+    --glass-border: rgba(255,255,255,.10);
+    --glass-highlight: rgba(255,255,255,.14);
+    --radius-lg:20px;
+    --radius-xl:28px;
+    --radius-pill:999px;
+  }
+
+  *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+  html,body{margin:0; padding:0; background:var(--bg-base); color:var(--ink-primary); overflow-x:hidden;}
+  body{
+    font-family:-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+    min-height:100vh;
+    min-height:100dvh;
+    position:relative;
+  }
+
+  .mesh{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(circle at 88% 6%, rgba(217,183,118,.16) 0%, transparent 45%),
+      radial-gradient(circle at 8% 92%, rgba(111,184,255,.10) 0%, transparent 45%);
+    filter:blur(40px);
+  }
+
+  .app{ position:relative; z-index:1; max-width:520px; margin:0 auto; padding: max(20px, env(safe-area-inset-top)) 20px 120px; }
+
+  header.top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; opacity:0; animation: rise .5s cubic-bezier(.22,1,.36,1) forwards; }
+  header.top .greet{ font-size:13px; color:var(--ink-tertiary); margin:0 0 2px; }
+  header.top h1{ font-size:26px; font-weight:700; margin:0; letter-spacing:-.02em; }
+  .avatar{ width:40px; height:40px; border-radius:50%; background:var(--bg-elevated-2); display:flex; align-items:center; justify-content:center; color:var(--gold); font-weight:600; box-shadow:0 8px 20px rgba(0,0,0,.18), 0 1px 2px rgba(0,0,0,.08); }
+
+  .glass{
+    position:relative;
+    background: rgba(255,255,255,.04);
+    -webkit-backdrop-filter: blur(22px);
+    backdrop-filter: blur(22px);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 20px 40px -8px rgba(0,0,0,.35), 0 2px 4px rgba(0,0,0,.1);
+  }
+  .glass::before{
+    content:""; position:absolute; inset:0; border-radius:inherit; padding:1px;
+    background: linear-gradient(180deg, var(--glass-highlight), var(--glass-border) 40%, transparent 70%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    pointer-events:none;
+  }
+
+  section{ margin-bottom:36px; opacity:0; transform:translateY(16px); animation: rise .5s cubic-bezier(.22,1,.36,1) forwards; }
+  @keyframes rise{ to{ opacity:1; transform:translateY(0); } }
+
+  .hero{ border-radius:var(--radius-xl); padding:24px; height:212px; display:flex; flex-direction:column; box-shadow:0 24px 48px -8px rgba(0,0,0,.36), 0 0 16px rgba(217,183,118,.10); }
+  .hero .row{ display:flex; align-items:center; justify-content:space-between; }
+  .hero .label{ font-size:14px; font-weight:500; color:var(--ink-secondary); }
+  .eye{ background:none; border:none; color:var(--ink-tertiary); font-size:16px; padding:4px; cursor:pointer; }
+  .hero .value-row{ display:flex; align-items:baseline; gap:10px; margin-top:8px; }
+  .value{ font-size:38px; font-weight:700; font-variant-numeric: tabular-nums; letter-spacing:-.02em; }
+  .value.blurred{ filter: blur(14px); opacity:.35; }
+  .trend{ display:inline-flex; align-items:center; gap:3px; font-size:11px; font-weight:600; padding:4px 8px; border-radius:var(--radius-pill); }
+  .trend.up{ color:var(--emerald); background:rgba(61,220,145,.14); }
+  .trend.down{ color:var(--coral); background:rgba(255,122,110,.14); }
+  .spark{ margin-top:auto; }
+
+  .calendar-strip{ display:flex; gap:8px; overflow-x:auto; padding:2px 2px 8px; scrollbar-width:none; }
+  .calendar-strip::-webkit-scrollbar{ display:none; }
+  .day{ min-width:42px; height:54px; border-radius:16px; background:var(--bg-elevated-2); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; font-variant-numeric:tabular-nums; font-size:14px; font-weight:500; flex-shrink:0; }
+  .day.today{ background:linear-gradient(135deg, var(--gold), var(--gold-glow)); color:var(--bg-base); font-weight:700; }
+  .day .dot{ width:4px; height:4px; border-radius:50%; background:var(--gold); }
+  .day.today .dot{ background:var(--bg-base); }
+  .day .dot.empty{ background:transparent; }
+
+  h2{ font-size:20px; font-weight:600; margin:0 0 14px; letter-spacing:-.01em; }
+  .section-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+  .section-header a{ font-size:13px; color:var(--gold); text-decoration:none; }
+
+  .tabs{ display:flex; gap:4px; padding:4px; border-radius:var(--radius-pill); margin-bottom:14px; }
+  .tabs button{ flex:1; border:none; background:none; padding:8px 0; border-radius:var(--radius-pill); font-size:13px; color:var(--ink-tertiary); font-weight:500; cursor:pointer; transition: color .2s; }
+  .tabs button.active{ background:var(--bg-elevated-3); color:var(--ink-primary); font-weight:600; }
+
+  .legend{ display:flex; gap:16px; margin-bottom:10px; }
+  .legend .item{ display:flex; align-items:center; gap:6px; }
+  .legend .dot{ width:7px; height:7px; border-radius:50%; }
+  .legend .meta div:first-child{ font-size:11px; color:var(--ink-tertiary); }
+  .legend .meta div:last-child{ font-size:14px; font-weight:600; font-variant-numeric: tabular-nums; }
+
+  .row-2{ display:flex; gap:14px; }
+  .tile{ flex:1; border-radius:var(--radius-lg); padding:16px; }
+  .tile .top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+  .tile .top span{ font-size:13px; color:var(--ink-secondary); font-weight:500; }
+  .tile .icon{ width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; }
+  .tile .amount{ font-size:21px; font-weight:700; font-variant-numeric: tabular-nums; margin-bottom:6px; }
+
+  .hscroll{ display:flex; gap:14px; overflow-x:auto; padding:2px 2px 10px; scrollbar-width:none; }
+  .hscroll::-webkit-scrollbar{ display:none; }
+
+  .goal-card{ min-width:140px; border-radius:var(--radius-lg); padding:18px 14px; text-align:center; flex-shrink:0; }
+  .ring{ width:56px; height:56px; margin:0 auto 10px; }
+  .goal-card .name{ font-size:13px; font-weight:600; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .goal-card .amt{ font-size:11px; color:var(--ink-tertiary); }
+  .new-goal{ min-width:140px; height:150px; border-radius:var(--radius-lg); border:1.5px dashed var(--ink-quaternary); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; flex-shrink:0; color:var(--gold); font-size:13px; }
+
+  .invest-card{ border-radius:var(--radius-lg); padding:18px; }
+  .invest-card .top{ display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:12px; }
+  .invest-card .amount{ font-size:24px; font-weight:700; font-variant-numeric: tabular-nums; }
+
+  .donut-row{ display:flex; align-items:center; gap:22px; padding:18px; border-radius:var(--radius-lg); }
+  .donut{ width:112px; height:112px; border-radius:50%; flex-shrink:0; }
+  .cat-list{ flex:1; display:flex; flex-direction:column; gap:8px; }
+  .cat-list .cat{ display:flex; align-items:center; gap:6px; font-size:12px; }
+  .cat-list .cat .dot{ width:6px; height:6px; border-radius:50%; }
+  .cat-list .cat span:nth-child(2){ color:var(--ink-secondary); flex:1; }
+  .cat-list .cat b{ font-weight:600; }
+
+  .card-tile{ min-width:220px; height:132px; border-radius:var(--radius-lg); padding:16px; flex-shrink:0; display:flex; flex-direction:column; justify-content:space-between; color:#fff; box-shadow:0 16px 32px -8px rgba(0,0,0,.28); }
+  .card-tile .top{ display:flex; justify-content:space-between; align-items:center; font-size:12px; opacity:.85; }
+  .card-tile .bank{ font-size:14px; font-weight:600; margin-bottom:6px; }
+  .card-bar{ height:6px; border-radius:99px; background:rgba(255,255,255,.2); overflow:hidden; margin-bottom:6px; }
+  .card-bar > div{ height:100%; background:rgba(255,255,255,.9); }
+  .card-tile small{ font-size:11px; opacity:.65; }
+
+  .sub-list{ border-radius:var(--radius-lg); padding:8px 18px; }
+  .sub-row{ display:flex; align-items:center; gap:12px; padding:12px 0; }
+  .sub-row + .sub-row{ border-top:1px solid var(--ink-quaternary); }
+  .sub-icon{ width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; }
+  .sub-row .name{ font-size:15px; font-weight:600; }
+  .sub-row .renew{ font-size:11px; color:var(--ink-tertiary); }
+  .sub-row .amt{ margin-left:auto; font-size:14px; font-weight:600; font-variant-numeric: tabular-nums; }
+
+  .tabbar{
+    position:fixed; left:16px; right:16px; bottom:calc(14px + env(safe-area-inset-bottom));
+    max-width:488px; margin:0 auto; z-index:10;
+    display:flex; padding:6px; border-radius:24px; gap:2px;
+    background: rgba(30,30,34,.55);
+    -webkit-backdrop-filter: blur(24px);
+    backdrop-filter: blur(24px);
+    border:1px solid var(--glass-border);
+    box-shadow:0 24px 48px -8px rgba(0,0,0,.4);
+  }
+  .tabbar button{ flex:1; background:none; border:none; display:flex; flex-direction:column; align-items:center; gap:3px; padding:9px 0; border-radius:16px; color:var(--ink-tertiary); font-size:10px; font-weight:500; cursor:pointer; transition: color .2s, background .2s; }
+  .tabbar button.active{ color:var(--gold); background:rgba(217,183,118,.12); }
+  .tabbar button svg{ width:19px; height:19px; }
+
+  .empty{ text-align:center; padding:48px 20px; color:var(--ink-tertiary); }
+  .empty .circle{ width:76px; height:76px; border-radius:50%; background:var(--bg-elevated-2); display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:28px; }
+  .empty h3{ color:var(--ink-primary); font-size:18px; margin:0 0 6px; }
+  .empty p{ font-size:14px; margin:0; max-width:260px; margin:0 auto; }
+
+  .view{ display:none; }
+  .view.active{ display:block; }
+
+  .fab{
+    position:fixed; right:24px; bottom:calc(96px + env(safe-area-inset-bottom)); z-index:11;
+    width:56px; height:56px; border-radius:50%; border:none; cursor:pointer;
+    background:linear-gradient(135deg, var(--gold), var(--gold-glow));
+    box-shadow:0 20px 40px -8px rgba(0,0,0,.4), 0 0 20px rgba(217,183,118,.25);
+    color:var(--bg-base); font-size:22px; font-weight:600;
+    animation: breathe 2.4s ease-in-out infinite;
+  }
+  @keyframes breathe{ 50%{ transform:scale(1.05); } }
+  .fab.hidden{ display:none; }
+
+  a, button{ -webkit-user-select:none; user-select:none; }
+  ::selection{ background:rgba(217,183,118,.3); }
+</style>
+</head>
+<body>
+<div class="mesh"></div>
+
+<div class="app">
+
+  <!-- DASHBOARD -->
+  <div class="view active" id="view-dashboard">
+    <header class="top" style="animation-delay:.0s">
+      <div>
+        <p class="greet" id="greeting">Boa noite, Fabricio</p>
+        <h1>Sua visão geral</h1>
+      </div>
+      <div class="avatar">F</div>
+    </header>
+
+    <section class="hero glass" style="animation-delay:.08s">
+      <div class="row">
+        <span class="label">Patrimônio total</span>
+        <button class="eye" id="eyeBtn">👁️</button>
+      </div>
+      <div class="value-row">
+        <span class="value" id="netWorth">R$ 0,00</span>
+        <span class="trend up">↗ +4,8%</span>
+      </div>
+      <div class="spark">
+        <svg viewBox="0 0 300 60" width="100%" height="60" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="sparkFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#D9B776" stop-opacity=".35"/>
+              <stop offset="100%" stop-color="#D9B776" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M0,45 L40,38 L80,42 L120,25 L160,30 L200,15 L240,20 L300,5 L300,60 L0,60 Z" fill="url(#sparkFill)"/>
+          <path d="M0,45 L40,38 L80,42 L120,25 L160,30 L200,15 L240,20 L300,5" fill="none" stroke="#D9B776" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </section>
+
+    <section style="animation-delay:.16s">
+      <div class="calendar-strip" id="calendarStrip"></div>
+    </section>
+
+    <section style="animation-delay:.24s">
+      <div class="section-header"><h2 style="margin:0">Fluxo de caixa</h2></div>
+      <div class="tabs glass" id="rangeTabs">
+        <button class="active">Semana</button>
+        <button>Mês</button>
+        <button>Ano</button>
+      </div>
+      <div class="glass" style="border-radius:var(--radius-lg); padding:18px;">
+        <div class="legend">
+          <div class="item"><span class="dot" style="background:var(--emerald)"></span><div class="meta"><div>Entradas</div><div>R$ 9.800</div></div></div>
+          <div class="item"><span class="dot" style="background:var(--coral)"></span><div class="meta"><div>Saídas</div><div>R$ 5.140</div></div></div>
+        </div>
+        <svg viewBox="0 0 300 100" width="100%" height="110" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="cashFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#3DDC91" stop-opacity=".3"/>
+              <stop offset="100%" stop-color="#3DDC91" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M0,70 L50,55 L100,60 L150,35 L200,42 L250,20 L300,10 L300,100 L0,100 Z" fill="url(#cashFill)"/>
+          <path d="M0,70 L50,55 L100,60 L150,35 L200,42 L250,20 L300,10" fill="none" stroke="#3DDC91" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </section>
+
+    <section class="row-2" style="animation-delay:.30s">
+      <div class="tile glass">
+        <div class="top"><span>Receitas</span><div class="icon" style="background:rgba(61,220,145,.14); color:var(--emerald)">↙</div></div>
+        <div class="amount">R$ 9.800</div>
+        <span class="trend up">↗ +6,2%</span>
+      </div>
+      <div class="tile glass">
+        <div class="top"><span>Despesas</span><div class="icon" style="background:rgba(255,122,110,.14); color:var(--coral)">↗</div></div>
+        <div class="amount">R$ 5.140</div>
+        <span class="trend down">↘ -3,1%</span>
+      </div>
+    </section>
+
+    <section style="animation-delay:.36s">
+      <div class="section-header"><h2 style="margin:0">Objetivos</h2></div>
+      <div class="hscroll">
+        <div class="goal-card glass">
+          <svg class="ring" viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" fill="none" stroke="#24242B" stroke-width="6"/><circle cx="28" cy="28" r="24" fill="none" stroke="url(#g1)" stroke-width="6" stroke-linecap="round" stroke-dasharray="150.8" stroke-dashoffset="73.4" transform="rotate(-90 28 28)"/><defs><linearGradient id="g1"><stop offset="0%" stop-color="#D9B776"/><stop offset="100%" stop-color="#3DDC91"/></linearGradient></defs><text x="28" y="32" text-anchor="middle" font-size="12" fill="#F5F5F7" font-weight="600">51%</text></svg>
+          <div class="name">Viagem Japão</div>
+          <div class="amt">R$ 9.200 de R$ 18.000</div>
+        </div>
+        <div class="goal-card glass">
+          <svg class="ring" viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" fill="none" stroke="#24242B" stroke-width="6"/><circle cx="28" cy="28" r="24" fill="none" stroke="url(#g2)" stroke-width="6" stroke-linecap="round" stroke-dasharray="150.8" stroke-dashoffset="0" transform="rotate(-90 28 28)"/><defs><linearGradient id="g2"><stop offset="0%" stop-color="#D9B776"/><stop offset="100%" stop-color="#3DDC91"/></linearGradient></defs><text x="28" y="32" text-anchor="middle" font-size="12" fill="#F5F5F7" font-weight="600">100%</text></svg>
+          <div class="name">Reserva emergência</div>
+          <div class="amt">R$ 24.000 de R$ 24.000</div>
+        </div>
+        <div class="goal-card glass">
+          <svg class="ring" viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" fill="none" stroke="#24242B" stroke-width="6"/><circle cx="28" cy="28" r="24" fill="none" stroke="url(#g3)" stroke-width="6" stroke-linecap="round" stroke-dasharray="150.8" stroke-dashoffset="104.6" transform="rotate(-90 28 28)"/><defs><linearGradient id="g3"><stop offset="0%" stop-color="#D9B776"/><stop offset="100%" stop-color="#3DDC91"/></linearGradient></defs><text x="28" y="32" text-anchor="middle" font-size="12" fill="#F5F5F7" font-weight="600">31%</text></svg>
+          <div class="name">Novo MacBook</div>
+          <div class="amt">R$ 4.300 de R$ 14.000</div>
+        </div>
+        <div class="new-goal glass">
+          <span style="font-size:18px">+</span>
+          <span>Nova meta</span>
+        </div>
+      </div>
+    </section>
+
+    <section style="animation-delay:.42s">
+      <div class="section-header"><h2 style="margin:0">Investimentos</h2></div>
+      <div class="invest-card glass">
+        <div class="top">
+          <div>
+            <span style="font-size:13px; color:var(--ink-secondary)">Total investido</span>
+            <div class="amount">R$ 62.450,30</div>
+          </div>
+          <span class="trend up">↗ +2,3%</span>
+        </div>
+        <svg viewBox="0 0 300 70" width="100%" height="80" preserveAspectRatio="none">
+          <defs><linearGradient id="investFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6FB8FF" stop-opacity=".3"/><stop offset="100%" stop-color="#6FB8FF" stop-opacity="0"/></linearGradient></defs>
+          <path d="M0,50 L50,40 L100,45 L150,30 L200,20 L250,12 L300,5 L300,70 L0,70 Z" fill="url(#investFill)"/>
+          <path d="M0,50 L50,40 L100,45 L150,30 L200,20 L250,12 L300,5" fill="none" stroke="#6FB8FF" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </section>
+
+    <section style="animation-delay:.48s">
+      <div class="section-header"><h2 style="margin:0">Gastos por categoria</h2></div>
+      <div class="donut-row glass">
+        <svg class="donut" viewBox="0 0 112 112">
+          <circle cx="56" cy="56" r="46" fill="none" stroke="#D9B776" stroke-width="16" stroke-dasharray="97 192" stroke-dashoffset="0" transform="rotate(-90 56 56)"/>
+          <circle cx="56" cy="56" r="46" fill="none" stroke="#3DDC91" stroke-width="16" stroke-dasharray="54 192" stroke-dashoffset="-100" transform="rotate(-90 56 56)"/>
+          <circle cx="56" cy="56" r="46" fill="none" stroke="#6FB8FF" stroke-width="16" stroke-dasharray="29 192" stroke-dashoffset="-157" transform="rotate(-90 56 56)"/>
+          <circle cx="56" cy="56" r="46" fill="none" stroke="#B79CFF" stroke-width="16" stroke-dasharray="34 192" stroke-dashoffset="-189" transform="rotate(-90 56 56)"/>
+          <circle cx="56" cy="56" r="46" fill="none" stroke="#FF7A6E" stroke-width="16" stroke-dasharray="23 192" stroke-dashoffset="-226" transform="rotate(-90 56 56)"/>
+        </svg>
+        <div class="cat-list">
+          <div class="cat"><span class="dot" style="background:var(--gold)"></span><span>Moradia</span><b>R$ 2.100</b></div>
+          <div class="cat"><span class="dot" style="background:var(--emerald)"></span><span>Alimentação</span><b>R$ 1.180</b></div>
+          <div class="cat"><span class="dot" style="background:var(--azure)"></span><span>Transporte</span><b>R$ 620</b></div>
+          <div class="cat"><span class="dot" style="background:var(--violet)"></span><span>Lazer</span><b>R$ 740</b></div>
+          <div class="cat"><span class="dot" style="background:var(--coral)"></span><span>Outros</span><b>R$ 500</b></div>
+        </div>
+      </div>
+    </section>
+
+    <section style="animation-delay:.54s">
+      <div class="section-header"><h2 style="margin:0">Cartões</h2></div>
+      <div class="hscroll">
+        <div class="card-tile" style="background:linear-gradient(135deg,#2C2C34,#111114)">
+          <div class="top"><span>))) </span><span>•••• 4821</span></div>
+          <div>
+            <div class="bank">Aurum Black</div>
+            <div class="card-bar"><div style="width:35%"></div></div>
+            <small>R$ 4.230 de R$ 12.000</small>
+          </div>
+        </div>
+        <div class="card-tile" style="background:linear-gradient(135deg,#6FB8FF,#B79CFF)">
+          <div class="top"><span>))) </span><span>•••• 7790</span></div>
+          <div>
+            <div class="bank">Aurum Travel</div>
+            <div class="card-bar"><div style="width:14%"></div></div>
+            <small>R$ 1.120 de R$ 8.000</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section style="animation-delay:.60s">
+      <div class="section-header"><h2 style="margin:0">Assinaturas</h2><a href="#">Ver todas</a></div>
+      <div class="sub-list glass">
+        <div class="sub-row">
+          <div class="sub-icon" style="background:rgba(111,184,255,.14); color:var(--azure)">☁️</div>
+          <div><div class="name">iCloud+</div><div class="renew">Renova em 6d</div></div>
+          <div class="amt">R$ 34,90</div>
+        </div>
+        <div class="sub-row">
+          <div class="sub-icon" style="background:rgba(61,220,145,.14); color:var(--emerald)">🎵</div>
+          <div><div class="name">Spotify</div><div class="renew">Renova em 12d</div></div>
+          <div class="amt">R$ 21,90</div>
+        </div>
+        <div class="sub-row">
+          <div class="sub-icon" style="background:rgba(183,156,255,.14); color:var(--violet)">📺</div>
+          <div><div class="name">Streaming Plus</div><div class="renew">Renova em 21d</div></div>
+          <div class="amt">R$ 44,90</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- TRANSAÇÕES -->
+  <div class="view" id="view-transactions">
+    <header class="top"><h1>Transações</h1></header>
+    <div class="tabs glass" style="margin-bottom:18px">
+      <button class="active">Todas</button><button>Receitas</button><button>Despesas</button>
+    </div>
+    <div class="sub-list glass">
+      <div class="sub-row">
+        <div class="sub-icon" style="background:rgba(61,220,145,.14); color:var(--emerald)">🛒</div>
+        <div><div class="name">Supermercado Pão de Ouro</div><div class="renew">Alimentação</div></div>
+        <div class="amt">-R$ 284,30</div>
+      </div>
+      <div class="sub-row">
+        <div class="sub-icon" style="background:rgba(61,220,145,.14); color:var(--emerald)">⬇️</div>
+        <div><div class="name">Salário</div><div class="renew">Receita</div></div>
+        <div class="amt" style="color:var(--emerald)">+R$ 9.800,00</div>
+      </div>
+      <div class="sub-row">
+        <div class="sub-icon" style="background:rgba(111,184,255,.14); color:var(--azure)">🚗</div>
+        <div><div class="name">Uber</div><div class="renew">Transporte</div></div>
+        <div class="amt">-R$ 38,50</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- METAS -->
+  <div class="view" id="view-goals">
+    <header class="top"><h1>Metas</h1></header>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+      <div class="goal-card glass" style="min-width:0">
+        <svg class="ring" viewBox="0 0 56 56" style="width:70px;height:70px"><circle cx="28" cy="28" r="24" fill="none" stroke="#24242B" stroke-width="6"/><circle cx="28" cy="28" r="24" fill="none" stroke="url(#gg1)" stroke-width="6" stroke-linecap="round" stroke-dasharray="150.8" stroke-dashoffset="73.4" transform="rotate(-90 28 28)"/><defs><linearGradient id="gg1"><stop offset="0%" stop-color="#D9B776"/><stop offset="100%" stop-color="#3DDC91"/></linearGradient></defs></svg>
+        <div class="name">Viagem Japão</div><div class="amt">R$ 9.200</div>
+      </div>
+      <div class="goal-card glass" style="min-width:0">
+        <svg class="ring" viewBox="0 0 56 56" style="width:70px;height:70px"><circle cx="28" cy="28" r="24" fill="none" stroke="#24242B" stroke-width="6"/><circle cx="28" cy="28" r="24" fill="none" stroke="url(#gg2)" stroke-width="6" stroke-linecap="round" stroke-dasharray="150.8" stroke-dashoffset="0" transform="rotate(-90 28 28)"/><defs><linearGradient id="gg2"><stop offset="0%" stop-color="#D9B776"/><stop offset="100%" stop-color="#3DDC91"/></linearGradient></defs></svg>
+        <div class="name">Reserva emergência</div><div class="amt">R$ 24.000</div>
+      </div>
+      <div class="goal-card glass" style="min-width:0">
+        <svg class="ring" viewBox="0 0 56 56" style="width:70px;height:70px"><circle cx="28" cy="28" r="24" fill="none" stroke="#24242B" stroke-width="6"/><circle cx="28" cy="28" r="24" fill="none" stroke="url(#gg3)" stroke-width="6" stroke-linecap="round" stroke-dasharray="150.8" stroke-dashoffset="104.6" transform="rotate(-90 28 28)"/><defs><linearGradient id="gg3"><stop offset="0%" stop-color="#D9B776"/><stop offset="100%" stop-color="#3DDC91"/></linearGradient></defs></svg>
+        <div class="name">Novo MacBook</div><div class="amt">R$ 4.300</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INVESTIMENTOS -->
+  <div class="view" id="view-investments">
+    <header class="top"><h1>Investimentos</h1></header>
+    <div class="invest-card glass" style="margin-bottom:20px">
+      <div class="top">
+        <div><span style="font-size:13px; color:var(--ink-secondary)">Total investido</span><div class="amount" style="font-size:30px">R$ 62.450,30</div></div>
+        <span class="trend up">↗ +2,3%</span>
+      </div>
+      <svg viewBox="0 0 300 90" width="100%" height="100" preserveAspectRatio="none">
+        <path d="M0,60 L50,50 L100,55 L150,38 L200,26 L250,16 L300,6" fill="none" stroke="#6FB8FF" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="sub-list glass">
+      <div class="sub-row"><div><div class="name">Tesouro Selic 2029</div><div class="renew">R$ 24.300</div></div><span class="trend up" style="margin-left:auto">+1,1%</span></div>
+      <div class="sub-row"><div><div class="name">ETF IVVB11</div><div class="renew">R$ 18.900</div></div><span class="trend up" style="margin-left:auto">+4,6%</span></div>
+      <div class="sub-row"><div><div class="name">Ações BR (carteira)</div><div class="renew">R$ 12.450</div></div><span class="trend down" style="margin-left:auto">-1,8%</span></div>
+    </div>
+  </div>
+
+  <!-- CARTÕES -->
+  <div class="view" id="view-cards">
+    <header class="top"><h1>Cartões</h1></header>
+    <div class="hscroll" style="margin-bottom:18px">
+      <div class="card-tile" style="min-width:100%; height:180px; background:linear-gradient(135deg,#2C2C34,#111114)">
+        <div class="top"><span>))) </span><span>Aurum Black</span></div>
+        <div style="font-size:18px; letter-spacing:2px;">•••• •••• •••• 4821</div>
+      </div>
+    </div>
+    <div class="invest-card glass">
+      <span style="font-size:13px; color:var(--ink-secondary)">Fatura atual</span>
+      <div class="amount" style="margin:6px 0">R$ 4.230,00</div>
+      <div class="card-bar" style="background:var(--bg-elevated-3)"><div style="width:35%; background:var(--gold)"></div></div>
+      <small style="color:var(--ink-tertiary)">Limite de R$ 12.000,00</small>
+    </div>
+  </div>
+
+</div>
+
+<button class="fab" id="fab">+</button>
+
+<nav class="tabbar" id="tabbar">
+  <button class="active" data-view="dashboard">
+    <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>
+    Início
+  </button>
+  <button data-view="transactions">
+    <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="5" width="18" height="3" rx="1.5"/><rect x="3" y="11" width="18" height="3" rx="1.5"/><rect x="3" y="17" width="12" height="3" rx="1.5"/></svg>
+    Transações
+  </button>
+  <button data-view="goals">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>
+    Metas
+  </button>
+  <button data-view="investments">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8"/></svg>
+    Investir
+  </button>
+  <button data-view="cards">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+    Cartões
+  </button>
+</nav>
+
+<script>
+  // Greeting
+  const hour = new Date().getHours();
+  const greetText = hour < 12 ? "Bom dia" : hour < 18 ? "Boa tarde" : "Boa noite";
+  document.getElementById("greeting").textContent = greetText + ", Fabricio";
+
+  // Animated net worth count-up
+  const target = 184320.55;
+  const el = document.getElementById("netWorth");
+  const fmt = v => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  let start = null;
+  const duration = 900;
+  function step(ts){
+    if(!start) start = ts;
+    const p = Math.min((ts - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - p, 3);
+    el.textContent = fmt(target * eased);
+    if(p < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+
+  // Hide balance toggle
+  let hidden = false;
+  document.getElementById("eyeBtn").addEventListener("click", () => {
+    hidden = !hidden;
+    el.classList.toggle("blurred", hidden);
+    document.getElementById("eyeBtn").textContent = hidden ? "🙈" : "👁️";
+    if (navigator.vibrate) navigator.vibrate(8);
+  });
+
+  // Calendar strip
+  const strip = document.getElementById("calendarStrip");
+  const eventDays = [3, 6, 10, 12];
+  const today = 6;
+  for (let d = 1; d <= 14; d++) {
+    const div = document.createElement("div");
+    div.className = "day" + (d === today ? " today" : "");
+    div.innerHTML = `<span>${d}</span><span class="dot ${eventDays.includes(d) ? "" : "empty"}"></span>`;
+    strip.appendChild(div);
+  }
+  document.querySelector(`.day:nth-child(${today})`)?.scrollIntoView({ inline: "center" });
+
+  // Range tabs
+  document.getElementById("rangeTabs").addEventListener("click", (e) => {
+    if (e.target.tagName === "BUTTON") {
+      document.querySelectorAll("#rangeTabs button").forEach(b => b.classList.remove("active"));
+      e.target.classList.add("active");
+      if (navigator.vibrate) navigator.vibrate(6);
+    }
+  });
+
+  // Tab bar navigation
+  const tabbar = document.getElementById("tabbar");
+  const fab = document.getElementById("fab");
+  tabbar.addEventListener("click", (e) => {
+    const btn = e.target.closest("button");
+    if (!btn) return;
+    tabbar.querySelectorAll("button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+    document.getElementById("view-" + btn.dataset.view).classList.add("active");
+    fab.classList.toggle("hidden", btn.dataset.view !== "goals");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (navigator.vibrate) navigator.vibrate(6);
+  });
+  fab.classList.add("hidden");
+
+  fab.addEventListener("click", () => { if (navigator.vibrate) navigator.vibrate(10); });
+
+  // Pull to refresh (simple, mobile-friendly)
+  let touchStartY = 0;
+  document.addEventListener("touchstart", e => touchStartY = e.touches[0].clientY, { passive: true });
+  document.addEventListener("touchend", e => {
+    if (window.scrollY === 0 && (e.changedTouches[0].clientY - touchStartY) > 80) {
+      if (navigator.vibrate) navigator.vibrate(10);
+    }
+  }, { passive: true });
+</script>
+</body>
+</html>
