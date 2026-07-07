@@ -227,6 +227,10 @@
   .sub-row .name{ font-size:15px; font-weight:600; }
   .sub-row .renew{ font-size:11px; color:var(--ink-tertiary); }
   .sub-row .amt{ margin-left:auto; font-size:14px; font-weight:600; font-variant-numeric: tabular-nums; }
+  .sub-row.tinted{ border-radius:14px; padding:12px 12px; margin-bottom:8px; }
+  .sub-row.tinted + .sub-row{ border-top:none; }
+  .sub-row.tinted.income{ background: linear-gradient(90deg, rgba(61,220,145,.18), rgba(61,220,145,.03) 75%); }
+  .sub-row.tinted.expense{ background: linear-gradient(90deg, rgba(255,122,110,.18), rgba(255,122,110,.03) 75%); }
 
   .tabbar{
     position:fixed; left:16px; right:16px; bottom:calc(14px + env(safe-area-inset-bottom));
@@ -794,14 +798,14 @@
     }
     filtered.forEach(t => {
       const row = document.createElement("div");
-      row.className = "sub-row";
-      row.style.cursor = "pointer";
       const isIncome = t.amount > 0;
+      row.className = "sub-row tinted " + (isIncome ? "income" : "expense");
+      row.style.cursor = "pointer";
       const dateLabel = new Date(t.date).toLocaleDateString("pt-BR", { day: "2-digit", month: "short" });
       row.innerHTML = `
         <div class="sub-icon" style="background:${t.bg}; color:${t.hex}">${t.icon}</div>
         <div><div class="name">${t.category}</div><div class="renew">${dateLabel}</div></div>
-        <div class="amt" style="color:${isIncome ? "var(--emerald)" : "var(--ink-primary)"}">${isIncome ? "+" : "-"}${fmt(Math.abs(t.amount))}</div>
+        <div class="amt" style="color:${isIncome ? "var(--emerald)" : "var(--coral)"}">${isIncome ? "+" : "-"}${fmt(Math.abs(t.amount))}</div>
       `;
       row.addEventListener("click", () => {
         if (confirm(`Excluir "${t.category}" (${fmt(Math.abs(t.amount))})?`)) {
