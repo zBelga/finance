@@ -290,6 +290,8 @@
   }
   .sheet.active{ transform: translateY(0); }
   .sheet .handle{ width:36px; height:5px; border-radius:99px; background:var(--ink-quaternary); margin:0 auto 18px; }
+  .sheet.type-despesa{ background: linear-gradient(180deg, rgba(255,122,110,.20), rgba(19,19,23,.94) 55%); border-color: rgba(255,122,110,.35); }
+  .sheet.type-receita{ background: linear-gradient(180deg, rgba(61,220,145,.20), rgba(19,19,23,.94) 55%); border-color: rgba(61,220,145,.35); }
   .sheet h3{ font-size:19px; font-weight:700; margin:0 0 18px; }
 
   .type-toggle{ display:flex; gap:4px; padding:4px; border-radius:var(--radius-pill); background:var(--bg-elevated-2); margin-bottom:18px; }
@@ -625,10 +627,6 @@
     <button data-type="receita">Receita</button>
   </div>
   <div class="field">
-    <label>Descrição</label>
-    <input type="text" id="txnDesc" placeholder="Ex: Supermercado, Salário..." autocomplete="off" />
-  </div>
-  <div class="field">
     <label>Valor (R$)</label>
     <input type="number" id="txnAmount" inputmode="decimal" step="0.01" min="0" placeholder="0,00" />
   </div>
@@ -799,13 +797,14 @@
       row.className = "sub-row";
       row.style.cursor = "pointer";
       const isIncome = t.amount > 0;
+      const dateLabel = new Date(t.date).toLocaleDateString("pt-BR", { day: "2-digit", month: "short" });
       row.innerHTML = `
         <div class="sub-icon" style="background:${t.bg}; color:${t.hex}">${t.icon}</div>
-        <div><div class="name">${t.desc}</div><div class="renew">${t.category}</div></div>
+        <div><div class="name">${t.category}</div><div class="renew">${dateLabel}</div></div>
         <div class="amt" style="color:${isIncome ? "var(--emerald)" : "var(--ink-primary)"}">${isIncome ? "+" : "-"}${fmt(Math.abs(t.amount))}</div>
       `;
       row.addEventListener("click", () => {
-        if (confirm(`Excluir "${t.desc}"?`)) {
+        if (confirm(`Excluir "${t.category}" (${fmt(Math.abs(t.amount))})?`)) {
           ledger = ledger.filter(x => x.id !== t.id);
           saveLedger();
           renderAll();
@@ -875,6 +874,11 @@
   }
   renderCatChips();
 
+  function setSheetTypeTint(){
+    sheet.classList.remove("type-despesa", "type-receita");
+    sheet.classList.add(currentType === "receita" ? "type-receita" : "type-despesa");
+  }
+
   typeToggle.addEventListener("click", (e) => {
     const btn = e.target.closest("button");
     if (!btn) return;
@@ -882,30 +886,30 @@
     btn.classList.add("active");
     currentType = btn.dataset.type;
     renderCatChips();
+    setSheetTypeTint();
     if (navigator.vibrate) navigator.vibrate(6);
   });
 
   document.getElementById("fab").addEventListener("click", () => {
     if (navigator.vibrate) navigator.vibrate(10);
-    document.getElementById("txnDesc").value = "";
     document.getElementById("txnAmount").value = "";
     typeToggle.querySelectorAll("button").forEach(b => b.classList.remove("active"));
     typeToggle.querySelector('[data-type="despesa"]').classList.add("active");
     currentType = "despesa";
     renderCatChips();
+    setSheetTypeTint();
     openSheet(sheet);
   });
   document.getElementById("sheetClose").addEventListener("click", closeActiveSheet);
 
   document.getElementById("txnSave").addEventListener("click", () => {
-    const desc = document.getElementById("txnDesc").value.trim();
     const rawAmount = parseFloat(document.getElementById("txnAmount").value.replace(",", "."));
-    if (!desc || !rawAmount || rawAmount <= 0) {
+    if (!rawAmount || rawAmount <= 0) {
       if (navigator.vibrate) navigator.vibrate([10, 40, 10]);
-      document.getElementById("txnDesc").style.borderColor = !desc ? "var(--coral)" : "";
-      document.getElementById("txnAmount").style.borderColor = (!rawAmount || rawAmount <= 0) ? "var(--coral)" : "";
+      document.getElementById("txnAmount").style.borderColor = "var(--coral)";
       return;
     }
+    document.getElementById("txnAmount").style.borderColor = "";
     let category, icon, hex, bg;
     if (currentType === "receita") {
       category = RECEITA_CAT.label; icon = RECEITA_CAT.icon; hex = RECEITA_CAT.hex; bg = RECEITA_CAT.bg;
@@ -919,7 +923,7 @@
     }
     ledger.unshift({
       id: Date.now(),
-      desc,
+      desc: category,
       category, icon, hex, bg,
       amount: currentType === "receita" ? Math.abs(rawAmount) : -Math.abs(rawAmount),
       date: Date.now()
