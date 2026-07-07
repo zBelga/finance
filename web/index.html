@@ -216,11 +216,14 @@
   .hscroll{ display:flex; gap:14px; overflow-x:auto; padding:2px 2px 10px; scrollbar-width:none; }
   .hscroll::-webkit-scrollbar{ display:none; }
 
-  .goal-card{ min-width:140px; border-radius:var(--radius-lg); padding:18px 14px; text-align:center; flex-shrink:0; }
-  .ring{ width:56px; height:56px; margin:0 auto 10px; }
+  .goal-card{ min-width:140px; border-radius:var(--radius-lg); padding:18px 14px; text-align:center; flex-shrink:0; cursor:pointer; -webkit-tap-highlight-color:transparent; position:relative; }
+  .ring{ width:56px; height:56px; margin:0 auto 6px; position:relative; }
+  .goal-card .icon-badge{ position:absolute; top:10px; right:10px; font-size:15px; opacity:.9; }
   .goal-card .name{ font-size:13px; font-weight:600; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .goal-card .amt{ font-size:11px; color:var(--ink-tertiary); }
-  .new-goal{ min-width:140px; height:150px; border-radius:var(--radius-lg); border:1.5px dashed var(--ink-quaternary); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; flex-shrink:0; color:var(--gold); font-size:13px; }
+  .goal-card .forecast{ font-size:10px; color:var(--cyan); margin-top:4px; opacity:.9; }
+  .new-goal{ min-width:140px; height:150px; border-radius:var(--radius-lg); border:1.5px dashed var(--ink-quaternary); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; flex-shrink:0; color:var(--gold); font-size:13px; cursor:pointer; -webkit-tap-highlight-color:transparent; transition: transform .18s cubic-bezier(.22,1,.36,1), border-color .2s; }
+  .new-goal:active{ transform:scale(.95); border-color:var(--gold); }
 
   .invest-card{ border-radius:var(--radius-lg); padding:18px; }
   .invest-card .top{ display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:12px; }
@@ -263,9 +266,9 @@
     border:1px solid var(--glass-border);
     box-shadow:0 24px 48px -8px rgba(0,0,0,.4);
   }
-  .tabbar button{ flex:1; background:none; border:none; display:flex; flex-direction:column; align-items:center; gap:3px; padding:9px 0; border-radius:16px; color:var(--ink-tertiary); font-size:10px; font-weight:500; cursor:pointer; transition: color .2s, background .2s; }
+  .tabbar button{ flex:1; min-width:0; background:none; border:none; display:flex; flex-direction:column; align-items:center; gap:3px; padding:9px 1px; border-radius:16px; color:var(--ink-tertiary); font-size:9.5px; font-weight:500; cursor:pointer; transition: color .2s, background .2s; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .tabbar button.active{ color:var(--gold); background:rgba(217,183,118,.12); }
-  .tabbar button svg{ width:19px; height:19px; }
+  .tabbar button svg{ width:18px; height:18px; flex-shrink:0; }
 
   .empty{ text-align:center; padding:48px 20px; color:var(--ink-tertiary); }
   .empty .circle{ width:76px; height:76px; border-radius:50%; background:var(--bg-elevated-2); display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:28px; }
@@ -372,6 +375,7 @@
     <feGaussianBlur stdDeviation="3.2" result="blur"/>
     <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
   </filter>
+  <linearGradient id="goalGrad"><stop offset="0%" stop-color="#D9B776"/><stop offset="100%" stop-color="#3DDC91"/></linearGradient>
 </svg>
 
 <div class="app">
@@ -440,27 +444,7 @@
 
     <section style="animation-delay:.36s">
       <div class="section-header"><h2 style="margin:0">Objetivos</h2></div>
-      <div class="hscroll">
-        <div class="goal-card glass tilt3d">
-          <svg class="ring" viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" fill="none" stroke="#24242B" stroke-width="6"/><circle cx="28" cy="28" r="24" fill="none" stroke="url(#g1)" stroke-width="6" stroke-linecap="round" stroke-dasharray="150.8" stroke-dashoffset="73.4" transform="rotate(-90 28 28)"/><defs><linearGradient id="g1"><stop offset="0%" stop-color="#D9B776"/><stop offset="100%" stop-color="#3DDC91"/></linearGradient></defs><text x="28" y="32" text-anchor="middle" font-size="12" fill="#F5F5F7" font-weight="600">51%</text></svg>
-          <div class="name">Viagem Japão</div>
-          <div class="amt">R$ 9.200 de R$ 18.000</div>
-        </div>
-        <div class="goal-card glass tilt3d">
-          <svg class="ring" viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" fill="none" stroke="#24242B" stroke-width="6"/><circle cx="28" cy="28" r="24" fill="none" stroke="url(#g2)" stroke-width="6" stroke-linecap="round" stroke-dasharray="150.8" stroke-dashoffset="0" transform="rotate(-90 28 28)"/><defs><linearGradient id="g2"><stop offset="0%" stop-color="#D9B776"/><stop offset="100%" stop-color="#3DDC91"/></linearGradient></defs><text x="28" y="32" text-anchor="middle" font-size="12" fill="#F5F5F7" font-weight="600">100%</text></svg>
-          <div class="name">Reserva emergência</div>
-          <div class="amt">R$ 24.000 de R$ 24.000</div>
-        </div>
-        <div class="goal-card glass tilt3d">
-          <svg class="ring" viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" fill="none" stroke="#24242B" stroke-width="6"/><circle cx="28" cy="28" r="24" fill="none" stroke="url(#g3)" stroke-width="6" stroke-linecap="round" stroke-dasharray="150.8" stroke-dashoffset="104.6" transform="rotate(-90 28 28)"/><defs><linearGradient id="g3"><stop offset="0%" stop-color="#D9B776"/><stop offset="100%" stop-color="#3DDC91"/></linearGradient></defs><text x="28" y="32" text-anchor="middle" font-size="12" fill="#F5F5F7" font-weight="600">31%</text></svg>
-          <div class="name">Novo MacBook</div>
-          <div class="amt">R$ 4.300 de R$ 14.000</div>
-        </div>
-        <div class="new-goal glass">
-          <span style="font-size:18px">+</span>
-          <span>Nova meta</span>
-        </div>
-      </div>
+      <div class="hscroll" id="goalsHscroll"></div>
     </section>
 
     <section style="animation-delay:.42s">
@@ -549,7 +533,6 @@
   <div class="view" id="view-transactions">
     <header class="top">
       <h1>Transações</h1>
-      <button class="eye" id="settingsBtn">⚙️</button>
     </header>
     <div class="tabs glass" id="txnFilterTabs" style="margin-bottom:18px">
       <button class="active" data-filter="all">Todas</button><button data-filter="income">Receitas</button><button data-filter="expense">Despesas</button>
@@ -562,7 +545,6 @@
   <div class="view" id="view-settings">
     <header class="top">
       <h1>Configurações</h1>
-      <button class="eye" id="backFromSettingsBtn">←</button>
     </header>
 
     <section style="margin-bottom:28px">
@@ -585,20 +567,7 @@
   <!-- METAS -->
   <div class="view" id="view-goals">
     <header class="top"><h1>Metas</h1></header>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
-      <div class="goal-card glass tilt3d" style="min-width:0">
-        <svg class="ring" viewBox="0 0 56 56" style="width:70px;height:70px"><circle cx="28" cy="28" r="24" fill="none" stroke="#24242B" stroke-width="6"/><circle cx="28" cy="28" r="24" fill="none" stroke="url(#gg1)" stroke-width="6" stroke-linecap="round" stroke-dasharray="150.8" stroke-dashoffset="73.4" transform="rotate(-90 28 28)"/><defs><linearGradient id="gg1"><stop offset="0%" stop-color="#D9B776"/><stop offset="100%" stop-color="#3DDC91"/></linearGradient></defs></svg>
-        <div class="name">Viagem Japão</div><div class="amt">R$ 9.200</div>
-      </div>
-      <div class="goal-card glass tilt3d" style="min-width:0">
-        <svg class="ring" viewBox="0 0 56 56" style="width:70px;height:70px"><circle cx="28" cy="28" r="24" fill="none" stroke="#24242B" stroke-width="6"/><circle cx="28" cy="28" r="24" fill="none" stroke="url(#gg2)" stroke-width="6" stroke-linecap="round" stroke-dasharray="150.8" stroke-dashoffset="0" transform="rotate(-90 28 28)"/><defs><linearGradient id="gg2"><stop offset="0%" stop-color="#D9B776"/><stop offset="100%" stop-color="#3DDC91"/></linearGradient></defs></svg>
-        <div class="name">Reserva emergência</div><div class="amt">R$ 24.000</div>
-      </div>
-      <div class="goal-card glass tilt3d" style="min-width:0">
-        <svg class="ring" viewBox="0 0 56 56" style="width:70px;height:70px"><circle cx="28" cy="28" r="24" fill="none" stroke="#24242B" stroke-width="6"/><circle cx="28" cy="28" r="24" fill="none" stroke="url(#gg3)" stroke-width="6" stroke-linecap="round" stroke-dasharray="150.8" stroke-dashoffset="104.6" transform="rotate(-90 28 28)"/><defs><linearGradient id="gg3"><stop offset="0%" stop-color="#D9B776"/><stop offset="100%" stop-color="#3DDC91"/></linearGradient></defs></svg>
-        <div class="name">Novo MacBook</div><div class="amt">R$ 4.300</div>
-      </div>
-    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;" id="goalsGrid"></div>
   </div>
 
   <!-- INVESTIMENTOS -->
@@ -678,6 +647,30 @@
   <button class="save-btn" id="catSave">Salvar categoria</button>
 </div>
 
+<div class="sheet" id="goalSheet">
+  <button class="sheet-close" id="goalSheetClose">✕</button>
+  <div class="handle"></div>
+  <h3 id="goalSheetTitle">Nova meta</h3>
+  <div class="field">
+    <label>Nome</label>
+    <input type="text" id="goalName" placeholder="Ex: Viagem, Carro novo..." autocomplete="off" />
+  </div>
+  <div class="field">
+    <label>Ícone (toque e escolha um emoji do teclado)</label>
+    <input type="text" id="goalIcon" placeholder="🎯" maxlength="4" />
+  </div>
+  <div class="field">
+    <label>Valor atual (R$)</label>
+    <input type="number" id="goalCurrent" inputmode="decimal" step="0.01" min="0" placeholder="0,00" />
+  </div>
+  <div class="field">
+    <label>Valor da meta (R$)</label>
+    <input type="number" id="goalTarget" inputmode="decimal" step="0.01" min="0" placeholder="0,00" />
+  </div>
+  <button class="save-btn" id="goalSave">Salvar meta</button>
+  <button class="save-btn" id="goalDelete" style="display:none; background:var(--bg-elevated-2); color:var(--coral); box-shadow:none; margin-top:10px;">Excluir meta</button>
+</div>
+
 <nav class="tabbar" id="tabbar">
   <button class="active" data-view="dashboard">
     <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>
@@ -698,6 +691,10 @@
   <button data-view="cards">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
     Cartões
+  </button>
+  <button data-view="settings">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    Ajustes
   </button>
 </nav>
 
@@ -986,6 +983,7 @@
       wrap.appendChild(chip);
     });
   }
+  renderManageCatChips();
 
   function renderColorPicker(){
     const wrap = document.getElementById("catColorPicker");
@@ -1028,16 +1026,143 @@
     if (navigator.vibrate) navigator.vibrate(15);
   });
 
-  // ---------- Settings: view navigation + reset data ----------
-  document.getElementById("settingsBtn").addEventListener("click", () => {
-    renderManageCatChips();
-    switchView("view-settings");
-    if (navigator.vibrate) navigator.vibrate(6);
-  });
-  document.getElementById("backFromSettingsBtn").addEventListener("click", () => {
-    switchView("view-transactions");
+  // ---------- Goals (Metas): add / edit / delete ----------
+  let motionReady = false;
+  const GOALS_STORAGE_KEY = "aurum_goals_v1";
+  const SEED_GOALS = [
+    { id: 1, label: "Viagem Japão", icon: "✈️", target: 18000, current: 9200 },
+    { id: 2, label: "Reserva emergência", icon: "🛡️", target: 24000, current: 24000 },
+    { id: 3, label: "Novo MacBook", icon: "💻", target: 14000, current: 4300 }
+  ];
+  function loadGoals(){
+    const raw = localStorage.getItem(GOALS_STORAGE_KEY);
+    if (raw) { try { return JSON.parse(raw); } catch (e) {} }
+    localStorage.setItem(GOALS_STORAGE_KEY, JSON.stringify(SEED_GOALS));
+    return SEED_GOALS.slice();
+  }
+  function saveGoals(){ localStorage.setItem(GOALS_STORAGE_KEY, JSON.stringify(goals)); }
+  let goals = loadGoals();
+
+  const GOAL_RING_CIRC = 150.8;
+  function goalForecastText(g){
+    const remaining = g.target - g.current;
+    if (remaining <= 0) return "Meta concluída! 🎉";
+    const net = computeIncome() - computeExpense();
+    if (net <= 0) return "Sem previsão no ritmo atual";
+    const months = Math.ceil(remaining / net);
+    if (months <= 1) return "Previsão: ~1 mês no ritmo atual";
+    if (months > 60) return "Previsão: 5+ anos no ritmo atual";
+    const target = new Date();
+    target.setMonth(target.getMonth() + months);
+    const label = target.toLocaleDateString("pt-BR", { month: "short", year: "numeric" });
+    return `Previsão: ~${months} meses (${label})`;
+  }
+
+  function goalCardInner(g, large){
+    const pct = g.target > 0 ? Math.min(100, Math.max(0, (g.current / g.target) * 100)) : 0;
+    const off = GOAL_RING_CIRC * (1 - pct / 100);
+    const dims = large ? ' style="width:70px;height:70px"' : "";
+    return `
+      <span class="icon-badge">${g.icon || "🎯"}</span>
+      <svg class="ring" viewBox="0 0 56 56"${dims}>
+        <circle cx="28" cy="28" r="24" fill="none" stroke="#24242B" stroke-width="6"/>
+        <circle cx="28" cy="28" r="24" fill="none" stroke="url(#goalGrad)" stroke-width="6" stroke-linecap="round" stroke-dasharray="${GOAL_RING_CIRC}" stroke-dashoffset="${off}" transform="rotate(-90 28 28)"/>
+        <text x="28" y="32" text-anchor="middle" font-size="12" fill="#F5F5F7" font-weight="600">${Math.round(pct)}%</text>
+      </svg>
+      <div class="name">${g.label}</div>
+      <div class="amt">${fmt(g.current)} de ${fmt(g.target)}</div>
+      <div class="forecast">${goalForecastText(g)}</div>
+    `;
+  }
+
+  function renderGoals(){
+    const hscroll = document.getElementById("goalsHscroll");
+    const grid = document.getElementById("goalsGrid");
+    if (!hscroll || !grid) return;
+    hscroll.innerHTML = "";
+    grid.innerHTML = "";
+    const newTiles = [];
+    goals.forEach(g => {
+      const card1 = document.createElement("div");
+      card1.className = "goal-card glass tilt3d";
+      card1.innerHTML = goalCardInner(g);
+      card1.addEventListener("click", () => openGoalSheet(g));
+      hscroll.appendChild(card1);
+      newTiles.push(card1);
+
+      const card2 = document.createElement("div");
+      card2.className = "goal-card glass tilt3d";
+      card2.style.minWidth = "0";
+      card2.innerHTML = goalCardInner(g, true);
+      card2.addEventListener("click", () => openGoalSheet(g));
+      grid.appendChild(card2);
+      newTiles.push(card2);
+    });
+    const newGoalHtml = `<span style="font-size:18px">+</span><span>Nova meta</span>`;
+    const newCard1 = document.createElement("div");
+    newCard1.className = "new-goal glass";
+    newCard1.innerHTML = newGoalHtml;
+    newCard1.addEventListener("click", () => openGoalSheet(null));
+    hscroll.appendChild(newCard1);
+    const newCard2 = document.createElement("div");
+    newCard2.className = "new-goal glass";
+    newCard2.innerHTML = newGoalHtml;
+    newCard2.addEventListener("click", () => openGoalSheet(null));
+    grid.appendChild(newCard2);
+    if (motionReady) newTiles.forEach(attachTilt);
+  }
+
+  const goalSheet = document.getElementById("goalSheet");
+  let editingGoalId = null;
+  function openGoalSheet(g){
+    editingGoalId = g ? g.id : null;
+    document.getElementById("goalSheetTitle").textContent = g ? "Editar meta" : "Nova meta";
+    document.getElementById("goalName").value = g ? g.label : "";
+    document.getElementById("goalIcon").value = g ? g.icon : "";
+    document.getElementById("goalCurrent").value = g ? g.current : "";
+    document.getElementById("goalTarget").value = g ? g.target : "";
+    document.getElementById("goalName").style.borderColor = "";
+    document.getElementById("goalTarget").style.borderColor = "";
+    document.getElementById("goalDelete").style.display = g ? "block" : "none";
+    openSheet(goalSheet);
+  }
+  document.getElementById("goalSheetClose").addEventListener("click", closeActiveSheet);
+
+  document.getElementById("goalSave").addEventListener("click", () => {
+    const name = document.getElementById("goalName").value.trim();
+    const icon = document.getElementById("goalIcon").value.trim() || "🎯";
+    const current = parseFloat(document.getElementById("goalCurrent").value.replace(",", ".")) || 0;
+    const target = parseFloat(document.getElementById("goalTarget").value.replace(",", "."));
+    if (!name || !target || target <= 0) {
+      if (navigator.vibrate) navigator.vibrate([10, 40, 10]);
+      document.getElementById("goalName").style.borderColor = !name ? "var(--coral)" : "";
+      document.getElementById("goalTarget").style.borderColor = (!target || target <= 0) ? "var(--coral)" : "";
+      return;
+    }
+    if (editingGoalId) {
+      const g = goals.find(x => x.id === editingGoalId);
+      if (g) { g.label = name; g.icon = icon; g.current = current; g.target = target; }
+    } else {
+      goals.push({ id: Date.now(), label: name, icon, current, target });
+    }
+    saveGoals();
+    renderGoals();
+    closeActiveSheet();
+    if (navigator.vibrate) navigator.vibrate(15);
   });
 
+  document.getElementById("goalDelete").addEventListener("click", () => {
+    if (!editingGoalId) return;
+    if (confirm("Excluir esta meta?")) {
+      goals = goals.filter(x => x.id !== editingGoalId);
+      saveGoals();
+      renderGoals();
+      closeActiveSheet();
+      if (navigator.vibrate) navigator.vibrate([10, 50, 10]);
+    }
+  });
+
+  // ---------- Settings: reset data ----------
   document.getElementById("resetDataRow").addEventListener("click", () => {
     if (confirm("Apagar todos os lançamentos? Essa ação não pode ser desfeita.")) {
       ledger = [];
@@ -1152,6 +1277,10 @@
     el.addEventListener("touchend", reset, { passive: true });
   }
   document.querySelectorAll(".tilt3d").forEach(attachTilt);
+
+  // Goals are rendered last so tilt/glare binding (attachTilt) is ready
+  motionReady = true;
+  renderGoals();
 </script>
 </body>
 </html>
