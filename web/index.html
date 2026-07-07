@@ -158,18 +158,39 @@
   .trend.down{ color:var(--coral); background:rgba(255,122,110,.14); }
   .spark{ margin-top:auto; }
 
-  .calendar-strip{ display:flex; gap:8px; overflow-x:auto; padding:2px 2px 8px; scrollbar-width:none; }
+  .calendar-strip{ display:flex; gap:8px; overflow-x:auto; padding:6px 2px 10px; scrollbar-width:none; scroll-snap-type:x proximity; }
   .calendar-strip::-webkit-scrollbar{ display:none; }
-  .day{ min-width:42px; height:54px; border-radius:16px; background:var(--bg-elevated-2); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; font-variant-numeric:tabular-nums; font-size:14px; font-weight:500; flex-shrink:0; }
+  .day{
+    min-width:44px; height:66px; border-radius:16px; background:var(--bg-elevated-2);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
+    font-variant-numeric:tabular-nums; font-size:14px; font-weight:500; flex-shrink:0;
+    position:relative; cursor:pointer; -webkit-tap-highlight-color:transparent;
+    border:1px solid transparent; scroll-snap-align:center;
+    opacity:0; transform:translateY(14px) scale(.85);
+    animation: dayIn .5s cubic-bezier(.22,1,.36,1) forwards;
+    animation-delay: calc(var(--i, 0) * 40ms);
+    transition: transform .18s cubic-bezier(.22,1,.36,1), box-shadow .25s ease, border-color .25s ease, background .25s ease;
+  }
+  .day:active{ transform:scale(.90); }
+  @keyframes dayIn{ to{ opacity:1; transform:translateY(0) scale(1); } }
+  .day .wd{ font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-tertiary); }
+  .day.today .wd{ color:rgba(10,10,12,.6); }
+  .day.selected{
+    border-color:var(--cyan);
+    box-shadow:0 0 0 1px rgba(0,229,255,.5) inset, 0 8px 20px -6px rgba(0,229,255,.35);
+    background:var(--bg-elevated-3);
+  }
   .day.today{
     background:linear-gradient(135deg, var(--gold), var(--gold-glow)); color:var(--bg-base); font-weight:700;
-    animation: todayFloat 2.6s ease-in-out infinite, todayGlow 2.6s ease-in-out infinite;
+    animation: dayIn .5s cubic-bezier(.22,1,.36,1) forwards, todayFloat 2.6s ease-in-out infinite, todayGlow 2.6s ease-in-out infinite;
+    animation-delay: calc(var(--i, 0) * 40ms), calc(var(--i, 0) * 40ms + .5s), calc(var(--i, 0) * 40ms + .5s);
   }
   @keyframes todayFloat{ 50%{ transform:translateY(-3px); } }
   @keyframes todayGlow{ 0%,100%{ box-shadow:0 6px 16px -4px rgba(217,183,118,.35); } 50%{ box-shadow:0 8px 26px -2px rgba(217,183,118,.65), 0 0 18px rgba(0,229,255,.18); } }
-  .day .dot{ width:4px; height:4px; border-radius:50%; background:var(--gold); }
-  .day.today .dot{ background:var(--bg-base); }
-  .day .dot.empty{ background:transparent; }
+  .day .dot{ width:4px; height:4px; border-radius:50%; background:var(--gold); box-shadow:0 0 6px rgba(217,183,118,.7); }
+  .day.today .dot{ background:var(--bg-base); box-shadow:none; }
+  .day.selected .dot{ background:var(--cyan); box-shadow:0 0 6px rgba(0,229,255,.7); }
+  .day .dot.empty{ background:transparent; box-shadow:none; }
 
   h2{ font-size:20px; font-weight:600; margin:0 0 14px; letter-spacing:-.01em; }
   .section-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
@@ -1029,15 +1050,31 @@
 
   // Calendar strip
   const strip = document.getElementById("calendarStrip");
-  const eventDays = [3, 6, 10, 12];
-  const today = 6;
-  for (let d = 1; d <= 14; d++) {
+  const WEEKDAYS_PT = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
+  const todayDate = new Date();
+  todayDate.setHours(0, 0, 0, 0);
+  const eventDaySet = new Set(
+    ledger.map(t => { const dt = new Date(t.date); dt.setHours(0, 0, 0, 0); return dt.getTime(); })
+  );
+  let todayEl = null;
+  for (let i = -4; i <= 9; i++) {
+    const d = new Date(todayDate);
+    d.setDate(d.getDate() + i);
+    const isToday = d.getTime() === todayDate.getTime();
+    const hasEvent = eventDaySet.has(d.getTime());
     const div = document.createElement("div");
-    div.className = "day" + (d === today ? " today" : "");
-    div.innerHTML = `<span>${d}</span><span class="dot ${eventDays.includes(d) ? "" : "empty"}"></span>`;
+    div.className = "day" + (isToday ? " today" : "");
+    div.style.setProperty("--i", i + 4);
+    div.innerHTML = `<span class="wd">${WEEKDAYS_PT[d.getDay()]}</span><span class="num">${d.getDate()}</span><span class="dot ${hasEvent ? "" : "empty"}"></span>`;
+    div.addEventListener("click", () => {
+      strip.querySelectorAll(".day.selected").forEach(x => x.classList.remove("selected"));
+      if (!isToday) div.classList.add("selected");
+      if (navigator.vibrate) navigator.vibrate(6);
+    });
     strip.appendChild(div);
+    if (isToday) todayEl = div;
   }
-  document.querySelector(`.day:nth-child(${today})`)?.scrollIntoView({ inline: "center" });
+  todayEl?.scrollIntoView({ inline: "center", block: "nearest" });
 
   // Range tabs
   document.getElementById("rangeTabs").addEventListener("click", (e) => {
