@@ -1057,14 +1057,15 @@
     ledger.map(t => { const dt = new Date(t.date); dt.setHours(0, 0, 0, 0); return dt.getTime(); })
   );
   let todayEl = null;
-  for (let i = -4; i <= 9; i++) {
+  const DAYS_BEFORE = 15, DAYS_AFTER = 15;
+  for (let i = -DAYS_BEFORE; i <= DAYS_AFTER; i++) {
     const d = new Date(todayDate);
     d.setDate(d.getDate() + i);
     const isToday = d.getTime() === todayDate.getTime();
     const hasEvent = eventDaySet.has(d.getTime());
     const div = document.createElement("div");
     div.className = "day" + (isToday ? " today" : "");
-    div.style.setProperty("--i", i + 4);
+    div.style.setProperty("--i", Math.min(Math.abs(i), 10));
     div.innerHTML = `<span class="wd">${WEEKDAYS_PT[d.getDay()]}</span><span class="num">${d.getDate()}</span><span class="dot ${hasEvent ? "" : "empty"}"></span>`;
     div.addEventListener("click", () => {
       strip.querySelectorAll(".day.selected").forEach(x => x.classList.remove("selected"));
