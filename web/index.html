@@ -409,12 +409,39 @@
 
   <!-- TRANSAÇÕES -->
   <div class="view" id="view-transactions">
-    <header class="top"><h1>Transações</h1></header>
+    <header class="top">
+      <h1>Transações</h1>
+      <button class="eye" id="settingsBtn">⚙️</button>
+    </header>
     <div class="tabs glass" id="txnFilterTabs" style="margin-bottom:18px">
       <button class="active" data-filter="all">Todas</button><button data-filter="income">Receitas</button><button data-filter="expense">Despesas</button>
     </div>
     <div class="sub-list glass" id="txnList"></div>
     <p class="swipe-hint">Toque em um lançamento pra excluir</p>
+  </div>
+
+  <!-- CONFIGURAÇÕES -->
+  <div class="view" id="view-settings">
+    <header class="top">
+      <h1>Configurações</h1>
+      <button class="eye" id="backFromSettingsBtn">←</button>
+    </header>
+
+    <section style="margin-bottom:28px">
+      <div class="section-header"><h2 style="margin:0">Categorias de gastos</h2></div>
+      <div class="cat-chips" id="manageCatChips" style="margin-bottom:14px"></div>
+      <button class="save-btn" id="addCatBtn" style="background:var(--bg-elevated-2); color:var(--ink-primary); box-shadow:none;">+ Nova categoria</button>
+    </section>
+
+    <section>
+      <div class="section-header"><h2 style="margin:0">Dados</h2></div>
+      <div class="sub-list glass">
+        <div class="sub-row" id="resetDataRow" style="cursor:pointer">
+          <div class="sub-icon" style="background:rgba(255,122,110,.14); color:var(--coral)">🗑️</div>
+          <div><div class="name" style="color:var(--coral)">Apagar todos os lançamentos</div><div class="renew">Remove os dados de exemplo e os seus, pra você começar do zero</div></div>
+        </div>
+      </div>
+    </section>
   </div>
 
   <!-- METAS -->
@@ -497,6 +524,25 @@
   <button class="save-btn" id="txnSave">Salvar lançamento</button>
 </div>
 
+<div class="sheet" id="catSheet">
+  <button class="sheet-close" id="catSheetClose">✕</button>
+  <div class="handle"></div>
+  <h3>Nova categoria</h3>
+  <div class="field">
+    <label>Nome</label>
+    <input type="text" id="catName" placeholder="Ex: Restaurante" autocomplete="off" />
+  </div>
+  <div class="field">
+    <label>Ícone (toque e escolha um emoji do teclado)</label>
+    <input type="text" id="catIcon" placeholder="🍔" maxlength="4" />
+  </div>
+  <div class="field">
+    <label>Cor</label>
+    <div id="catColorPicker" style="display:flex; gap:12px; padding:4px 0;"></div>
+  </div>
+  <button class="save-btn" id="catSave">Salvar categoria</button>
+</div>
+
 <nav class="tabbar" id="tabbar">
   <button class="active" data-view="dashboard">
     <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>
@@ -531,13 +577,32 @@
   // ---------- Ledger (persisted on-device with localStorage) ----------
   const STORAGE_KEY = "aurum_ledger_v1";
 
-  const CATEGORIES = [
+  // ---------- Categories (editable, persisted on-device) ----------
+  const CAT_STORAGE_KEY = "aurum_categories_v1";
+  const DEFAULT_CATEGORIES = [
     { key: "alimentacao", label: "Alimentação", icon: "🛒", hex: "#3DDC91", bg: "rgba(61,220,145,.14)" },
     { key: "transporte",  label: "Transporte",  icon: "🚗", hex: "#6FB8FF", bg: "rgba(111,184,255,.14)" },
     { key: "moradia",     label: "Moradia",      icon: "🏠", hex: "#D9B776", bg: "rgba(217,183,118,.14)" },
     { key: "lazer",       label: "Lazer",        icon: "🎬", hex: "#B79CFF", bg: "rgba(183,156,255,.14)" },
     { key: "outros",      label: "Outros",       icon: "📦", hex: "#FF7A6E", bg: "rgba(255,122,110,.14)" }
   ];
+  const PALETTE = [
+    { hex: "#D9B776", bg: "rgba(217,183,118,.14)" },
+    { hex: "#3DDC91", bg: "rgba(61,220,145,.14)" },
+    { hex: "#6FB8FF", bg: "rgba(111,184,255,.14)" },
+    { hex: "#B79CFF", bg: "rgba(183,156,255,.14)" },
+    { hex: "#FF7A6E", bg: "rgba(255,122,110,.14)" }
+  ];
+
+  function loadCategories(){
+    const raw = localStorage.getItem(CAT_STORAGE_KEY);
+    if (raw) { try { return JSON.parse(raw); } catch(e) { /* fall through to defaults */ } }
+    localStorage.setItem(CAT_STORAGE_KEY, JSON.stringify(DEFAULT_CATEGORIES));
+    return DEFAULT_CATEGORIES.slice();
+  }
+  function saveCategories(){ localStorage.setItem(CAT_STORAGE_KEY, JSON.stringify(categories)); }
+  let categories = loadCategories();
+
   const RECEITA_CAT = { label: "Receita", icon: "⬇️", hex: "#3DDC91", bg: "rgba(61,220,145,.14)" };
 
   const SEED_LEDGER = [
@@ -613,9 +678,23 @@
 
   renderAll();
 
+  // ---------- Sheets (generic open/close, backdrop shared) ----------
+  const sheetBackdrop = document.getElementById("sheetBackdrop");
+  let activeSheetEl = null;
+  function openSheet(el){
+    activeSheetEl = el;
+    el.classList.add("active");
+    sheetBackdrop.classList.add("active");
+  }
+  function closeActiveSheet(){
+    if (activeSheetEl) activeSheetEl.classList.remove("active");
+    sheetBackdrop.classList.remove("active");
+    activeSheetEl = null;
+  }
+  sheetBackdrop.addEventListener("click", closeActiveSheet);
+
   // ---------- Add-transaction sheet ----------
   const sheet = document.getElementById("addSheet");
-  const sheetBackdrop = document.getElementById("sheetBackdrop");
   const catChips = document.getElementById("catChips");
   const typeToggle = document.getElementById("typeToggle");
   let currentType = "despesa";
@@ -624,7 +703,7 @@
     catChips.innerHTML = "";
     if (currentType === "receita") { catChips.style.display = "none"; return; }
     catChips.style.display = "flex";
-    CATEGORIES.forEach((cat, i) => {
+    categories.forEach((cat, i) => {
       const chip = document.createElement("div");
       chip.className = "cat-chip" + (i === 0 ? " active" : "");
       chip.style.color = cat.hex;
@@ -650,27 +729,17 @@
     if (navigator.vibrate) navigator.vibrate(6);
   });
 
-  function openSheet(){
-    sheet.classList.add("active");
-    sheetBackdrop.classList.add("active");
+  document.getElementById("fab").addEventListener("click", () => {
+    if (navigator.vibrate) navigator.vibrate(10);
     document.getElementById("txnDesc").value = "";
     document.getElementById("txnAmount").value = "";
     typeToggle.querySelectorAll("button").forEach(b => b.classList.remove("active"));
     typeToggle.querySelector('[data-type="despesa"]').classList.add("active");
     currentType = "despesa";
     renderCatChips();
-  }
-  function closeSheet(){
-    sheet.classList.remove("active");
-    sheetBackdrop.classList.remove("active");
-  }
-
-  document.getElementById("fab").addEventListener("click", () => {
-    if (navigator.vibrate) navigator.vibrate(10);
-    openSheet();
+    openSheet(sheet);
   });
-  document.getElementById("sheetClose").addEventListener("click", closeSheet);
-  sheetBackdrop.addEventListener("click", closeSheet);
+  document.getElementById("sheetClose").addEventListener("click", closeActiveSheet);
 
   document.getElementById("txnSave").addEventListener("click", () => {
     const desc = document.getElementById("txnDesc").value.trim();
@@ -686,8 +755,11 @@
       category = RECEITA_CAT.label; icon = RECEITA_CAT.icon; hex = RECEITA_CAT.hex; bg = RECEITA_CAT.bg;
     } else {
       const activeChip = catChips.querySelector(".cat-chip.active");
-      const catDef = CATEGORIES.find(c => c.key === activeChip?.dataset.key) || CATEGORIES[0];
-      category = catDef.label; icon = catDef.icon; hex = catDef.hex; bg = catDef.bg;
+      const catDef = categories.find(c => c.key === activeChip?.dataset.key) || categories[0];
+      category = catDef ? catDef.label : "Outros";
+      icon = catDef ? catDef.icon : "📦";
+      hex = catDef ? catDef.hex : "#FF7A6E";
+      bg = catDef ? catDef.bg : "rgba(255,122,110,.14)";
     }
     ledger.unshift({
       id: Date.now(),
@@ -698,8 +770,97 @@
     });
     saveLedger();
     renderAll();
-    closeSheet();
+    closeActiveSheet();
     if (navigator.vibrate) navigator.vibrate(15);
+  });
+
+  // ---------- Settings: manage categories ----------
+  const catSheet = document.getElementById("catSheet");
+  let selectedColorIdx = 1;
+
+  function renderManageCatChips(){
+    const wrap = document.getElementById("manageCatChips");
+    wrap.innerHTML = "";
+    if (categories.length === 0) {
+      wrap.innerHTML = `<p style="font-size:13px; color:var(--ink-tertiary); margin:0;">Nenhuma categoria ainda. Crie a primeira abaixo.</p>`;
+      return;
+    }
+    categories.forEach(cat => {
+      const chip = document.createElement("div");
+      chip.className = "cat-chip";
+      chip.style.color = cat.hex;
+      chip.innerHTML = `<span>${cat.icon}</span><span>${cat.label}</span><span style="margin-left:4px; opacity:.55;">✕</span>`;
+      chip.addEventListener("click", () => {
+        if (confirm(`Remover categoria "${cat.label}"?`)) {
+          categories = categories.filter(c => c.key !== cat.key);
+          saveCategories();
+          renderManageCatChips();
+          if (navigator.vibrate) navigator.vibrate(10);
+        }
+      });
+      wrap.appendChild(chip);
+    });
+  }
+
+  function renderColorPicker(){
+    const wrap = document.getElementById("catColorPicker");
+    wrap.innerHTML = "";
+    PALETTE.forEach((c, i) => {
+      const dot = document.createElement("div");
+      dot.style.cssText = `width:28px; height:28px; border-radius:50%; background:${c.hex}; cursor:pointer; border:2px solid ${i === selectedColorIdx ? "#fff" : "transparent"};`;
+      dot.addEventListener("click", () => {
+        selectedColorIdx = i;
+        renderColorPicker();
+        if (navigator.vibrate) navigator.vibrate(5);
+      });
+      wrap.appendChild(dot);
+    });
+  }
+
+  document.getElementById("addCatBtn").addEventListener("click", () => {
+    document.getElementById("catName").value = "";
+    document.getElementById("catIcon").value = "";
+    document.getElementById("catName").style.borderColor = "";
+    selectedColorIdx = 1;
+    renderColorPicker();
+    openSheet(catSheet);
+  });
+  document.getElementById("catSheetClose").addEventListener("click", closeActiveSheet);
+
+  document.getElementById("catSave").addEventListener("click", () => {
+    const name = document.getElementById("catName").value.trim();
+    const icon = document.getElementById("catIcon").value.trim() || "🏷️";
+    if (!name) {
+      document.getElementById("catName").style.borderColor = "var(--coral)";
+      if (navigator.vibrate) navigator.vibrate([10, 40, 10]);
+      return;
+    }
+    const color = PALETTE[selectedColorIdx];
+    categories.push({ key: "c" + Date.now(), label: name, icon, hex: color.hex, bg: color.bg });
+    saveCategories();
+    renderManageCatChips();
+    closeActiveSheet();
+    if (navigator.vibrate) navigator.vibrate(15);
+  });
+
+  // ---------- Settings: view navigation + reset data ----------
+  document.getElementById("settingsBtn").addEventListener("click", () => {
+    renderManageCatChips();
+    switchView("view-settings");
+    if (navigator.vibrate) navigator.vibrate(6);
+  });
+  document.getElementById("backFromSettingsBtn").addEventListener("click", () => {
+    switchView("view-transactions");
+  });
+
+  document.getElementById("resetDataRow").addEventListener("click", () => {
+    if (confirm("Apagar todos os lançamentos? Essa ação não pode ser desfeita.")) {
+      ledger = [];
+      saveLedger();
+      renderAll();
+      if (navigator.vibrate) navigator.vibrate([10, 50, 10]);
+      alert("Pronto! Todos os lançamentos foram apagados.");
+    }
   });
 
   // Calendar strip
@@ -724,15 +885,18 @@
   });
 
   // Tab bar navigation
+  function switchView(viewId){
+    document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+    document.getElementById(viewId).classList.add("active");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
   const tabbar = document.getElementById("tabbar");
   tabbar.addEventListener("click", (e) => {
     const btn = e.target.closest("button");
     if (!btn) return;
     tabbar.querySelectorAll("button").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
-    document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
-    document.getElementById("view-" + btn.dataset.view).classList.add("active");
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    switchView("view-" + btn.dataset.view);
     if (navigator.vibrate) navigator.vibrate(6);
   });
 
