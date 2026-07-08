@@ -237,7 +237,7 @@
   .cat-list .cat span:nth-child(2){ color:var(--ink-secondary); flex:1; }
   .cat-list .cat b{ font-weight:600; }
 
-  .card-tile{ min-width:220px; height:132px; border-radius:var(--radius-lg); padding:16px; flex-shrink:0; display:flex; flex-direction:column; justify-content:space-between; color:#fff; box-shadow:0 16px 32px -8px rgba(0,0,0,.28); }
+  .card-tile{ min-width:220px; height:132px; border-radius:var(--radius-lg); padding:16px; flex-shrink:0; display:flex; flex-direction:column; justify-content:space-between; color:#fff; box-shadow:0 16px 32px -8px rgba(0,0,0,.28); cursor:pointer; -webkit-tap-highlight-color:transparent; position:relative; }
   .card-tile .top{ display:flex; justify-content:space-between; align-items:center; font-size:12px; opacity:.85; }
   .card-tile .bank{ font-size:14px; font-weight:600; margin-bottom:6px; }
   .card-bar{ height:6px; border-radius:99px; background:rgba(255,255,255,.2); overflow:hidden; margin-bottom:6px; }
@@ -407,14 +407,14 @@
     <section style="animation-delay:.20s">
       <div class="section-header"><h2 style="margin:0">Fluxo de caixa</h2></div>
       <div class="tabs glass" id="rangeTabs">
-        <button class="active">Semana</button>
-        <button>Mês</button>
-        <button>Ano</button>
+        <button class="active" data-range="week">Semana</button>
+        <button data-range="month">Mês</button>
+        <button data-range="year">Ano</button>
       </div>
       <div class="glass tilt3d" style="border-radius:var(--radius-lg); padding:18px;">
         <div class="legend">
-          <div class="item"><span class="dot" style="background:var(--emerald)"></span><div class="meta"><div>Entradas</div><div>R$ 9.800</div></div></div>
-          <div class="item"><span class="dot" style="background:var(--coral)"></span><div class="meta"><div>Saídas</div><div>R$ 5.140</div></div></div>
+          <div class="item"><span class="dot" style="background:var(--emerald)"></span><div class="meta"><div>Entradas</div><div id="cfIncome">R$ 0</div></div></div>
+          <div class="item"><span class="dot" style="background:var(--coral)"></span><div class="meta"><div>Saídas</div><div id="cfExpense">R$ 0</div></div></div>
         </div>
         <svg viewBox="0 0 300 100" width="100%" height="110" preserveAspectRatio="none">
           <defs>
@@ -423,9 +423,10 @@
               <stop offset="100%" stop-color="#3DDC91" stop-opacity="0"/>
             </linearGradient>
           </defs>
-          <path d="M0,70 L50,55 L100,60 L150,35 L200,42 L250,20 L300,10 L300,100 L0,100 Z" fill="url(#cashFill)"/>
-          <path d="M0,70 L50,55 L100,60 L150,35 L200,42 L250,20 L300,10" fill="none" stroke="#3DDC91" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#neonGlow)"/>
+          <path id="cfFillPath" d="M0,100 L300,100 Z" fill="url(#cashFill)"/>
+          <path id="cfStrokePath" d="M0,50 L300,50" fill="none" stroke="#3DDC91" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#neonGlow)"/>
         </svg>
+        <p id="cfEmpty" style="text-align:center; font-size:12px; color:var(--ink-tertiary); margin:10px 0 0; display:none;">Sem lançamentos neste período</p>
       </div>
     </section>
 
@@ -433,12 +434,12 @@
       <div class="tile glass tilt3d">
         <div class="top"><span>Receitas</span><div class="icon" style="background:rgba(61,220,145,.14); color:var(--emerald)">↙</div></div>
         <div class="amount" id="incomeAmt">R$ 0</div>
-        <span class="trend up">↗ +6,2%</span>
+        <span class="trend up" id="incomeTrend">—</span>
       </div>
       <div class="tile glass tilt3d">
         <div class="top"><span>Despesas</span><div class="icon" style="background:rgba(255,122,110,.14); color:var(--coral)">↗</div></div>
         <div class="amount" id="expenseAmt">R$ 0</div>
-        <span class="trend down">↘ -3,1%</span>
+        <span class="trend down" id="expenseTrend">—</span>
       </div>
     </section>
 
@@ -453,9 +454,9 @@
         <div class="top">
           <div>
             <span style="font-size:13px; color:var(--ink-secondary)">Total investido</span>
-            <div class="amount">R$ 62.450,30</div>
+            <div class="amount" id="investTotalDash">R$ 0,00</div>
           </div>
-          <span class="trend up">↗ +2,3%</span>
+          <span class="trend up" id="investTrendDash">—</span>
         </div>
         <svg viewBox="0 0 300 70" width="100%" height="80" preserveAspectRatio="none">
           <defs><linearGradient id="investFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6FB8FF" stop-opacity=".3"/><stop offset="100%" stop-color="#6FB8FF" stop-opacity="0"/></linearGradient></defs>
@@ -487,24 +488,7 @@
 
     <section style="animation-delay:.54s">
       <div class="section-header"><h2 style="margin:0">Cartões</h2></div>
-      <div class="hscroll">
-        <div class="card-tile tilt3d" style="background:linear-gradient(135deg,#2C2C34,#111114)">
-          <div class="top"><span>))) </span><span>•••• 4821</span></div>
-          <div>
-            <div class="bank">Aurum Black</div>
-            <div class="card-bar"><div style="width:35%"></div></div>
-            <small>R$ 4.230 de R$ 12.000</small>
-          </div>
-        </div>
-        <div class="card-tile tilt3d" style="background:linear-gradient(135deg,#6FB8FF,#B79CFF)">
-          <div class="top"><span>))) </span><span>•••• 7790</span></div>
-          <div>
-            <div class="bank">Aurum Travel</div>
-            <div class="card-bar"><div style="width:14%"></div></div>
-            <small>R$ 1.120 de R$ 8.000</small>
-          </div>
-        </div>
-      </div>
+      <div class="hscroll" id="cardsHscroll"></div>
     </section>
 
     <section style="animation-delay:.60s">
@@ -575,35 +559,22 @@
     <header class="top"><h1>Investimentos</h1></header>
     <div class="invest-card glass tilt3d" style="margin-bottom:20px">
       <div class="top">
-        <div><span style="font-size:13px; color:var(--ink-secondary)">Total investido</span><div class="amount" style="font-size:30px">R$ 62.450,30</div></div>
-        <span class="trend up">↗ +2,3%</span>
+        <div><span style="font-size:13px; color:var(--ink-secondary)">Total investido</span><div class="amount" style="font-size:30px" id="investTotalFull">R$ 0,00</div></div>
+        <span class="trend up" id="investTrendFull">—</span>
       </div>
       <svg viewBox="0 0 300 90" width="100%" height="100" preserveAspectRatio="none">
         <path d="M0,60 L50,50 L100,55 L150,38 L200,26 L250,16 L300,6" fill="none" stroke="#6FB8FF" stroke-width="2.5" stroke-linecap="round" filter="url(#neonGlow)"/>
       </svg>
     </div>
-    <div class="sub-list glass">
-      <div class="sub-row"><div><div class="name">Tesouro Selic 2029</div><div class="renew">R$ 24.300</div></div><span class="trend up" style="margin-left:auto">+1,1%</span></div>
-      <div class="sub-row"><div><div class="name">ETF IVVB11</div><div class="renew">R$ 18.900</div></div><span class="trend up" style="margin-left:auto">+4,6%</span></div>
-      <div class="sub-row"><div><div class="name">Ações BR (carteira)</div><div class="renew">R$ 12.450</div></div><span class="trend down" style="margin-left:auto">-1,8%</span></div>
-    </div>
+    <div class="sub-list glass" id="investList" style="margin-bottom:14px"></div>
+    <button class="save-btn" id="addInvestBtn" style="background:var(--bg-elevated-2); color:var(--ink-primary); box-shadow:none;">+ Novo investimento</button>
   </div>
 
   <!-- CARTÕES -->
   <div class="view" id="view-cards">
     <header class="top"><h1>Cartões</h1></header>
-    <div class="hscroll" style="margin-bottom:18px">
-      <div class="card-tile tilt3d" style="min-width:100%; height:180px; background:linear-gradient(135deg,#2C2C34,#111114)">
-        <div class="top"><span>))) </span><span>Aurum Black</span></div>
-        <div style="font-size:18px; letter-spacing:2px;">•••• •••• •••• 4821</div>
-      </div>
-    </div>
-    <div class="invest-card glass tilt3d">
-      <span style="font-size:13px; color:var(--ink-secondary)">Fatura atual</span>
-      <div class="amount" style="margin:6px 0">R$ 4.230,00</div>
-      <div class="card-bar" style="background:var(--bg-elevated-3)"><div style="width:35%; background:var(--gold)"></div></div>
-      <small style="color:var(--ink-tertiary)">Limite de R$ 12.000,00</small>
-    </div>
+    <div id="cardsGrid" style="display:flex; flex-direction:column; gap:14px; margin-bottom:14px;"></div>
+    <button class="save-btn" id="addCardBtn" style="background:var(--bg-elevated-2); color:var(--ink-primary); box-shadow:none;">+ Novo cartão</button>
   </div>
 
 </div>
@@ -669,6 +640,54 @@
   </div>
   <button class="save-btn" id="goalSave">Salvar meta</button>
   <button class="save-btn" id="goalDelete" style="display:none; background:var(--bg-elevated-2); color:var(--coral); box-shadow:none; margin-top:10px;">Excluir meta</button>
+</div>
+
+<div class="sheet" id="investSheet">
+  <button class="sheet-close" id="investSheetClose">✕</button>
+  <div class="handle"></div>
+  <h3 id="investSheetTitle">Novo investimento</h3>
+  <div class="field">
+    <label>Nome</label>
+    <input type="text" id="investName" placeholder="Ex: Tesouro Selic, ETF IVVB11..." autocomplete="off" />
+  </div>
+  <div class="field">
+    <label>Valor atual (R$)</label>
+    <input type="number" id="investValue" inputmode="decimal" step="0.01" min="0" placeholder="0,00" />
+  </div>
+  <div class="field">
+    <label>Variação (%)</label>
+    <input type="number" id="investChange" inputmode="decimal" step="0.1" placeholder="Ex: 1.1 ou -2.5" />
+  </div>
+  <button class="save-btn" id="investSave">Salvar investimento</button>
+  <button class="save-btn" id="investDelete" style="display:none; background:var(--bg-elevated-2); color:var(--coral); box-shadow:none; margin-top:10px;">Excluir investimento</button>
+</div>
+
+<div class="sheet" id="cardSheet">
+  <button class="sheet-close" id="cardSheetClose">✕</button>
+  <div class="handle"></div>
+  <h3 id="cardSheetTitle">Novo cartão</h3>
+  <div class="field">
+    <label>Nome do cartão</label>
+    <input type="text" id="cardName" placeholder="Ex: Aurum Black" autocomplete="off" />
+  </div>
+  <div class="field">
+    <label>Últimos 4 dígitos</label>
+    <input type="text" id="cardLast4" inputmode="numeric" maxlength="4" placeholder="4821" />
+  </div>
+  <div class="field">
+    <label>Fatura atual (R$)</label>
+    <input type="number" id="cardUsed" inputmode="decimal" step="0.01" min="0" placeholder="0,00" />
+  </div>
+  <div class="field">
+    <label>Limite (R$)</label>
+    <input type="number" id="cardLimit" inputmode="decimal" step="0.01" min="0" placeholder="0,00" />
+  </div>
+  <div class="field">
+    <label>Cor</label>
+    <div id="cardColorPicker" style="display:flex; gap:12px; padding:4px 0;"></div>
+  </div>
+  <button class="save-btn" id="cardSave">Salvar cartão</button>
+  <button class="save-btn" id="cardDelete" style="display:none; background:var(--bg-elevated-2); color:var(--coral); box-shadow:none; margin-top:10px;">Excluir cartão</button>
 </div>
 
 <nav class="tabbar" id="tabbar">
@@ -757,9 +776,99 @@
   function computeIncome(){ return ledger.filter(t => t.amount > 0).reduce((s, t) => s + t.amount, 0); }
   function computeExpense(){ return Math.abs(ledger.filter(t => t.amount < 0).reduce((s, t) => s + t.amount, 0)); }
 
-  function renderSummary(){
-    document.getElementById("incomeAmt").textContent = fmt(computeIncome());
-    document.getElementById("expenseAmt").textContent = fmt(computeExpense());
+  // ---------- Fluxo de caixa (real, calculado do ledger) ----------
+  let currentCashRange = "week";
+
+  function periodRanges(range){
+    const now = new Date();
+    const end = new Date(now); end.setHours(23, 59, 59, 999);
+    let start, buckets;
+    if (range === "month") {
+      start = new Date(now.getFullYear(), now.getMonth(), 1); start.setHours(0, 0, 0, 0);
+      buckets = 6;
+    } else if (range === "year") {
+      start = new Date(now.getFullYear(), 0, 1); start.setHours(0, 0, 0, 0);
+      buckets = 12;
+    } else {
+      start = new Date(now); start.setDate(start.getDate() - 6); start.setHours(0, 0, 0, 0);
+      buckets = 7;
+    }
+    const duration = end.getTime() - start.getTime();
+    const prevEnd = new Date(start.getTime() - 1);
+    const prevStart = new Date(prevEnd.getTime() - duration);
+    return { start, end, prevStart, prevEnd, buckets };
+  }
+
+  function sumRange(from, to){
+    let income = 0, expense = 0;
+    ledger.forEach(t => {
+      if (t.date >= from.getTime() && t.date <= to.getTime()) {
+        if (t.amount > 0) income += t.amount; else expense += Math.abs(t.amount);
+      }
+    });
+    return { income, expense };
+  }
+
+  function cashFlowPoints(start, end, bucketCount){
+    const step = (end.getTime() - start.getTime()) / bucketCount;
+    const nets = new Array(bucketCount).fill(0);
+    ledger.forEach(t => {
+      if (t.date >= start.getTime() && t.date <= end.getTime()) {
+        let idx = step > 0 ? Math.floor((t.date - start.getTime()) / step) : 0;
+        if (idx >= bucketCount) idx = bucketCount - 1;
+        if (idx < 0) idx = 0;
+        nets[idx] += t.amount;
+      }
+    });
+    let running = 0;
+    return nets.map(n => (running += n));
+  }
+
+  function buildChartPaths(points){
+    const w = 300, h = 100, pad = 8;
+    const n = points.length;
+    if (n < 2) return { fill: `M0,${h} L${w},${h} Z`, stroke: `M0,${h / 2} L${w},${h / 2}` };
+    const min = Math.min(0, ...points);
+    const max = Math.max(0, ...points);
+    const range = (max - min) || 1;
+    const stepX = w / (n - 1);
+    const coords = points.map((v, i) => {
+      const x = i * stepX;
+      const y = pad + (1 - (v - min) / range) * (h - pad * 2);
+      return [x, y];
+    });
+    const strokeD = coords.map((c, i) => (i === 0 ? "M" : "L") + c[0].toFixed(1) + "," + c[1].toFixed(1)).join(" ");
+    const fillD = strokeD + ` L${w},${h} L0,${h} Z`;
+    return { fill: fillD, stroke: strokeD };
+  }
+
+  function setTrendEl(el, curVal, prevVal){
+    if (prevVal <= 0 && curVal <= 0) { el.textContent = "—"; el.className = "trend"; return; }
+    if (prevVal <= 0) { el.textContent = "novo"; el.className = "trend up"; return; }
+    const pct = ((curVal - prevVal) / prevVal) * 100;
+    const up = pct >= 0;
+    el.textContent = (up ? "↗ +" : "↘ ") + pct.toFixed(1).replace(".", ",") + "%";
+    el.className = "trend " + (up ? "up" : "down");
+  }
+
+  function renderCashFlow(range){
+    currentCashRange = range;
+    const { start, end, prevStart, prevEnd, buckets } = periodRanges(range);
+    const cur = sumRange(start, end);
+    const prev = sumRange(prevStart, prevEnd);
+
+    document.getElementById("cfIncome").textContent = fmt(cur.income);
+    document.getElementById("cfExpense").textContent = fmt(cur.expense);
+    document.getElementById("incomeAmt").textContent = fmt(cur.income);
+    document.getElementById("expenseAmt").textContent = fmt(cur.expense);
+    setTrendEl(document.getElementById("incomeTrend"), cur.income, prev.income);
+    setTrendEl(document.getElementById("expenseTrend"), cur.expense, prev.expense);
+
+    const points = cashFlowPoints(start, end, buckets);
+    const paths = buildChartPaths(points);
+    document.getElementById("cfFillPath").setAttribute("d", paths.fill);
+    document.getElementById("cfStrokePath").setAttribute("d", paths.stroke);
+    document.getElementById("cfEmpty").style.display = (cur.income === 0 && cur.expense === 0) ? "block" : "none";
   }
 
   function topExpenseCategory(){
@@ -838,7 +947,7 @@
   }
 
   function renderAll(){
-    renderSummary();
+    renderCashFlow(currentCashRange);
     renderTxnList();
     renderInsight();
   }
@@ -1162,6 +1271,258 @@
     }
   });
 
+  // ---------- Investimentos: add / edit / delete ----------
+  const INVEST_STORAGE_KEY = "aurum_investments_v1";
+  const SEED_INVESTMENTS = [
+    { id: 1, label: "Tesouro Selic 2029", value: 24300, changePct: 1.1 },
+    { id: 2, label: "ETF IVVB11", value: 18900, changePct: 4.6 },
+    { id: 3, label: "Ações BR (carteira)", value: 12450, changePct: -1.8 }
+  ];
+  function loadInvestments(){
+    const raw = localStorage.getItem(INVEST_STORAGE_KEY);
+    if (raw) { try { return JSON.parse(raw); } catch (e) {} }
+    localStorage.setItem(INVEST_STORAGE_KEY, JSON.stringify(SEED_INVESTMENTS));
+    return SEED_INVESTMENTS.slice();
+  }
+  function saveInvestments(){ localStorage.setItem(INVEST_STORAGE_KEY, JSON.stringify(investments)); }
+  let investments = loadInvestments();
+
+  function trendBadgeHtml(pct){
+    if (!pct) return { text: "—", cls: "trend" };
+    const up = pct >= 0;
+    return { text: (up ? "↗ +" : "↘ ") + pct.toFixed(1).replace(".", ",").replace("-", "") + "%", cls: "trend " + (up ? "up" : "down") };
+  }
+
+  function renderInvestments(){
+    const total = investments.reduce((s, i) => s + i.value, 0);
+    const weightedPct = total > 0 ? investments.reduce((s, i) => s + i.value * i.changePct, 0) / total : 0;
+    const badge = trendBadgeHtml(weightedPct);
+
+    ["investTotalDash", "investTotalFull"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = fmt(total);
+    });
+    ["investTrendDash", "investTrendFull"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = badge.text; el.className = badge.cls; }
+    });
+
+    const list = document.getElementById("investList");
+    if (!list) return;
+    list.innerHTML = "";
+    if (investments.length === 0) {
+      list.innerHTML = `<div class="empty"><div class="circle">📈</div><h3>Nada por aqui</h3><p>Toque em "+ Novo investimento" pra adicionar sua primeira posição.</p></div>`;
+      return;
+    }
+    investments.forEach(inv => {
+      const b = trendBadgeHtml(inv.changePct);
+      const row = document.createElement("div");
+      row.className = "sub-row";
+      row.style.cursor = "pointer";
+      row.innerHTML = `
+        <div><div class="name">${inv.label}</div><div class="renew">${fmt(inv.value)}</div></div>
+        <span class="${b.cls}" style="margin-left:auto">${b.text}</span>
+      `;
+      row.addEventListener("click", () => openInvestSheet(inv));
+      list.appendChild(row);
+    });
+  }
+
+  const investSheet = document.getElementById("investSheet");
+  let editingInvestId = null;
+  function openInvestSheet(inv){
+    editingInvestId = inv ? inv.id : null;
+    document.getElementById("investSheetTitle").textContent = inv ? "Editar investimento" : "Novo investimento";
+    document.getElementById("investName").value = inv ? inv.label : "";
+    document.getElementById("investValue").value = inv ? inv.value : "";
+    document.getElementById("investChange").value = inv ? inv.changePct : "";
+    document.getElementById("investName").style.borderColor = "";
+    document.getElementById("investValue").style.borderColor = "";
+    document.getElementById("investDelete").style.display = inv ? "block" : "none";
+    openSheet(investSheet);
+  }
+  document.getElementById("addInvestBtn").addEventListener("click", () => openInvestSheet(null));
+  document.getElementById("investSheetClose").addEventListener("click", closeActiveSheet);
+
+  document.getElementById("investSave").addEventListener("click", () => {
+    const name = document.getElementById("investName").value.trim();
+    const value = parseFloat(document.getElementById("investValue").value.replace(",", "."));
+    const changePct = parseFloat(document.getElementById("investChange").value.replace(",", ".")) || 0;
+    if (!name || !value || value <= 0) {
+      if (navigator.vibrate) navigator.vibrate([10, 40, 10]);
+      document.getElementById("investName").style.borderColor = !name ? "var(--coral)" : "";
+      document.getElementById("investValue").style.borderColor = (!value || value <= 0) ? "var(--coral)" : "";
+      return;
+    }
+    if (editingInvestId) {
+      const inv = investments.find(x => x.id === editingInvestId);
+      if (inv) { inv.label = name; inv.value = value; inv.changePct = changePct; }
+    } else {
+      investments.push({ id: Date.now(), label: name, value, changePct });
+    }
+    saveInvestments();
+    renderInvestments();
+    closeActiveSheet();
+    if (navigator.vibrate) navigator.vibrate(15);
+  });
+
+  document.getElementById("investDelete").addEventListener("click", () => {
+    if (!editingInvestId) return;
+    if (confirm("Excluir este investimento?")) {
+      investments = investments.filter(x => x.id !== editingInvestId);
+      saveInvestments();
+      renderInvestments();
+      closeActiveSheet();
+      if (navigator.vibrate) navigator.vibrate([10, 50, 10]);
+    }
+  });
+  renderInvestments();
+
+  // ---------- Cartões: add / edit / delete ----------
+  const CARD_STORAGE_KEY = "aurum_cards_v1";
+  const CARD_GRADIENTS = [
+    { from: "#2C2C34", to: "#111114" },
+    { from: "#6FB8FF", to: "#B79CFF" },
+    { from: "#D9B776", to: "#F0D9A8" },
+    { from: "#3DDC91", to: "#1F8F5A" },
+    { from: "#FF7A6E", to: "#B7433A" }
+  ];
+  const SEED_CARDS = [
+    { id: 1, label: "Aurum Black", last4: "4821", used: 4230, limit: 12000, colorIdx: 0 },
+    { id: 2, label: "Aurum Travel", last4: "7790", used: 1120, limit: 8000, colorIdx: 1 }
+  ];
+  function loadCards(){
+    const raw = localStorage.getItem(CARD_STORAGE_KEY);
+    if (raw) { try { return JSON.parse(raw); } catch (e) {} }
+    localStorage.setItem(CARD_STORAGE_KEY, JSON.stringify(SEED_CARDS));
+    return SEED_CARDS.slice();
+  }
+  function saveCards(){ localStorage.setItem(CARD_STORAGE_KEY, JSON.stringify(cards)); }
+  let cards = loadCards();
+
+  function cardTileInner(card, big){
+    const pct = card.limit > 0 ? Math.min(100, Math.max(0, (card.used / card.limit) * 100)) : 0;
+    const numFont = big ? "font-size:18px; letter-spacing:2px;" : "";
+    const masked = big ? "•••• •••• •••• " + card.last4 : "•••• " + card.last4;
+    return `
+      <div class="top"><span>))) </span><span>${big ? card.label : masked}</span></div>
+      <div>
+        ${big ? `<div style="${numFont}">${masked}</div><div class="bank" style="margin-top:10px">${fmt(card.used)} de ${fmt(card.limit)}</div>` : `<div class="bank">${card.label}</div>`}
+        <div class="card-bar"><div style="width:${pct}%"></div></div>
+        ${big ? "" : `<small>${fmt(card.used)} de ${fmt(card.limit)}</small>`}
+      </div>
+    `;
+  }
+
+  function renderCards(){
+    const hscroll = document.getElementById("cardsHscroll");
+    const grid = document.getElementById("cardsGrid");
+    const newTiles = [];
+    if (hscroll) {
+      hscroll.innerHTML = "";
+      cards.forEach(card => {
+        const g = CARD_GRADIENTS[card.colorIdx] || CARD_GRADIENTS[0];
+        const tile = document.createElement("div");
+        tile.className = "card-tile tilt3d";
+        tile.style.background = `linear-gradient(135deg,${g.from},${g.to})`;
+        tile.innerHTML = cardTileInner(card, false);
+        tile.addEventListener("click", () => openCardSheet(card));
+        hscroll.appendChild(tile);
+        newTiles.push(tile);
+      });
+      const newTile = document.createElement("div");
+      newTile.className = "new-goal glass";
+      newTile.innerHTML = `<span style="font-size:18px">+</span><span>Novo cartão</span>`;
+      newTile.addEventListener("click", () => openCardSheet(null));
+      hscroll.appendChild(newTile);
+    }
+    if (grid) {
+      grid.innerHTML = "";
+      if (cards.length === 0) {
+        grid.innerHTML = `<div class="empty"><div class="circle">💳</div><h3>Nada por aqui</h3><p>Toque em "+ Novo cartão" pra adicionar o primeiro.</p></div>`;
+      }
+      cards.forEach(card => {
+        const g = CARD_GRADIENTS[card.colorIdx] || CARD_GRADIENTS[0];
+        const tile = document.createElement("div");
+        tile.className = "card-tile tilt3d";
+        tile.style.cssText = `min-width:100%; height:180px; background:linear-gradient(135deg,${g.from},${g.to})`;
+        tile.innerHTML = cardTileInner(card, true);
+        tile.addEventListener("click", () => openCardSheet(card));
+        grid.appendChild(tile);
+        newTiles.push(tile);
+      });
+    }
+    if (motionReady) newTiles.forEach(attachTilt);
+  }
+
+  const cardSheet = document.getElementById("cardSheet");
+  let editingCardId = null;
+  let selectedCardColorIdx = 0;
+  function renderCardColorPicker(){
+    const wrap = document.getElementById("cardColorPicker");
+    wrap.innerHTML = "";
+    CARD_GRADIENTS.forEach((g, i) => {
+      const dot = document.createElement("div");
+      dot.style.cssText = `width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,${g.from},${g.to}); cursor:pointer; border:2px solid ${i === selectedCardColorIdx ? "#fff" : "transparent"};`;
+      dot.addEventListener("click", () => {
+        selectedCardColorIdx = i;
+        renderCardColorPicker();
+        if (navigator.vibrate) navigator.vibrate(5);
+      });
+      wrap.appendChild(dot);
+    });
+  }
+  function openCardSheet(card){
+    editingCardId = card ? card.id : null;
+    document.getElementById("cardSheetTitle").textContent = card ? "Editar cartão" : "Novo cartão";
+    document.getElementById("cardName").value = card ? card.label : "";
+    document.getElementById("cardLast4").value = card ? card.last4 : "";
+    document.getElementById("cardUsed").value = card ? card.used : "";
+    document.getElementById("cardLimit").value = card ? card.limit : "";
+    document.getElementById("cardName").style.borderColor = "";
+    document.getElementById("cardLimit").style.borderColor = "";
+    selectedCardColorIdx = card ? card.colorIdx : 0;
+    renderCardColorPicker();
+    document.getElementById("cardDelete").style.display = card ? "block" : "none";
+    openSheet(cardSheet);
+  }
+  document.getElementById("addCardBtn").addEventListener("click", () => openCardSheet(null));
+  document.getElementById("cardSheetClose").addEventListener("click", closeActiveSheet);
+
+  document.getElementById("cardSave").addEventListener("click", () => {
+    const name = document.getElementById("cardName").value.trim();
+    const last4 = document.getElementById("cardLast4").value.trim().replace(/\D/g, "").padStart(4, "0").slice(-4);
+    const used = parseFloat(document.getElementById("cardUsed").value.replace(",", ".")) || 0;
+    const limit = parseFloat(document.getElementById("cardLimit").value.replace(",", "."));
+    if (!name || !limit || limit <= 0) {
+      if (navigator.vibrate) navigator.vibrate([10, 40, 10]);
+      document.getElementById("cardName").style.borderColor = !name ? "var(--coral)" : "";
+      document.getElementById("cardLimit").style.borderColor = (!limit || limit <= 0) ? "var(--coral)" : "";
+      return;
+    }
+    if (editingCardId) {
+      const card = cards.find(x => x.id === editingCardId);
+      if (card) { card.label = name; card.last4 = last4; card.used = used; card.limit = limit; card.colorIdx = selectedCardColorIdx; }
+    } else {
+      cards.push({ id: Date.now(), label: name, last4, used, limit, colorIdx: selectedCardColorIdx });
+    }
+    saveCards();
+    renderCards();
+    closeActiveSheet();
+    if (navigator.vibrate) navigator.vibrate(15);
+  });
+
+  document.getElementById("cardDelete").addEventListener("click", () => {
+    if (!editingCardId) return;
+    if (confirm("Excluir este cartão?")) {
+      cards = cards.filter(x => x.id !== editingCardId);
+      saveCards();
+      renderCards();
+      closeActiveSheet();
+      if (navigator.vibrate) navigator.vibrate([10, 50, 10]);
+    }
+  });
+
   // ---------- Settings: reset data ----------
   document.getElementById("resetDataRow").addEventListener("click", () => {
     if (confirm("Apagar todos os lançamentos? Essa ação não pode ser desfeita.")) {
@@ -1204,11 +1565,12 @@
 
   // Range tabs
   document.getElementById("rangeTabs").addEventListener("click", (e) => {
-    if (e.target.tagName === "BUTTON") {
-      document.querySelectorAll("#rangeTabs button").forEach(b => b.classList.remove("active"));
-      e.target.classList.add("active");
-      if (navigator.vibrate) navigator.vibrate(6);
-    }
+    const btn = e.target.closest("button");
+    if (!btn) return;
+    document.querySelectorAll("#rangeTabs button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    renderCashFlow(btn.dataset.range || "week");
+    if (navigator.vibrate) navigator.vibrate(6);
   });
 
   // Tab bar navigation
@@ -1278,9 +1640,10 @@
   }
   document.querySelectorAll(".tilt3d").forEach(attachTilt);
 
-  // Goals are rendered last so tilt/glare binding (attachTilt) is ready
+  // Goals/Cards are rendered last so tilt/glare binding (attachTilt) is ready
   motionReady = true;
   renderGoals();
+  renderCards();
 </script>
 </body>
 </html>
