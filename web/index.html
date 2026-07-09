@@ -308,9 +308,9 @@
     border:1px solid var(--glass-border);
     box-shadow:0 24px 48px -8px rgba(0,0,0,.4);
   }
-  .tabbar button{ flex:1; min-width:0; background:none; border:none; display:flex; flex-direction:column; align-items:center; gap:3px; padding:9px 1px; border-radius:16px; color:var(--ink-tertiary); font-size:9.5px; font-weight:500; cursor:pointer; transition: color .2s, background .2s; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .tabbar button{ flex:1; min-width:0; background:none; border:none; display:flex; flex-direction:column; align-items:center; gap:3px; padding:9px 0; border-radius:16px; color:var(--ink-tertiary); font-size:10px; font-weight:500; cursor:pointer; transition: color .2s, background .2s; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .tabbar button.active{ color:var(--gold); background:rgba(217,183,118,.12); }
-  .tabbar button svg{ width:18px; height:18px; flex-shrink:0; }
+  .tabbar button svg{ width:19px; height:19px; flex-shrink:0; }
 
   .empty{ text-align:center; padding:48px 20px; color:var(--ink-tertiary); }
   .empty .circle{ width:76px; height:76px; border-radius:50%; background:var(--bg-elevated-2); display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:28px; }
@@ -429,7 +429,7 @@
         <p class="greet" id="greeting">Boa noite, Fabricio</p>
         <h1>Sua visão geral</h1>
       </div>
-      <div class="avatar">F</div>
+      <div class="avatar" id="avatarBtn" style="cursor:pointer">F</div>
     </header>
 
     <section style="animation-delay:.08s">
@@ -678,6 +678,7 @@
   <div class="view" id="view-settings">
     <header class="top">
       <h1>Configurações</h1>
+      <button class="eye" id="backFromSettingsBtn">←</button>
     </header>
 
     <section style="margin-bottom:28px">
@@ -859,10 +860,6 @@
   <button data-view="cards">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
     Cartões
-  </button>
-  <button data-view="settings">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-    Ajustes
   </button>
 </nav>
 
@@ -1800,6 +1797,16 @@
     btn.classList.add("active");
     switchView("view-" + btn.dataset.view);
     if (navigator.vibrate) navigator.vibrate(6);
+  });
+
+  document.getElementById("avatarBtn").addEventListener("click", () => {
+    switchView("view-settings");
+    if (navigator.vibrate) navigator.vibrate(6);
+  });
+  document.getElementById("backFromSettingsBtn").addEventListener("click", () => {
+    tabbar.querySelectorAll("button").forEach(b => b.classList.remove("active"));
+    tabbar.querySelector('[data-view="dashboard"]')?.classList.add("active");
+    switchView("view-dashboard");
   });
 
   // Pull to refresh (simple, mobile-friendly)
