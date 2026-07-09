@@ -165,7 +165,7 @@
   .day .dot{ width:4px; height:4px; border-radius:50%; background:var(--gold); box-shadow:0 0 6px rgba(217,183,118,.7); }
   .day.today .dot{ background:var(--bg-base); box-shadow:none; }
   .day.selected .dot{ background:var(--cyan); box-shadow:0 0 6px rgba(0,229,255,.7); }
-  .day .dot.empty{ background:transparent; box-shadow:none; }
+  .day .dot.no-event{ background:transparent; box-shadow:none; }
 
   /* ---------- Nori mascot card ---------- */
   .nori-card{
@@ -1839,7 +1839,7 @@
     const div = document.createElement("div");
     div.className = "day" + (isToday ? " today" : "");
     div.style.setProperty("--i", i);
-    div.innerHTML = `<span class="wd">${WEEKDAYS_PT[d.getDay()]}</span><span class="num">${d.getDate()}</span><span class="dot ${hasEvent ? "" : "empty"}"></span>`;
+    div.innerHTML = `<span class="wd">${WEEKDAYS_PT[d.getDay()]}</span><span class="num">${d.getDate()}</span><span class="dot ${hasEvent ? "" : "no-event"}"></span>`;
     div.addEventListener("click", () => {
       strip.querySelectorAll(".day.selected").forEach(x => x.classList.remove("selected"));
       if (!isToday) div.classList.add("selected");
