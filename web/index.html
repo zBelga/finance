@@ -240,12 +240,14 @@
   .hscroll{ display:flex; gap:14px; overflow-x:auto; padding:2px 2px 10px; scrollbar-width:none; }
   .hscroll::-webkit-scrollbar{ display:none; }
 
-  .goal-card{ min-width:140px; border-radius:var(--radius-lg); padding:18px 14px; text-align:center; flex-shrink:0; cursor:pointer; -webkit-tap-highlight-color:transparent; position:relative; }
+  .goal-card{ min-width:140px; border-radius:var(--radius-lg); padding:18px 14px; text-align:center; flex-shrink:0; cursor:pointer; -webkit-tap-highlight-color:transparent; position:relative; transition: transform .15s cubic-bezier(.22,1,.36,1); }
+  .goal-card:active{ transform:scale(.96); }
+  .goal-card.completed{ box-shadow:0 0 0 1px rgba(217,183,118,.4) inset, 0 8px 24px -8px rgba(217,183,118,.3); }
   .ring{ width:56px; height:56px; margin:0 auto 6px; position:relative; }
   .goal-card .icon-badge{ position:absolute; top:10px; right:10px; font-size:15px; opacity:.9; }
   .goal-card .name{ font-size:13px; font-weight:600; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .goal-card .amt{ font-size:11px; color:var(--ink-tertiary); }
-  .goal-card .forecast{ font-size:10px; color:var(--cyan); margin-top:4px; opacity:.9; }
+  .goal-card .forecast{ font-size:10px; color:var(--gold); margin-top:4px; opacity:.9; }
   .new-goal{ min-width:140px; height:150px; border-radius:var(--radius-lg); border:1.5px dashed var(--ink-quaternary); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; flex-shrink:0; color:var(--gold); font-size:13px; cursor:pointer; -webkit-tap-highlight-color:transparent; transition: transform .18s cubic-bezier(.22,1,.36,1), border-color .2s; }
   .new-goal:active{ transform:scale(.95); border-color:var(--gold); }
 
@@ -261,7 +263,18 @@
   .cat-list .cat span:nth-child(2){ color:var(--ink-secondary); flex:1; }
   .cat-list .cat b{ font-weight:600; }
 
-  .card-tile{ min-width:220px; height:132px; border-radius:var(--radius-lg); padding:16px; flex-shrink:0; display:flex; flex-direction:column; justify-content:space-between; color:#fff; box-shadow:0 16px 32px -8px rgba(0,0,0,.28); cursor:pointer; -webkit-tap-highlight-color:transparent; position:relative; }
+  .card-tile{
+    min-width:220px; height:132px; border-radius:var(--radius-lg); padding:16px; flex-shrink:0;
+    display:flex; flex-direction:column; justify-content:space-between; color:#fff;
+    box-shadow:0 20px 40px -10px rgba(0,0,0,.4), 0 2px 6px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.12);
+    cursor:pointer; -webkit-tap-highlight-color:transparent; position:relative; overflow:hidden;
+    transition: transform .15s cubic-bezier(.22,1,.36,1);
+  }
+  .card-tile:active{ transform:scale(.97); }
+  .card-tile::after{
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background: radial-gradient(140% 90% at 15% -10%, rgba(255,255,255,.22), transparent 55%);
+  }
   .card-tile .top{ display:flex; justify-content:space-between; align-items:center; font-size:12px; opacity:.85; }
   .card-tile .bank{ font-size:14px; font-weight:600; margin-bottom:6px; }
   .card-bar{ height:6px; border-radius:99px; background:rgba(255,255,255,.2); overflow:hidden; margin-bottom:6px; }
@@ -269,16 +282,25 @@
   .card-tile small{ font-size:11px; opacity:.65; }
 
   .sub-list{ border-radius:var(--radius-lg); padding:8px 18px; }
-  .sub-row{ display:flex; align-items:center; gap:12px; padding:12px 0; }
+  .sub-row{ display:flex; align-items:center; gap:12px; padding:12px 0; transition: opacity .15s ease; }
+  .sub-row.clickable{ cursor:pointer; -webkit-tap-highlight-color:transparent; }
+  .sub-row.clickable:active{ opacity:.55; }
   .sub-row + .sub-row{ border-top:1px solid var(--ink-quaternary); }
   .sub-icon{ width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; }
   .sub-row .name{ font-size:15px; font-weight:600; }
   .sub-row .renew{ font-size:11px; color:var(--ink-tertiary); }
   .sub-row .amt{ margin-left:auto; font-size:14px; font-weight:600; font-variant-numeric: tabular-nums; }
-  .sub-row.tinted{ border-radius:14px; padding:12px 12px; margin-bottom:8px; }
+  .sub-row.tinted{
+    border-radius:14px; padding:12px 14px 12px 17px; margin-bottom:8px; position:relative;
+    transition: transform .15s cubic-bezier(.22,1,.36,1), background .15s ease;
+  }
+  .sub-row.tinted:active{ transform:scale(.98); }
+  .sub-row.tinted::before{ content:""; position:absolute; left:0; top:10px; bottom:10px; width:3px; border-radius:2px; }
   .sub-row.tinted + .sub-row{ border-top:none; }
-  .sub-row.tinted.income{ background: linear-gradient(90deg, rgba(61,220,145,.18), rgba(61,220,145,.03) 75%); }
-  .sub-row.tinted.expense{ background: linear-gradient(90deg, rgba(255,122,110,.18), rgba(255,122,110,.03) 75%); }
+  .sub-row.tinted.income{ background: linear-gradient(90deg, rgba(61,220,145,.11), rgba(61,220,145,.02) 65%); }
+  .sub-row.tinted.income::before{ background:var(--emerald); box-shadow:0 0 8px rgba(61,220,145,.5); }
+  .sub-row.tinted.expense{ background: linear-gradient(90deg, rgba(255,122,110,.11), rgba(255,122,110,.02) 65%); }
+  .sub-row.tinted.expense::before{ background:var(--coral); box-shadow:0 0 8px rgba(255,122,110,.5); }
 
   .tabbar{
     position:fixed; left:16px; right:16px; bottom:calc(14px + env(safe-area-inset-bottom));
@@ -382,6 +404,14 @@
   .sheet-close{ position:absolute; top:14px; right:16px; background:none; border:none; color:var(--ink-tertiary); font-size:20px; cursor:pointer; padding:6px; }
 
   .swipe-hint{ font-size:11px; color:var(--ink-quaternary); text-align:center; margin-top:2px; }
+
+  .confirm-icon{ width:52px; height:52px; border-radius:50%; background:rgba(255,122,110,.14); color:var(--coral); display:flex; align-items:center; justify-content:center; margin:6px auto 16px; }
+  .confirm-text{ text-align:center; font-size:15px; line-height:1.4; color:var(--ink-primary); margin:0 0 22px; font-weight:500; }
+  .confirm-actions{ display:flex; gap:10px; }
+  .confirm-btn{ flex:1; border:none; padding:14px 0; border-radius:var(--radius-pill); font-size:15px; font-weight:700; cursor:pointer; transition: transform .15s cubic-bezier(.22,1,.36,1); }
+  .confirm-btn:active{ transform:scale(.96); }
+  .confirm-btn.cancel{ background:var(--bg-elevated-2); color:var(--ink-primary); }
+  .confirm-btn.danger{ background:var(--coral); color:#2a0e0b; }
 
   a, button{ -webkit-user-select:none; user-select:none; }
   ::selection{ background:rgba(217,183,118,.3); }
@@ -642,7 +672,10 @@
   <!-- TRANSAÇÕES -->
   <div class="view" id="view-transactions">
     <header class="top">
-      <h1>Transações</h1>
+      <div>
+        <p class="greet" id="txnCount">0 lançamentos</p>
+        <h1>Transações</h1>
+      </div>
     </header>
     <div class="tabs glass" id="txnFilterTabs" style="margin-bottom:18px">
       <button class="active" data-filter="all">Todas</button><button data-filter="income">Receitas</button><button data-filter="expense">Despesas</button>
@@ -654,8 +687,9 @@
   <!-- CONFIGURAÇÕES -->
   <div class="view" id="view-settings">
     <header class="top">
+      <button class="eye" id="backFromSettingsBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
       <h1>Configurações</h1>
-      <button class="eye" id="backFromSettingsBtn">←</button>
+      <span style="width:20px"></span>
     </header>
 
     <section style="margin-bottom:28px">
@@ -667,8 +701,8 @@
     <section>
       <div class="section-header"><h2 style="margin:0">Dados</h2></div>
       <div class="sub-list glass">
-        <div class="sub-row" id="resetDataRow" style="cursor:pointer">
-          <div class="sub-icon" style="background:rgba(255,122,110,.14); color:var(--coral)">🗑️</div>
+        <div class="sub-row clickable" id="resetDataRow">
+          <div class="sub-icon" style="background:rgba(255,122,110,.14); color:var(--coral)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/><path d="M10 11v6M14 11v6"/></svg></div>
           <div><div class="name" style="color:var(--coral)">Apagar todos os lançamentos</div><div class="renew">Remove os dados de exemplo e os seus, pra você começar do zero</div></div>
         </div>
       </div>
@@ -677,13 +711,23 @@
 
   <!-- METAS -->
   <div class="view" id="view-goals">
-    <header class="top"><h1>Metas</h1></header>
+    <header class="top">
+      <div>
+        <p class="greet" id="goalsCount">0 metas</p>
+        <h1>Metas</h1>
+      </div>
+    </header>
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;" id="goalsGrid"></div>
   </div>
 
   <!-- INVESTIMENTOS -->
   <div class="view" id="view-investments">
-    <header class="top"><h1>Investimentos</h1></header>
+    <header class="top">
+      <div>
+        <p class="greet" id="investCount">0 posições</p>
+        <h1>Investimentos</h1>
+      </div>
+    </header>
     <div class="invest-card glass tilt3d" style="margin-bottom:20px">
       <div class="top">
         <div><span style="font-size:13px; color:var(--ink-secondary)">Total investido</span><div class="amount" style="font-size:30px" id="investTotalFull">R$ 0,00</div></div>
@@ -699,7 +743,12 @@
 
   <!-- CARTÕES -->
   <div class="view" id="view-cards">
-    <header class="top"><h1>Cartões</h1></header>
+    <header class="top">
+      <div>
+        <p class="greet" id="cardsCount">0 cartões</p>
+        <h1>Cartões</h1>
+      </div>
+    </header>
     <div id="cardsGrid" style="display:flex; flex-direction:column; gap:14px; margin-bottom:14px;"></div>
     <button class="save-btn" id="addCardBtn" style="background:var(--bg-elevated-2); color:var(--ink-primary); box-shadow:none;">+ Novo cartão</button>
   </div>
@@ -815,6 +864,18 @@
   </div>
   <button class="save-btn" id="cardSave">Salvar cartão</button>
   <button class="save-btn" id="cardDelete" style="display:none; background:var(--bg-elevated-2); color:var(--coral); box-shadow:none; margin-top:10px;">Excluir cartão</button>
+</div>
+
+<div class="sheet" id="confirmSheet" style="max-width:400px;">
+  <div class="handle"></div>
+  <div class="confirm-icon">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/><path d="M10 11v6M14 11v6"/></svg>
+  </div>
+  <p class="confirm-text" id="confirmText">Tem certeza?</p>
+  <div class="confirm-actions">
+    <button class="confirm-btn cancel" id="confirmCancelBtn">Cancelar</button>
+    <button class="confirm-btn danger" id="confirmOkBtn">Excluir</button>
+  </div>
 </div>
 
 <nav class="tabbar" id="tabbar">
@@ -1043,8 +1104,10 @@
     list.innerHTML = "";
     const sorted = ledger.slice().sort((a, b) => b.date - a.date);
     const filtered = sorted.filter(t => currentFilter === "all" || (currentFilter === "income" && t.amount > 0) || (currentFilter === "expense" && t.amount < 0));
+    const countEl = document.getElementById("txnCount");
+    if (countEl) countEl.textContent = filtered.length === 1 ? "1 lançamento" : `${filtered.length} lançamentos`;
     if (filtered.length === 0) {
-      list.innerHTML = `<div class="empty"><div class="circle">🗂️</div><h3>Nada por aqui</h3><p>Toque no botão dourado para adicionar um lançamento.</p></div>`;
+      list.innerHTML = `<div class="empty"><div class="circle"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11Z"/></svg></div><h3>Nada por aqui</h3><p>Toque no botão dourado para adicionar um lançamento.</p></div>`;
       return;
     }
     filtered.forEach(t => {
@@ -1059,12 +1122,11 @@
         <div class="amt" style="color:${isIncome ? "var(--emerald)" : "var(--coral)"}">${isIncome ? "+" : "-"}${fmt(Math.abs(t.amount))}</div>
       `;
       row.addEventListener("click", () => {
-        if (confirm(`Excluir "${t.category}" (${fmt(Math.abs(t.amount))})?`)) {
+        showConfirm(`Excluir "${t.category}" (${fmt(Math.abs(t.amount))})?`, () => {
           ledger = ledger.filter(x => x.id !== t.id);
           saveLedger();
           renderAll();
-          if (navigator.vibrate) navigator.vibrate(12);
-        }
+        });
       });
       list.appendChild(row);
     });
@@ -1093,6 +1155,7 @@
   const sheetBackdrop = document.getElementById("sheetBackdrop");
   let activeSheetEl = null;
   function openSheet(el){
+    document.querySelectorAll(".sheet.active").forEach(s => { if (s !== el) s.classList.remove("active"); });
     activeSheetEl = el;
     el.classList.add("active");
     sheetBackdrop.classList.add("active");
@@ -1103,6 +1166,38 @@
     activeSheetEl = null;
   }
   sheetBackdrop.addEventListener("click", closeActiveSheet);
+
+  // ---------- Shared confirm dialog (replaces native confirm()) ----------
+  const confirmSheetEl = document.getElementById("confirmSheet");
+  const confirmTextEl = document.getElementById("confirmText");
+  const confirmOkBtn = document.getElementById("confirmOkBtn");
+  const confirmCancelBtn = document.getElementById("confirmCancelBtn");
+  let confirmCallback = null;
+  let confirmReturnSheet = null;
+  function showConfirm(message, onConfirm){
+    confirmTextEl.textContent = message;
+    confirmCallback = onConfirm;
+    confirmReturnSheet = (activeSheetEl && activeSheetEl !== confirmSheetEl) ? activeSheetEl : null;
+    openSheet(confirmSheetEl);
+  }
+  confirmOkBtn.addEventListener("click", () => {
+    const cb = confirmCallback;
+    confirmCallback = null;
+    confirmReturnSheet = null;
+    closeActiveSheet();
+    if (cb) cb();
+    if (navigator.vibrate) navigator.vibrate([10, 40, 10]);
+  });
+  confirmCancelBtn.addEventListener("click", () => {
+    if (confirmReturnSheet) {
+      openSheet(confirmReturnSheet);
+      confirmReturnSheet = null;
+      confirmCallback = null;
+      return;
+    }
+    confirmCallback = null;
+    closeActiveSheet();
+  });
 
   // ---------- Add-transaction sheet ----------
   const sheet = document.getElementById("addSheet");
@@ -1207,12 +1302,11 @@
       chip.style.color = cat.hex;
       chip.innerHTML = `<span>${cat.icon}</span><span>${cat.label}</span><span style="margin-left:4px; opacity:.55;">✕</span>`;
       chip.addEventListener("click", () => {
-        if (confirm(`Remover categoria "${cat.label}"?`)) {
+        showConfirm(`Remover categoria "${cat.label}"?`, () => {
           categories = categories.filter(c => c.key !== cat.key);
           saveCategories();
           renderManageCatChips();
-          if (navigator.vibrate) navigator.vibrate(10);
-        }
+        });
       });
       wrap.appendChild(chip);
     });
@@ -1315,17 +1409,20 @@
     if (!hscroll || !grid) return;
     hscroll.innerHTML = "";
     grid.innerHTML = "";
+    const goalsCountEl = document.getElementById("goalsCount");
+    if (goalsCountEl) goalsCountEl.textContent = goals.length === 1 ? "1 meta" : `${goals.length} metas`;
     const newTiles = [];
     goals.forEach(g => {
+      const isDone = g.current >= g.target;
       const card1 = document.createElement("div");
-      card1.className = "goal-card glass tilt3d";
+      card1.className = "goal-card glass tilt3d" + (isDone ? " completed" : "");
       card1.innerHTML = goalCardInner(g);
       card1.addEventListener("click", () => openGoalSheet(g));
       hscroll.appendChild(card1);
       newTiles.push(card1);
 
       const card2 = document.createElement("div");
-      card2.className = "goal-card glass tilt3d";
+      card2.className = "goal-card glass tilt3d" + (isDone ? " completed" : "");
       card2.style.minWidth = "0";
       card2.innerHTML = goalCardInner(g, true);
       card2.addEventListener("click", () => openGoalSheet(g));
@@ -1387,13 +1484,12 @@
 
   document.getElementById("goalDelete").addEventListener("click", () => {
     if (!editingGoalId) return;
-    if (confirm("Excluir esta meta?")) {
+    showConfirm("Excluir esta meta?", () => {
       goals = goals.filter(x => x.id !== editingGoalId);
       saveGoals();
       renderGoals();
       closeActiveSheet();
-      if (navigator.vibrate) navigator.vibrate([10, 50, 10]);
-    }
+    });
   });
 
   // ---------- Investimentos: add / edit / delete ----------
@@ -1419,6 +1515,8 @@
   }
 
   function renderInvestments(){
+    const investCountEl = document.getElementById("investCount");
+    if (investCountEl) investCountEl.textContent = investments.length === 1 ? "1 posição" : `${investments.length} posições`;
     const total = investments.reduce((s, i) => s + i.value, 0);
     const weightedPct = total > 0 ? investments.reduce((s, i) => s + i.value * i.changePct, 0) / total : 0;
     const badge = trendBadgeHtml(weightedPct);
@@ -1436,15 +1534,16 @@
     if (!list) return;
     list.innerHTML = "";
     if (investments.length === 0) {
-      list.innerHTML = `<div class="empty"><div class="circle">📈</div><h3>Nada por aqui</h3><p>Toque em "+ Novo investimento" pra adicionar sua primeira posição.</p></div>`;
+      list.innerHTML = `<div class="empty"><div class="circle"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m22 7-8.5 8.5-5-5L2 17"/><path d="M16 7h6v6"/></svg></div><h3>Nada por aqui</h3><p>Toque em "+ Novo investimento" pra adicionar sua primeira posição.</p></div>`;
       return;
     }
     investments.forEach(inv => {
       const b = trendBadgeHtml(inv.changePct);
+      const up = (inv.changePct || 0) >= 0;
       const row = document.createElement("div");
-      row.className = "sub-row";
-      row.style.cursor = "pointer";
+      row.className = "sub-row clickable";
       row.innerHTML = `
+        <div class="sub-icon" style="background:${up ? "rgba(61,220,145,.14)" : "rgba(255,122,110,.14)"}; color:${up ? "var(--emerald)" : "var(--coral)"}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${up ? '<path d="m22 7-8.5 8.5-5-5L2 17"/><path d="M16 7h6v6"/>' : '<path d="m22 17-8.5-8.5-5 5L2 7"/><path d="M16 17h6v-6"/>'}</svg></div>
         <div><div class="name">${inv.label}</div><div class="renew">${fmt(inv.value)}</div></div>
         <span class="${b.cls}" style="margin-left:auto">${b.text}</span>
       `;
@@ -1493,13 +1592,12 @@
 
   document.getElementById("investDelete").addEventListener("click", () => {
     if (!editingInvestId) return;
-    if (confirm("Excluir este investimento?")) {
+    showConfirm("Excluir este investimento?", () => {
       investments = investments.filter(x => x.id !== editingInvestId);
       saveInvestments();
       renderInvestments();
       closeActiveSheet();
-      if (navigator.vibrate) navigator.vibrate([10, 50, 10]);
-    }
+    });
   });
   renderInvestments();
 
@@ -1530,7 +1628,7 @@
     const numFont = big ? "font-size:18px; letter-spacing:2px;" : "";
     const masked = big ? "•••• •••• •••• " + card.last4 : "•••• " + card.last4;
     return `
-      <div class="top"><span>))) </span><span>${big ? card.label : masked}</span></div>
+      <div class="top"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 8.82a8 8 0 0 1 0 6.36M2.5 6a12 12 0 0 1 0 12M9.5 10.5a4 4 0 0 1 0 3"/></svg><span>${big ? card.label : masked}</span></div>
       <div>
         ${big ? `<div style="${numFont}">${masked}</div><div class="bank" style="margin-top:10px">${fmt(card.used)} de ${fmt(card.limit)}</div>` : `<div class="bank">${card.label}</div>`}
         <div class="card-bar"><div style="width:${pct}%"></div></div>
@@ -1540,6 +1638,8 @@
   }
 
   function renderCards(){
+    const cardsCountEl = document.getElementById("cardsCount");
+    if (cardsCountEl) cardsCountEl.textContent = cards.length === 1 ? "1 cartão" : `${cards.length} cartões`;
     const hscroll = document.getElementById("cardsHscroll");
     const grid = document.getElementById("cardsGrid");
     const newTiles = [];
@@ -1564,7 +1664,7 @@
     if (grid) {
       grid.innerHTML = "";
       if (cards.length === 0) {
-        grid.innerHTML = `<div class="empty"><div class="circle">💳</div><h3>Nada por aqui</h3><p>Toque em "+ Novo cartão" pra adicionar o primeiro.</p></div>`;
+        grid.innerHTML = `<div class="empty"><div class="circle"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></div><h3>Nada por aqui</h3><p>Toque em "+ Novo cartão" pra adicionar o primeiro.</p></div>`;
       }
       cards.forEach(card => {
         const g = CARD_GRADIENTS[card.colorIdx] || CARD_GRADIENTS[0];
@@ -1639,13 +1739,12 @@
 
   document.getElementById("cardDelete").addEventListener("click", () => {
     if (!editingCardId) return;
-    if (confirm("Excluir este cartão?")) {
+    showConfirm("Excluir este cartão?", () => {
       cards = cards.filter(x => x.id !== editingCardId);
       saveCards();
       renderCards();
       closeActiveSheet();
-      if (navigator.vibrate) navigator.vibrate([10, 50, 10]);
-    }
+    });
   });
 
   // ---------- Nori (mascote) ----------
@@ -1711,13 +1810,12 @@
 
   // ---------- Settings: reset data ----------
   document.getElementById("resetDataRow").addEventListener("click", () => {
-    if (confirm("Apagar todos os lançamentos? Essa ação não pode ser desfeita.")) {
+    showConfirm("Apagar todos os lançamentos? Essa ação não pode ser desfeita.", () => {
       ledger = [];
       saveLedger();
       renderAll();
-      if (navigator.vibrate) navigator.vibrate([10, 50, 10]);
       alert("Pronto! Todos os lançamentos foram apagados.");
-    }
+    });
   });
 
   // Calendar strip
