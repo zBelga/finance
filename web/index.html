@@ -167,6 +167,56 @@
   .day.selected .dot{ background:var(--cyan); box-shadow:0 0 6px rgba(0,229,255,.7); }
   .day .dot.no-event{ background:transparent; box-shadow:none; }
 
+  /* ---------- Splash / login screen ---------- */
+  .splash-screen{
+    position:fixed; inset:0; z-index:60; overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+    background: var(--bg-base);
+    transition: opacity .5s cubic-bezier(.22,1,.36,1);
+  }
+  .splash-screen.leaving{ opacity:0; pointer-events:none; }
+  .splash-orb{ position:absolute; border-radius:50%; filter:blur(60px); opacity:.5; animation: splashOrbDrift 9s ease-in-out infinite alternate; }
+  .splash-orb-1{ width:280px; height:280px; top:8%; left:-10%; background:radial-gradient(circle, rgba(217,183,118,.35), transparent 70%); }
+  .splash-orb-2{ width:320px; height:320px; bottom:-5%; right:-12%; background:radial-gradient(circle, rgba(61,220,145,.18), transparent 70%); animation-delay:-4s; }
+  @keyframes splashOrbDrift{ to{ transform:translate3d(4%,-4%,0) scale(1.08); } }
+  .splash-content{ position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; text-align:center; padding:0 32px; }
+  .splash-mark{
+    margin-bottom:22px; opacity:1; transform:scale(1) rotate(0);
+    animation: splashMarkIn .8s cubic-bezier(.22,1,.36,1) backwards, splashFloat 3.6s ease-in-out .9s infinite;
+  }
+  @keyframes splashMarkIn{ from{ transform:scale(.55) rotate(-10deg); } to{ transform:scale(1) rotate(0); } }
+  @keyframes splashFloat{ 50%{ transform:translateY(-6px); } }
+  .splash-ring{ transform-origin:50px 50px; animation: splashSpin 3s linear infinite; filter:url(#neonGlow); }
+  @keyframes splashSpin{ to{ transform:rotate(360deg); } }
+  .splash-title{
+    font-size:36px; font-weight:700; letter-spacing:-.01em; margin:0 0 8px;
+    background:linear-gradient(135deg, var(--gold-glow), var(--gold));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    opacity:1; transform:translateY(0);
+    animation: splashTextIn .7s cubic-bezier(.22,1,.36,1) .35s backwards;
+  }
+  .splash-tagline{
+    font-size:14px; color:var(--ink-tertiary); margin:0 0 44px;
+    opacity:1; transform:translateY(0);
+    animation: splashTextIn .7s cubic-bezier(.22,1,.36,1) .5s backwards;
+  }
+  @keyframes splashTextIn{ from{ transform:translateY(10px); } to{ transform:translateY(0); } }
+  .splash-btn{
+    position:relative; overflow:hidden; border:none; padding:16px 56px; border-radius:var(--radius-pill);
+    font-size:16px; font-weight:700; font-family:inherit;
+    background:linear-gradient(135deg, var(--gold), var(--gold-glow)); color:var(--bg-base); cursor:pointer;
+    box-shadow:0 20px 40px -10px rgba(0,0,0,.5), 0 0 24px rgba(217,183,118,.18);
+    opacity:1; transform:translateY(0);
+    animation: splashTextIn .7s cubic-bezier(.22,1,.36,1) .68s backwards;
+    transition: transform .18s cubic-bezier(.22,1,.36,1);
+  }
+  .splash-btn:active{ transform:scale(.95); }
+  .splash-btn::after{
+    content:""; position:absolute; top:0; bottom:0; left:-60%; width:40%;
+    background: linear-gradient(115deg, transparent, rgba(255,255,255,.5), transparent);
+    animation: shimmerSweep 3.2s ease-in-out 1.4s infinite;
+  }
+
   /* ---------- Nori mascot card ---------- */
   .nori-card{
     display:block;
@@ -418,6 +468,27 @@
 </style>
 </head>
 <body>
+<div class="splash-screen" id="splashScreen">
+  <div class="splash-orb splash-orb-1"></div>
+  <div class="splash-orb splash-orb-2"></div>
+  <div class="splash-content">
+    <div class="splash-mark">
+      <svg viewBox="0 0 100 100" width="76" height="76">
+        <defs>
+          <linearGradient id="splashRingGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#D9B776"/>
+            <stop offset="100%" stop-color="#F0D9A8"/>
+          </linearGradient>
+        </defs>
+        <circle class="splash-ring" cx="50" cy="50" r="35" fill="none" stroke="url(#splashRingGrad)" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="140 80"/>
+        <text x="50" y="61" text-anchor="middle" font-size="32" font-weight="700" fill="url(#splashRingGrad)" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif">A</text>
+      </svg>
+    </div>
+    <h1 class="splash-title">Aurum</h1>
+    <p class="splash-tagline">Clareza para o seu dinheiro</p>
+    <button class="splash-btn" id="splashEnterBtn">Entrar</button>
+  </div>
+</div>
 <div class="mesh">
   <div class="aurora"></div>
   <div class="grid-floor"></div>
@@ -902,6 +973,18 @@
 </nav>
 
 <script>
+  // ---------- Splash screen ----------
+  (function(){
+    const splash = document.getElementById("splashScreen");
+    const enterBtn = document.getElementById("splashEnterBtn");
+    if (!splash || !enterBtn) return;
+    enterBtn.addEventListener("click", () => {
+      splash.classList.add("leaving");
+      if (navigator.vibrate) navigator.vibrate(10);
+      setTimeout(() => { splash.style.display = "none"; }, 550);
+    }, { once: true });
+  })();
+
   // Greeting
   const hour = new Date().getHours();
   const greetText = hour < 12 ? "Bom dia" : hour < 18 ? "Boa tarde" : "Boa noite";
