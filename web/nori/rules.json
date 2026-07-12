@@ -1,0 +1,96 @@
+{
+  "_readme": "Cada regra decide QUANDO o Nori fala — nunca o texto. O texto mora em dialogs.json, no grupo apontado por 'dialog'. Veja o README.md da pasta web/nori/ para o guia completo.",
+
+  "rules": [
+    {
+      "id": "saldo_negativo",
+      "dialog": "saldo_negativo",
+      "priority": 100,
+      "cooldown_days": 0,
+      "max_per_week": null,
+      "max_per_month": null,
+      "repeatable": true,
+      "enabled": true,
+      "conditions": [
+        { "metric": "net", "op": "<", "value": 0 }
+      ]
+    },
+    {
+      "id": "sem_reserva",
+      "dialog": "sem_reserva",
+      "priority": 90,
+      "cooldown_days": 0,
+      "max_per_week": null,
+      "max_per_month": null,
+      "repeatable": true,
+      "enabled": true,
+      "conditions": [
+        { "metric": "goals_count", "op": "==", "value": 0 }
+      ]
+    },
+    {
+      "id": "meta_concluida",
+      "dialog": "meta_concluida",
+      "priority": 80,
+      "cooldown_days": 1,
+      "max_per_week": null,
+      "max_per_month": null,
+      "repeatable": true,
+      "enabled": true,
+      "conditions": [
+        { "metric": "goals_completed", "op": ">=", "value": 1 }
+      ]
+    },
+    {
+      "id": "muito_uber",
+      "dialog": "too_much_uber",
+      "priority": 70,
+      "cooldown_days": 2,
+      "max_per_week": 3,
+      "max_per_month": null,
+      "repeatable": true,
+      "enabled": true,
+      "conditions": [
+        { "metric": "category_expense_pct", "category": "Uber", "op": ">", "value": 0.12 }
+      ]
+    },
+    {
+      "id": "gastos_subindo",
+      "dialog": "gastos_subindo",
+      "priority": 60,
+      "cooldown_days": 3,
+      "max_per_week": 2,
+      "max_per_month": null,
+      "repeatable": true,
+      "enabled": true,
+      "conditions": [
+        { "metric": "expense_change_pct", "op": ">", "value": 1.15 }
+      ]
+    },
+    {
+      "id": "sobra_para_investir",
+      "dialog": "sobra_para_investir",
+      "priority": 50,
+      "cooldown_days": 3,
+      "max_per_week": 2,
+      "max_per_month": null,
+      "repeatable": true,
+      "enabled": true,
+      "conditions": [
+        { "metric": "net_pct", "op": ">=", "value": 0.5 },
+        { "metric": "investments_total", "op": ">", "value": 0 }
+      ]
+    },
+    {
+      "id": "tudo_azul",
+      "dialog": "tudo_azul",
+      "priority": 0,
+      "cooldown_days": 0,
+      "max_per_week": null,
+      "max_per_month": null,
+      "repeatable": true,
+      "enabled": true,
+      "conditions": []
+    }
+  ]
+}

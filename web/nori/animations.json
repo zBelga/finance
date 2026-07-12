@@ -1,0 +1,22 @@
+{
+  "_readme": "Catálogo de todas as animações que o Nori pode ter. 'implemented': true significa que já existe um efeito visual real no app hoje (via os adereços SVG por humor). 'implemented': false significa que está catalogada/planejada mas ainda precisa de trabalho de front-end (CSS/SVG) pra existir de verdade — ter a entrada aqui não cria o efeito sozinho.",
+
+  "idle":        { "duration_ms": 0,    "loop": true,  "implemented": true,  "description": "Estado parado padrão, sem animação de movimento." },
+  "blink":       { "duration_ms": 200,  "loop": false, "implemented": false, "description": "Pisca os olhos rapidamente." },
+  "wave":        { "duration_ms": 800,  "loop": false, "implemented": false, "description": "Acena com a mão." },
+  "jump":        { "duration_ms": 500,  "loop": false, "implemented": false, "description": "Pula no lugar." },
+  "celebrate":   { "duration_ms": 1200, "loop": false, "implemented": true,  "description": "Mostra confete/troféu (adereço do humor 'goal'/'celebration')." },
+  "shake":       { "duration_ms": 400,  "loop": false, "implemented": true,  "description": "Adereço de alerta (humor 'danger')." },
+  "cry":         { "duration_ms": 1000, "loop": false, "implemented": false, "description": "Expressão triste, lágrima." },
+  "dance":       { "duration_ms": 1500, "loop": true,  "implemented": false, "description": "Dança animada." },
+  "sleep":       { "duration_ms": 0,    "loop": true,  "implemented": false, "description": "Olhos fechados, 'Zzz'." },
+  "thinking":    { "duration_ms": 0,    "loop": true,  "implemented": false, "description": "Mão no queixo, balão de pensamento." },
+  "lookLeft":    { "duration_ms": 400,  "loop": false, "implemented": false, "description": "Olha para a esquerda." },
+  "lookRight":   { "duration_ms": 400,  "loop": false, "implemented": false, "description": "Olha para a direita." },
+  "lookMoney":   { "duration_ms": 0,    "loop": true,  "implemented": false, "description": "Olhos em formato de cifrão." },
+  "lookChart":   { "duration_ms": 0,    "loop": true,  "implemented": true,  "description": "Adereço de gráfico (humor 'investment')." },
+  "lookGoal":    { "duration_ms": 0,    "loop": true,  "implemented": false, "description": "Olha para uma bandeira/alvo de meta." },
+  "happyBounce": { "duration_ms": 600,  "loop": false, "implemented": false, "description": "Pula de felicidade." },
+  "angry":       { "duration_ms": 500,  "loop": false, "implemented": false, "description": "Expressão de raiva." },
+  "worried":     { "duration_ms": 0,    "loop": true,  "implemented": true,  "description": "Adereço de preocupação (humores 'warning'/'emergency')." }
+}

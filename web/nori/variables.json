@@ -1,0 +1,20 @@
+{
+  "_readme": "Variáveis que podem ser usadas dentro de 'title'/'sub' em dialogs.json, no formato {nome}. 'supported': false significa que a variável está documentada/planejada mas o app ainda não tem os dados pra preenchê-la — não use essas em frases novas ainda.",
+
+  "variables": {
+    "amount": { "description": "Valor formatado em R$. Se a regra tiver um campo 'category' em conditions, é o gasto nessa categoria no mês atual; senão é a despesa total do mês.", "supported": true },
+    "category": { "description": "Nome da categoria referenciada pela condição da regra (campo 'category' em conditions).", "supported": true },
+    "goal": { "description": "Nome da primeira meta ainda não concluída (ou a mais recente, se todas já foram concluídas).", "supported": true },
+    "investment": { "description": "Nome do primeiro investimento cadastrado.", "supported": true },
+    "income": { "description": "Receita total do mês atual, formatada em R$.", "supported": true },
+    "expense": { "description": "Despesa total do mês atual, formatada em R$.", "supported": true },
+    "month": { "description": "Nome do mês atual por extenso (ex: 'julho').", "supported": true },
+    "days": { "description": "Dias restantes até o fim do mês atual.", "supported": true },
+    "card": { "description": "Nome do primeiro cartão cadastrado.", "supported": true },
+    "topCategory": { "description": "Categoria com maior gasto no mês atual.", "supported": true },
+    "goalProgress": { "description": "Progresso, em %, da meta referenciada em {goal}.", "supported": true },
+    "investmentYield": { "description": "Variação percentual média de todos os investimentos.", "supported": true },
+    "merchant": { "description": "Nome do estabelecimento de uma transação específica.", "supported": false, "note": "O app hoje não guarda 'estabelecimento' separado da descrição do lançamento." },
+    "remainingBudget": { "description": "Orçamento restante do mês numa categoria.", "supported": false, "note": "O app ainda não tem um sistema de orçamento por categoria (só o valor gasto)." }
+  }
+}

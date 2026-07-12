@@ -1,0 +1,20 @@
+{
+  "_readme": "Cada humor define a cor dos olhos do Nori e uma animação padrão (ver animations.json). Nem toda animação listada em animations.json já tem um efeito visual implementado — quando não tem, o Nori só troca a cor dos olhos (e o adereço decorativo, se existir um para esse humor). Veja a coluna 'implemented' em animations.json.",
+
+  "happy":       { "label": "Feliz",           "color": "#3DDC91", "default_animation": "idle" },
+  "warning":     { "label": "Alerta",          "color": "#D9B776", "default_animation": "worried" },
+  "danger":      { "label": "Perigo",          "color": "#FF7A6E", "default_animation": "shake" },
+  "goal":        { "label": "Meta concluída",  "color": "#D9B776", "default_animation": "celebrate" },
+  "emergency":   { "label": "Emergência",      "color": "#6FB8FF", "default_animation": "worried" },
+  "investment":  { "label": "Investimento",    "color": "#B79CFF", "default_animation": "lookChart" },
+  "thinking":    { "label": "Pensativo",       "color": "#6FB8FF", "default_animation": "thinking" },
+  "sleep":       { "label": "Dormindo",        "color": "#9AA5B1", "default_animation": "sleep" },
+  "celebration": { "label": "Celebração",      "color": "#D9B776", "default_animation": "celebrate" },
+  "proud":       { "label": "Orgulhoso",       "color": "#3DDC91", "default_animation": "happyBounce" },
+  "curious":     { "label": "Curioso",         "color": "#6FB8FF", "default_animation": "lookLeft" },
+  "funny":       { "label": "Engraçado",       "color": "#FFA857", "default_animation": "dance" },
+  "focused":     { "label": "Focado",          "color": "#6C63FF", "default_animation": "idle" },
+  "rich":        { "label": "Rico",            "color": "#D9B776", "default_animation": "lookMoney" },
+  "sad":         { "label": "Triste",          "color": "#9AA5B1", "default_animation": "cry" },
+  "stressed":    { "label": "Estressado",      "color": "#FF7A6E", "default_animation": "worried" }
+}

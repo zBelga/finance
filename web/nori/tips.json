@@ -1,0 +1,11 @@
+{
+  "_readme": "Dicas educacionais avulsas, não ligadas a nenhuma regra de gatilho — pensadas pra uma futura superfície de exibição (ex: 'dica do dia' num estado vazio). Nesta fase, o app carrega este arquivo mas ainda não exibe as dicas automaticamente em lugar nenhum; é conteúdo pronto esperando uma tela que o use.",
+
+  "tips": [
+    { "id": "tip_reserva", "title": "Reserva de emergência", "text": "O ideal é ter de 3 a 6 meses de despesas guardados para imprevistos." },
+    { "id": "tip_50_30_20", "title": "Regra 50/30/20", "text": "Uma referência simples: 50% do seu dinheiro para necessidades, 30% para desejos, 20% para poupança/investimento." },
+    { "id": "tip_juros_compostos", "title": "Juros compostos", "text": "Investir cedo, mesmo pouco, costuma valer mais no longo prazo do que investir mais tarde com valores maiores." },
+    { "id": "tip_categorizar", "title": "Categorize tudo", "text": "Lançamentos bem categorizados tornam muito mais fácil identificar onde cortar gastos." },
+    { "id": "tip_metas_especificas", "title": "Metas específicas", "text": "Metas com valor e prazo definidos são mais fáceis de alcançar do que 'economizar mais'." }
+  ]
+}

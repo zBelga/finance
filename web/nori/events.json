@@ -1,0 +1,13 @@
+{
+  "_readme": "Eventos são situações especiais, de uma vez só (ou uma vez por ano), que têm prioridade sobre as regras normais de rules.json quando disparam. 'trigger' pode ser: 'first_ledger_entry', 'first_goal_created', 'goal_completed' (marcos detectáveis com os dados atuais do app), ou 'date:MM-DD' (dispara nesse dia do calendário, uma vez por ano). 'once': 'always' significa que dispara só uma vez na vida da conta; 'yearly' significa uma vez por ano.",
+
+  "events": [
+    { "id": "primeiro_lancamento", "trigger": "first_ledger_entry", "dialog": "evento_primeiro_lancamento", "once": "always" },
+    { "id": "primeira_meta", "trigger": "first_goal_created", "dialog": "evento_primeira_meta", "once": "always" },
+    { "id": "meta_concluida_especial", "trigger": "goal_completed", "dialog": "evento_meta_concluida_especial", "once": "always" },
+    { "id": "natal", "trigger": "date:12-25", "dialog": "evento_natal", "once": "yearly" },
+    { "id": "ano_novo", "trigger": "date:01-01", "dialog": "evento_ano_novo", "once": "yearly" },
+    { "id": "black_friday", "trigger": "date:11-29", "dialog": "evento_black_friday", "once": "yearly" },
+    { "id": "aniversario_usuario", "trigger": "user_birthday", "dialog": "evento_aniversario", "once": "yearly", "status": "pendente: exige campo de data de nascimento, que a conta ainda não coleta no cadastro. Regra fica aqui documentada, mas o motor JS ainda não sabe checar esse gatilho." }
+  ]
+}

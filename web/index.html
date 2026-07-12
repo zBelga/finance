@@ -482,6 +482,50 @@
   .icon-grid-item:active{ transform:scale(.88); background:rgba(255,255,255,.08); }
   .icon-grid-item.active{ background:var(--gold); }
 
+  /* ---------- Nori Studio ---------- */
+  .studio-tabs{ display:flex; gap:4px; padding:4px; border-radius:var(--radius-pill); background:var(--bg-elevated-2); margin-bottom:20px; overflow-x:auto; }
+  .studio-tabs button{ flex:1; white-space:nowrap; border:none; background:none; padding:10px 12px; border-radius:var(--radius-pill); font-size:13px; font-weight:600; color:var(--ink-tertiary); cursor:pointer; transition:all .2s; }
+  .studio-tabs button.active{ background:var(--bg-elevated-3); color:var(--gold); }
+  .studio-panel{ display:none; }
+  .studio-panel.active{ display:block; }
+  .studio-toolbar{ display:flex; gap:10px; margin-bottom:14px; }
+  .studio-search{ flex:1; background:var(--bg-elevated-2); border:1.5px solid transparent; border-radius:var(--radius-pill); color:var(--ink-primary); font-size:14px; padding:11px 16px; font-family:inherit; outline:none; }
+  .studio-row{ align-items:center; }
+  .studio-row.disabled{ opacity:.4; }
+  .studio-row-main{ flex:1; min-width:0; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+  .studio-row-main .name{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .studio-row-actions{ display:flex; align-items:center; gap:6px; flex-shrink:0; }
+  .studio-icon-btn{ width:28px; height:28px; border:none; border-radius:8px; background:var(--bg-elevated-2); color:var(--ink-secondary); display:flex; align-items:center; justify-content:center; cursor:pointer; -webkit-tap-highlight-color:transparent; font-size:11px; }
+  .studio-icon-btn.danger{ color:var(--coral); }
+  .studio-order-col{ display:flex; flex-direction:column; gap:2px; flex-shrink:0; }
+  .studio-order-btn{ width:20px; height:16px; border:none; background:var(--bg-elevated-2); color:var(--ink-secondary); border-radius:5px; font-size:8px; display:flex; align-items:center; justify-content:center; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+  .studio-order-btn:disabled{ opacity:.25; cursor:default; }
+  .studio-toggle-pill{ flex-shrink:0; width:36px; height:20px; border-radius:var(--radius-pill); border:none; background:var(--bg-elevated-2); position:relative; cursor:pointer; -webkit-tap-highlight-color:transparent; transition:background .18s; }
+  .studio-toggle-pill::after{ content:""; position:absolute; top:2px; left:2px; width:16px; height:16px; border-radius:50%; background:var(--ink-tertiary); transition:transform .18s cubic-bezier(.22,1,.36,1), background .18s; }
+  .studio-toggle-pill.on{ background:rgba(61,220,145,.25); }
+  .studio-toggle-pill.on::after{ transform:translateX(16px); background:var(--emerald); }
+  .cond-row, .phrase-row{ background:var(--bg-elevated-2); border-radius:14px; padding:12px; margin-bottom:10px; }
+  .cond-row-fields{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .cond-row select, .cond-row input, .phrase-row input{ background:var(--bg-elevated-1); border:1.5px solid transparent; border-radius:10px; color:var(--ink-primary); font-size:13px; padding:9px 10px; font-family:inherit; outline:none; }
+  .cond-row select{ flex:1.4; min-width:110px; }
+  .cond-row input[data-field="category"]{ flex:1; min-width:90px; }
+  .cond-row input[data-field="value"]{ width:80px; }
+  .phrase-row .field{ margin-bottom:10px; }
+  .phrase-row .field:last-child{ margin-bottom:0; }
+  .phrase-weight-row{ display:flex; align-items:center; gap:10px; }
+  .phrase-weight-row input[type="number"]{ width:70px; }
+  .mood-picker, .personality-picker{ display:flex; flex-wrap:wrap; gap:8px; }
+  .mood-chip, .personality-chip{ display:flex; align-items:center; gap:6px; padding:8px 12px; border-radius:var(--radius-pill); background:var(--bg-elevated-2); border:1.5px solid transparent; font-size:12px; color:var(--ink-secondary); cursor:pointer; -webkit-tap-highlight-color:transparent; }
+  .mood-chip .dot{ width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .mood-chip.active, .personality-chip.active{ border-color:currentColor; background:rgba(255,255,255,.06); color:var(--ink-primary); }
+  .studio-remove-btn{ width:100%; margin-top:2px; padding:9px 0; border:none; border-radius:10px; background:var(--bg-elevated-1); color:var(--coral); font-size:12px; font-weight:600; cursor:pointer; }
+  .simulate-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .simulate-result{ border-radius:var(--radius-lg); padding:18px; margin-top:18px; text-align:center; }
+  .simulate-result .rule-id{ font-size:11px; color:var(--ink-tertiary); margin-bottom:6px; text-transform:uppercase; letter-spacing:.04em; }
+  .simulate-result .title{ font-size:17px; font-weight:700; margin-bottom:4px; }
+  .simulate-result .sub{ font-size:13px; color:var(--ink-secondary); }
+  .studio-export-bar{ display:flex; gap:10px; margin-top:22px; }
+  .studio-hint{ font-size:12px; color:var(--ink-tertiary); margin:-6px 0 16px; }
 
   .save-btn{
     position:relative; overflow:hidden;
@@ -875,9 +919,10 @@
     <section style="margin-bottom:28px">
       <div class="section-header"><h2 style="margin:0">Personalização</h2></div>
       <div class="sub-list glass">
-        <div class="sub-row" style="pointer-events:none">
+        <div class="sub-row clickable" id="openNoriStudioRow">
           <div class="sub-icon" style="background:rgba(183,156,255,.14); color:#B79CFF"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r="1" fill="currentColor" stroke="none"/><path d="M8 15c1 1 2.5 1.5 4 1.5s3-.5 4-1.5"/></svg></div>
-          <div><div class="name">Situações do Nori</div><div class="renew">Editável no arquivo web/nori-config.json</div></div>
+          <div><div class="name">Nori Studio</div><div class="renew">Editar frases, humores e personalidade</div></div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:.4; margin-left:auto; flex-shrink:0"><path d="m9 6 6 6-6 6"/></svg>
         </div>
       </div>
     </section>
@@ -905,6 +950,65 @@
         </div>
       </div>
     </section>
+  </div>
+
+  <!-- NORI STUDIO -->
+  <div class="view" id="view-nori-studio">
+    <header class="top">
+      <button class="eye" id="backFromStudioBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+      <h1>Nori Studio</h1>
+      <button class="eye" id="studioExportBtn" aria-label="Exportar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg></button>
+    </header>
+    <p class="studio-hint">Edite aqui, teste no simulador, e exporte os arquivos pra publicar. Nada aqui muda o Nori "ao vivo" até você trocar os JSONs em web/nori/ e publicar — exceto a personalidade ativa, que já reflete na hora.</p>
+
+    <div class="studio-tabs" id="studioTabs">
+      <button class="active" data-panel="situacoes">Situações</button>
+      <button data-panel="humores">Humores</button>
+      <button data-panel="personalidade">Personalidade</button>
+      <button data-panel="simular">Simular</button>
+    </div>
+
+    <div class="studio-panel active" id="studioPanelSituacoes">
+      <div class="studio-toolbar">
+        <input type="text" class="studio-search" id="studioRuleSearch" placeholder="Buscar situação ou frase..." />
+      </div>
+      <div class="sub-list glass" id="studioRulesList"></div>
+      <button class="save-btn" id="addStudioRuleBtn" style="background:var(--bg-elevated-2); color:var(--ink-primary); box-shadow:none; margin-top:14px;">+ Nova situação</button>
+    </div>
+
+    <div class="studio-panel" id="studioPanelHumores">
+      <div class="sub-list glass" id="studioMoodsList"></div>
+      <button class="save-btn" id="addStudioMoodBtn" style="background:var(--bg-elevated-2); color:var(--ink-primary); box-shadow:none; margin-top:14px;">+ Novo humor</button>
+    </div>
+
+    <div class="studio-panel" id="studioPanelPersonalidade">
+      <div class="field">
+        <label>Personalidade ativa (já vale pro Nori agora, neste aparelho)</label>
+        <div class="personality-picker" id="studioActivePersonalityPicker"></div>
+      </div>
+      <div class="field">
+        <label>Perfis</label>
+        <div class="sub-list glass" id="studioPersonalitiesList"></div>
+      </div>
+      <button class="save-btn" id="addStudioPersonalityBtn" style="background:var(--bg-elevated-2); color:var(--ink-primary); box-shadow:none;">+ Nova personalidade</button>
+    </div>
+
+    <div class="studio-panel" id="studioPanelSimular">
+      <div class="simulate-grid">
+        <div class="field"><label>Saldo do mês (R$)</label><input type="number" id="simNet" value="1200" /></div>
+        <div class="field"><label>Receita (R$)</label><input type="number" id="simIncome" value="5000" /></div>
+        <div class="field"><label>Despesa (R$)</label><input type="number" id="simExpense" value="3800" /></div>
+        <div class="field"><label>Nº de metas</label><input type="number" id="simGoalsCount" value="1" /></div>
+        <div class="field"><label>Metas concluídas</label><input type="number" id="simGoalsCompleted" value="0" /></div>
+        <div class="field"><label>Total investido (R$)</label><input type="number" id="simInvestTotal" value="0" /></div>
+        <div class="field"><label>Variação de despesa (1.15 = +15%)</label><input type="number" step="0.01" id="simExpenseChange" value="1.0" /></div>
+        <div class="field"><label>Lançamentos no extrato</label><input type="number" id="simLedgerCount" value="10" /></div>
+        <div class="field"><label>Categoria (opcional)</label><input type="text" id="simCategory" placeholder="Ex: Uber" /></div>
+        <div class="field"><label>% da despesa nessa categoria</label><input type="number" step="0.01" id="simCategoryPct" value="0" /></div>
+      </div>
+      <button class="save-btn" id="simulateBtn">Simular</button>
+      <div class="simulate-result glass" id="simulateResult" style="display:none;"></div>
+    </div>
   </div>
 
   <!-- METAS -->
@@ -993,9 +1097,97 @@
   </div>
   <div class="field">
     <label>Cor</label>
-    <div id="catColorPicker" style="display:flex; gap:12px; padding:4px 0;"></div>
+    <div id="catColorPicker" style="display:flex; flex-wrap:wrap; gap:10px; padding:4px 0;"></div>
   </div>
   <button class="save-btn" id="catSave">Salvar categoria</button>
+</div>
+
+<div class="sheet" id="studioRuleSheet">
+  <button class="sheet-close" id="studioRuleSheetClose">✕</button>
+  <div class="handle"></div>
+  <h3 id="studioRuleSheetTitle">Nova situação</h3>
+  <div class="field">
+    <label>Identificador (sem espaços)</label>
+    <input type="text" id="studioRuleId" placeholder="Ex: gastos_lazer_alto" autocomplete="off" />
+  </div>
+  <div class="field">
+    <label>Humor quando ativa</label>
+    <div class="mood-picker" id="studioRuleMoodPicker"></div>
+  </div>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+    <div class="field"><label>Prioridade</label><input type="number" id="studioRulePriority" value="50" /></div>
+    <div class="field"><label>Cooldown (dias)</label><input type="number" id="studioRuleCooldown" value="0" min="0" /></div>
+    <div class="field"><label>Máx. por semana</label><input type="number" id="studioRuleMaxWeek" placeholder="sem limite" min="0" /></div>
+    <div class="field"><label>Máx. por mês</label><input type="number" id="studioRuleMaxMonth" placeholder="sem limite" min="0" /></div>
+  </div>
+  <div class="field" style="flex-direction:row; align-items:center; justify-content:space-between;">
+    <label style="margin:0">Repetível</label>
+    <button type="button" class="studio-toggle-pill on" id="studioRuleRepeatable"><span></span></button>
+  </div>
+  <div class="field" style="flex-direction:row; align-items:center; justify-content:space-between;">
+    <label style="margin:0">Ativa</label>
+    <button type="button" class="studio-toggle-pill on" id="studioRuleEnabled"><span></span></button>
+  </div>
+
+  <div class="field">
+    <label>Condições (todas precisam ser verdadeiras)</label>
+    <div id="studioRuleConditions"></div>
+    <button type="button" class="studio-icon-btn" id="addCondBtn" style="width:auto; padding:0 12px; gap:6px;">+ condição</button>
+  </div>
+
+  <div class="field">
+    <label>Frases (uma é sorteada por peso)</label>
+    <div id="studioRulePhrases"></div>
+    <button type="button" class="studio-icon-btn" id="addPhraseBtn" style="width:auto; padding:0 12px; gap:6px;">+ frase</button>
+  </div>
+
+  <button class="save-btn" id="studioRuleSave">Salvar situação</button>
+  <button class="save-btn studio-remove-btn" id="studioRuleDelete" style="display:none; margin-top:8px;">Excluir situação</button>
+</div>
+
+<div class="sheet" id="studioMoodSheet">
+  <button class="sheet-close" id="studioMoodSheetClose">✕</button>
+  <div class="handle"></div>
+  <h3 id="studioMoodSheetTitle">Novo humor</h3>
+  <div class="field">
+    <label>Identificador (sem espaços)</label>
+    <input type="text" id="studioMoodId" placeholder="Ex: animado" autocomplete="off" />
+  </div>
+  <div class="field">
+    <label>Nome</label>
+    <input type="text" id="studioMoodLabel" placeholder="Ex: Animado" autocomplete="off" />
+  </div>
+  <div class="field">
+    <label>Cor</label>
+    <div id="studioMoodColorPicker" style="display:flex; flex-wrap:wrap; gap:10px; padding:4px 0;"></div>
+    <input type="text" id="studioMoodColor" value="#F2C955" style="display:none;" />
+  </div>
+  <div class="field">
+    <label>Animação padrão</label>
+    <select id="studioMoodAnimation"></select>
+  </div>
+  <button class="save-btn" id="studioMoodSave">Salvar humor</button>
+  <button class="save-btn studio-remove-btn" id="studioMoodDelete" style="display:none; margin-top:8px;">Excluir humor</button>
+</div>
+
+<div class="sheet" id="studioPersonalitySheet">
+  <button class="sheet-close" id="studioPersonalitySheetClose">✕</button>
+  <div class="handle"></div>
+  <h3 id="studioPersonalitySheetTitle">Nova personalidade</h3>
+  <div class="field">
+    <label>Identificador (sem espaços)</label>
+    <input type="text" id="studioPersonalityId" placeholder="Ex: sarcastico" autocomplete="off" />
+  </div>
+  <div class="field">
+    <label>Nome</label>
+    <input type="text" id="studioPersonalityLabel" placeholder="Ex: Sarcástico" autocomplete="off" />
+  </div>
+  <div class="field">
+    <label>Descrição</label>
+    <input type="text" id="studioPersonalityDescription" placeholder="Como esse perfil se comporta" autocomplete="off" />
+  </div>
+  <button class="save-btn" id="studioPersonalitySave">Salvar personalidade</button>
+  <button class="save-btn studio-remove-btn" id="studioPersonalityDelete" style="display:none; margin-top:8px;">Excluir personalidade</button>
 </div>
 
 <div class="sheet" id="goalSheet">
@@ -1134,30 +1326,43 @@
   function dbInvestToJs(row){ return { id: row.id, label: row.label, value: Number(row.value), changePct: Number(row.change_pct) }; }
   function dbCardToJs(row){ return { id: row.id, label: row.label, last4: row.last4, used: Number(row.used), limit: Number(row.credit_limit), colorIdx: row.color_idx }; }
 
-  // Frases/situações do Nori: sempre lidas de web/nori-config.json, que é a fonte
-  // única da verdade (sobrescreve qualquer coisa salva antes). Edite esse arquivo
-  // e suba pro GitHub pra mudar o que o Nori fala.
-  const FALLBACK_NORI_STATES = [
-    { title: "Você está no azul.", sub: "Continue assim.", mood: "happy", enabled: true, conditions: [] }
-  ];
-  async function fetchNoriConfig(){
+  // Nori: pacote de configuração modular, sempre lido de web/nori/*.json (fonte
+  // única da verdade). Ver web/nori/README.md para o guia completo de edição.
+  const NORI_PACK_FILES = ["rules", "dialogs", "moods", "animations", "events", "variables", "personalities", "tips"];
+  const NORI_FALLBACK_PACK = {
+    rules: [{ id: "fallback", dialog: "fallback", priority: 0, cooldown_days: 0, max_per_week: null, max_per_month: null, repeatable: true, enabled: true, conditions: [] }],
+    dialogs: { fallback: { mood: "happy", phrases: [{ title: "Você está no azul.", sub: "Continue assim.", weight: 1 }] } },
+    moods: { happy: { label: "Feliz", color: "#3DDC91", default_animation: "idle" } },
+    animations: {},
+    events: [],
+    variables: {},
+    personalities: { active: "equilibrado", personalities: { equilibrado: { label: "Equilibrado" } } },
+    tips: []
+  };
+  async function fetchNoriPack(){
     try {
-      const res = await fetch("./nori-config.json", { cache: "no-store" });
-      if (!res.ok) throw new Error("nori-config.json não encontrado");
-      const json = await res.json();
-      const situations = Array.isArray(json) ? json : (json.situations || []);
-      if (!situations.length) throw new Error("nori-config.json vazio");
-      return situations.map((s, i) => ({
-        id: i + 1,
-        title: s.title || "",
-        sub: s.sub || "",
-        mood: s.mood || "happy",
-        enabled: s.enabled !== false,
-        conditions: Array.isArray(s.conditions) ? s.conditions : []
-      }));
+      const results = await Promise.all(NORI_PACK_FILES.map(name =>
+        fetch("./nori/" + name + ".json", { cache: "no-store" }).then(r => {
+          if (!r.ok) throw new Error(name + ".json não encontrado");
+          return r.json();
+        })
+      ));
+      const [rulesFile, dialogsFile, moodsFile, animationsFile, eventsFile, variablesFile, personalitiesFile, tipsFile] = results;
+      const pack = {
+        rules: rulesFile.rules || [],
+        dialogs: dialogsFile || {},
+        moods: moodsFile || {},
+        animations: animationsFile || {},
+        events: eventsFile.events || [],
+        variables: variablesFile.variables || {},
+        personalities: personalitiesFile || NORI_FALLBACK_PACK.personalities,
+        tips: tipsFile.tips || []
+      };
+      if (!pack.rules.length || !Object.keys(pack.dialogs).length) throw new Error("pacote do Nori incompleto");
+      return pack;
     } catch (e) {
-      console.warn("Usando situações padrão do Nori (nori-config.json não pôde ser lido):", e);
-      return FALLBACK_NORI_STATES.map((s, i) => ({ id: i + 1, ...s }));
+      console.warn("Usando pacote mínimo do Nori (web/nori/*.json não pôde ser lido):", e);
+      return NORI_FALLBACK_PACK;
     }
   }
 
@@ -1271,8 +1476,8 @@
       async function proceedToLoading(user){
         if (resolved) return;
         showView(loadingView);
-        const [data, noriStates] = await Promise.all([fetchAllUserData(), fetchNoriConfig()]);
-        data.noriStates = noriStates;
+        const [data, noriPack] = await Promise.all([fetchAllUserData(), fetchNoriPack()]);
+        data.noriPack = noriPack;
         splash.classList.add("leaving");
         setTimeout(() => { splash.style.display = "none"; }, 550);
         resolved = true;
@@ -1364,11 +1569,23 @@
     { key: "outros",      label: "Outros",       icon: "📦", hex: "#FF7A6E", bg: "rgba(255,122,110,.14)" }
   ];
   const PALETTE = [
-    { hex: "#D9B776", bg: "rgba(217,183,118,.14)" },
-    { hex: "#3DDC91", bg: "rgba(61,220,145,.14)" },
-    { hex: "#6FB8FF", bg: "rgba(111,184,255,.14)" },
-    { hex: "#B79CFF", bg: "rgba(183,156,255,.14)" },
-    { hex: "#FF7A6E", bg: "rgba(255,122,110,.14)" }
+    { hex: "#D9B776", bg: "rgba(217,183,118,.14)" },  // dourado
+    { hex: "#3DDC91", bg: "rgba(61,220,145,.14)" },   // esmeralda
+    { hex: "#6FB8FF", bg: "rgba(111,184,255,.14)" },  // azul
+    { hex: "#B79CFF", bg: "rgba(183,156,255,.14)" },  // roxo
+    { hex: "#FF7A6E", bg: "rgba(255,122,110,.14)" },  // coral
+    { hex: "#4ECDC4", bg: "rgba(78,205,196,.14)" },   // teal
+    { hex: "#FF6FA5", bg: "rgba(255,111,165,.14)" },  // rosa
+    { hex: "#FFA857", bg: "rgba(255,168,87,.14)" },   // laranja
+    { hex: "#6C63FF", bg: "rgba(108,99,255,.14)" },   // índigo
+    { hex: "#9BD35C", bg: "rgba(155,211,92,.14)" },   // verde-limão
+    { hex: "#5CC8E8", bg: "rgba(92,200,232,.14)" },   // ciano
+    { hex: "#E85CC8", bg: "rgba(232,92,200,.14)" },   // magenta
+    { hex: "#F2D680", bg: "rgba(242,214,128,.14)" },  // âmbar
+    { hex: "#C9967A", bg: "rgba(201,150,122,.14)" },  // terracota
+    { hex: "#9AA5B1", bg: "rgba(154,165,177,.14)" },  // grafite
+    { hex: "#F45B69", bg: "rgba(244,91,105,.14)" },   // vermelho
+    { hex: "#6EE7B7", bg: "rgba(110,231,183,.14)" }   // menta
   ];
 
   async function saveCategories(){
@@ -2243,14 +2460,67 @@
     });
   });
 
-  // ---------- Nori (mascote) ----------
-  // As situações e frases do Nori vêm sempre de web/nori-config.json (ver fetchNoriConfig),
-  // carregado antes do runAuthGate e guardado em __auth.noriStates.
-  const NORI_MOOD_EYE_COLOR = {
-    happy: "#3DDC91", warning: "#D9B776", danger: "#FF7A6E",
-    goal: "#D9B776", emergency: "#6FB8FF", investment: "#B79CFF"
-  };
-  let noriStates = __auth.noriStates;
+  // ---------- Nori (mascote) — motor de regras + diálogos + humores ----------
+  // Toda a configuração vem de web/nori/*.json (fonte única da verdade — ver
+  // web/nori/README.md). Este bloco só INTERPRETA essa configuração; para mudar
+  // frases, regras, humores, animações, eventos ou personalidade, edite os JSONs.
+  let noriPack = __auth.noriPack;
+
+  const NORI_HISTORY_KEY = "aurum_nori_history_v1";
+  const NORI_EVENTS_SHOWN_KEY = "aurum_nori_events_shown_v1";
+  const NORI_PERSONALITY_KEY = "aurum_nori_personality_v1";
+  const NORI_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+  const NORI_MONTH_MS = 30 * 24 * 60 * 60 * 1000;
+
+  function loadNoriHistory(){
+    try { return JSON.parse(localStorage.getItem(NORI_HISTORY_KEY)) || {}; } catch (e) { return {}; }
+  }
+  function saveNoriHistoryEntry(ruleId){
+    const history = loadNoriHistory();
+    const now = Date.now();
+    const entry = history[ruleId] || { lastShownAt: 0, weekStart: now, monthStart: now, countWeek: 0, countMonth: 0 };
+    if (now - entry.weekStart > NORI_WEEK_MS) { entry.weekStart = now; entry.countWeek = 0; }
+    if (now - entry.monthStart > NORI_MONTH_MS) { entry.monthStart = now; entry.countMonth = 0; }
+    entry.lastShownAt = now;
+    entry.countWeek += 1;
+    entry.countMonth += 1;
+    history[ruleId] = entry;
+    localStorage.setItem(NORI_HISTORY_KEY, JSON.stringify(history));
+  }
+  function isNoriRuleOnCooldown(rule){
+    const entry = loadNoriHistory()[rule.id];
+    if (!entry) return false;
+    const now = Date.now();
+    if (rule.cooldown_days && (now - entry.lastShownAt) < rule.cooldown_days * 24 * 60 * 60 * 1000) return true;
+    const weekCount = (now - entry.weekStart) > NORI_WEEK_MS ? 0 : entry.countWeek;
+    const monthCount = (now - entry.monthStart) > NORI_MONTH_MS ? 0 : entry.countMonth;
+    if (rule.max_per_week != null && weekCount >= rule.max_per_week) return true;
+    if (rule.max_per_month != null && monthCount >= rule.max_per_month) return true;
+    return false;
+  }
+
+  function loadNoriEventsShown(){
+    try { return JSON.parse(localStorage.getItem(NORI_EVENTS_SHOWN_KEY)) || {}; } catch (e) { return {}; }
+  }
+  function markNoriEventShown(key){
+    const shown = loadNoriEventsShown();
+    shown[key] = Date.now();
+    localStorage.setItem(NORI_EVENTS_SHOWN_KEY, JSON.stringify(shown));
+  }
+
+  function getActiveNoriPersonality(){
+    const stored = localStorage.getItem(NORI_PERSONALITY_KEY);
+    const known = (noriPack.personalities && noriPack.personalities.personalities) || {};
+    if (stored && known[stored]) return stored;
+    return (noriPack.personalities && noriPack.personalities.active) || "equilibrado";
+  }
+
+  function noriCategoryExpenseThisMonth(categoryLabel){
+    const now = new Date();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+    const matches = ledger.filter(t => t.amount < 0 && t.date >= monthStart && (t.category || "").toLowerCase() === String(categoryLabel).toLowerCase());
+    return { total: matches.reduce((s, t) => s + Math.abs(t.amount), 0), count: matches.length };
+  }
 
   function computeNoriMetrics(){
     const income = computeIncome();
@@ -2272,8 +2542,19 @@
     };
   }
 
+  function getNoriMetricValue(cond, metrics){
+    if (cond.category) {
+      const cat = noriCategoryExpenseThisMonth(cond.category);
+      if (cond.metric === "category_expense") return cat.total;
+      if (cond.metric === "category_count") return cat.count;
+      if (cond.metric === "category_expense_pct") return metrics.expense > 0 ? (cat.total / metrics.expense) : 0;
+      return undefined;
+    }
+    return metrics[cond.metric];
+  }
+
   function evalNoriCondition(cond, metrics){
-    const v = metrics[cond.metric];
+    const v = getNoriMetricValue(cond, metrics);
     if (v === undefined) return false;
     switch (cond.op) {
       case ">": return v > cond.value;
@@ -2285,26 +2566,145 @@
     }
   }
 
+  function pickNoriPhrase(phrases, personality){
+    const eligible = phrases.filter(p => !p.personality || p.personality.includes(personality));
+    const pool = eligible.length ? eligible : phrases;
+    const totalWeight = pool.reduce((s, p) => s + (p.weight || 1), 0);
+    let r = Math.random() * totalWeight;
+    for (const p of pool) {
+      r -= (p.weight || 1);
+      if (r <= 0) return p;
+    }
+    return pool[pool.length - 1];
+  }
+
+  function buildNoriVarContext(rule, metrics){
+    const now = new Date();
+    const monthName = now.toLocaleDateString("pt-BR", { month: "long" });
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    const daysLeft = Math.max(0, Math.ceil((endOfMonth - now) / 86400000));
+    const catCond = (rule.conditions || []).find(c => c.category);
+    const categoryLabel = catCond ? catCond.category : null;
+    const categoryAmount = categoryLabel ? noriCategoryExpenseThisMonth(categoryLabel).total : metrics.expense;
+    const openGoal = goals.find(g => g.target > 0 && g.current < g.target) || goals[0];
+    const firstInvest = investments[0];
+    const firstCard = cards[0];
+    const byCat = {};
+    ledger.filter(t => t.amount < 0).forEach(t => { byCat[t.category] = (byCat[t.category] || 0) + Math.abs(t.amount); });
+    let topCat = null, topCatAmount = -1;
+    Object.entries(byCat).forEach(([k, v]) => { if (v > topCatAmount) { topCatAmount = v; topCat = k; } });
+    const avgYield = investments.length ? (investments.reduce((s, i) => s + (i.changePct || 0), 0) / investments.length) : 0;
+    return {
+      amount: fmt(categoryAmount),
+      category: categoryLabel || "",
+      goal: openGoal ? openGoal.label : "",
+      investment: firstInvest ? firstInvest.label : "",
+      income: fmt(metrics.income),
+      expense: fmt(metrics.expense),
+      month: monthName,
+      days: String(daysLeft),
+      card: firstCard ? firstCard.label : "",
+      topCategory: topCat || "",
+      goalProgress: (openGoal && openGoal.target > 0) ? String(Math.round((openGoal.current / openGoal.target) * 100)) : "0",
+      investmentYield: avgYield.toFixed(1).replace(".", ",") + "%"
+    };
+  }
+
+  function interpolateNoriText(text, ctx){
+    return (text || "").replace(/\{(\w+)\}/g, (m, key) => (ctx[key] !== undefined ? ctx[key] : m));
+  }
+
+  function checkNoriEvents(){
+    const shown = loadNoriEventsShown();
+    const now = new Date();
+    const mmdd = String(now.getMonth() + 1).padStart(2, "0") + "-" + String(now.getDate()).padStart(2, "0");
+    for (const ev of (noriPack.events || [])) {
+      let fire = false;
+      let key = ev.id;
+      if (ev.trigger === "first_ledger_entry") {
+        fire = ledger.length >= 1 && !shown[ev.id];
+      } else if (ev.trigger === "first_goal_created") {
+        fire = goals.length >= 1 && !shown[ev.id];
+      } else if (ev.trigger === "goal_completed") {
+        fire = goals.some(g => g.target > 0 && g.current >= g.target) && !shown[ev.id];
+      } else if (ev.trigger && ev.trigger.indexOf("date:") === 0) {
+        key = ev.id + "_" + now.getFullYear();
+        fire = mmdd === ev.trigger.slice(5) && !shown[key];
+      }
+      if (fire) return { ev, key };
+    }
+    return null;
+  }
+
+  // Estado "pegajoso": a frase sorteada fica fixa enquanto a mesma regra/evento
+  // continuar ativo, só é sorteada de novo quando a situação realmente muda.
+  let activeNoriRuleId = null;
+  let activeNoriPhrase = null;
+
   function computeNoriState(){
     const metrics = computeNoriMetrics();
-    const active = noriStates.filter(s => s.enabled !== false);
-    for (const s of active) {
-      const conds = s.conditions || [];
-      if (conds.length === 0 || conds.every(c => evalNoriCondition(c, metrics))) return s;
+    const personality = getActiveNoriPersonality();
+
+    const firedEvent = checkNoriEvents();
+    if (firedEvent) {
+      const group = noriPack.dialogs[firedEvent.ev.dialog];
+      if (group && group.phrases && group.phrases.length) {
+        const eventStateId = "event:" + firedEvent.key;
+        if (activeNoriRuleId !== eventStateId) {
+          activeNoriPhrase = pickNoriPhrase(group.phrases, personality);
+          activeNoriRuleId = eventStateId;
+          markNoriEventShown(firedEvent.key);
+        }
+        const ctx = buildNoriVarContext({ conditions: [] }, metrics);
+        return {
+          id: eventStateId,
+          title: interpolateNoriText(activeNoriPhrase.title, ctx),
+          sub: interpolateNoriText(activeNoriPhrase.sub, ctx),
+          mood: activeNoriPhrase.mood || group.mood || "happy"
+        };
+      }
     }
-    return { id: 0, title: "Tudo certo por aqui.", sub: "Continue acompanhando suas finanças.", mood: "happy" };
+
+    const rules = (noriPack.rules || []).filter(r => r.enabled !== false).slice().sort((a, b) => (b.priority || 0) - (a.priority || 0));
+    for (const rule of rules) {
+      const conds = rule.conditions || [];
+      const matches = conds.length === 0 || conds.every(c => evalNoriCondition(c, metrics));
+      if (!matches) continue;
+      const isAlreadyActive = activeNoriRuleId === rule.id;
+      if (!isAlreadyActive && isNoriRuleOnCooldown(rule)) continue;
+      const group = noriPack.dialogs[rule.dialog];
+      if (!group || !group.phrases || !group.phrases.length) continue;
+      if (!isAlreadyActive) {
+        activeNoriPhrase = pickNoriPhrase(group.phrases, personality);
+        activeNoriRuleId = rule.id;
+        saveNoriHistoryEntry(rule.id);
+      }
+      const ctx = buildNoriVarContext(rule, metrics);
+      return {
+        id: rule.id,
+        title: interpolateNoriText(activeNoriPhrase.title, ctx),
+        sub: interpolateNoriText(activeNoriPhrase.sub, ctx),
+        mood: activeNoriPhrase.mood || group.mood || "happy"
+      };
+    }
+
+    activeNoriRuleId = "fallback";
+    return { id: "fallback", title: "Tudo certo por aqui.", sub: "Continue acompanhando suas finanças.", mood: "happy" };
   }
 
   let currentNoriState = null;
   function applyNoriState(state){
     const card = document.getElementById("noriCard");
     const mood = state.mood || "happy";
+    const moodCfg = (noriPack.moods && noriPack.moods[mood]) || (noriPack.moods && noriPack.moods.happy) || { color: "#3DDC91" };
     card.dataset.state = mood;
     document.getElementById("noriTitle").textContent = state.title;
     document.getElementById("noriSub").textContent = state.sub;
-    document.getElementById("noriEyeL").setAttribute("fill", NORI_MOOD_EYE_COLOR[mood]);
-    document.getElementById("noriEyeR").setAttribute("fill", NORI_MOOD_EYE_COLOR[mood]);
+    document.getElementById("noriEyeL").setAttribute("fill", moodCfg.color || "#3DDC91");
+    document.getElementById("noriEyeR").setAttribute("fill", moodCfg.color || "#3DDC91");
     document.querySelectorAll(".nori-prop").forEach(p => p.classList.remove("active"));
+    // Só os humores com adereço SVG implementado mostram algo aqui (ver web/nori/animations.json);
+    // os demais só trocam a cor dos olhos por enquanto.
     const propId = "noriProp" + mood.charAt(0).toUpperCase() + mood.slice(1);
     const propEl = document.getElementById(propId);
     if (propEl) propEl.classList.add("active");
@@ -2324,6 +2724,621 @@
       textEl.classList.remove("fading");
     }, 200);
   }
+
+  // Ajuda de depuração pro Nori (ver web/nori/README.md, seção "Como testar uma situação").
+  // Não faz parte do fluxo normal do app — só exposto pra facilitar testar situações no Console.
+  window.__noriDebug = {
+    reset(){ activeNoriRuleId = null; renderNori(); },
+    state(){ return currentNoriState; },
+    metrics(){ return computeNoriMetrics(); },
+    pack(){ return noriPack; }
+  };
+
+  // ---------- Nori Studio (Fase 2): editor local, exporta JSON pra publicar ----------
+  const STUDIO_METRICS = [
+    { id: "net", label: "Saldo do mês (R$)" },
+    { id: "net_pct", label: "Saldo ÷ receita (0 a 1)" },
+    { id: "income", label: "Receita do mês (R$)" },
+    { id: "expense", label: "Despesa do mês (R$)" },
+    { id: "expense_change_pct", label: "Despesa vs. mês anterior (1 = igual)" },
+    { id: "goals_count", label: "Nº de metas" },
+    { id: "goals_completed", label: "Nº de metas concluídas" },
+    { id: "investments_total", label: "Total investido (R$)" },
+    { id: "ledger_count", label: "Nº de lançamentos" },
+    { id: "category_expense", label: "Gasto numa categoria (R$)" },
+    { id: "category_count", label: "Lançamentos numa categoria" },
+    { id: "category_expense_pct", label: "% da despesa numa categoria" }
+  ];
+  const STUDIO_CATEGORY_METRICS = ["category_expense", "category_count", "category_expense_pct"];
+  const STUDIO_OPS = [">", ">=", "<", "<=", "=="];
+
+  function studioEsc(str){
+    return String(str == null ? "" : str).replace(/[&<>"']/g, m => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[m]));
+  }
+
+  let studioDraft = null;
+  let studioEditingRuleId = null;
+  let studioEditingMoodId = null;
+  let studioEditingPersonalityId = null;
+  let studioRuleSelectedMood = "happy";
+  let studioRuleConditionsDraft = [];
+  let studioRulePhrasesDraft = [];
+
+  function studioMoodEntries(){
+    return Object.keys(studioDraft.moods).filter(k => k !== "_readme").map(k => ({ id: k, ...studioDraft.moods[k] }));
+  }
+  function studioPersonalityEntries(){
+    const p = studioDraft.personalities.personalities || {};
+    return Object.keys(p).filter(k => k !== "_readme").map(k => ({ id: k, ...p[k] }));
+  }
+  function studioAnimationIds(){
+    return Object.keys(noriPack.animations || {}).filter(k => k !== "_readme");
+  }
+
+  function studioCloneDraft(){
+    studioDraft = {
+      rules: JSON.parse(JSON.stringify(noriPack.rules || [])),
+      dialogs: JSON.parse(JSON.stringify(noriPack.dialogs || {})),
+      moods: JSON.parse(JSON.stringify(noriPack.moods || {})),
+      personalities: JSON.parse(JSON.stringify(noriPack.personalities || { active: "equilibrado", personalities: {} }))
+    };
+  }
+
+  // ----- Navegação -----
+  document.getElementById("openNoriStudioRow").addEventListener("click", () => {
+    studioCloneDraft();
+    renderStudioRulesList();
+    renderStudioMoodsList();
+    renderStudioActivePersonalityPicker();
+    renderStudioPersonalitiesList();
+    switchView("view-nori-studio");
+    if (navigator.vibrate) navigator.vibrate(6);
+  });
+  document.getElementById("backFromStudioBtn").addEventListener("click", () => {
+    switchView("view-settings");
+  });
+  document.getElementById("studioTabs").addEventListener("click", (e) => {
+    const btn = e.target.closest("button");
+    if (!btn) return;
+    document.querySelectorAll("#studioTabs button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    const panel = btn.dataset.panel;
+    document.querySelectorAll(".studio-panel").forEach(p => p.classList.remove("active"));
+    document.getElementById("studioPanel" + panel.charAt(0).toUpperCase() + panel.slice(1)).classList.add("active");
+  });
+
+  // ----- Situações (regra + grupo de diálogo) -----
+  function studioSwapPriority(ruleId, dir){
+    const sorted = [...studioDraft.rules].sort((a, b) => (b.priority || 0) - (a.priority || 0));
+    const idx = sorted.findIndex(r => r.id === ruleId);
+    const swapIdx = dir === "up" ? idx - 1 : idx + 1;
+    if (swapIdx < 0 || swapIdx >= sorted.length) return;
+    const a = sorted[idx], b = sorted[swapIdx];
+    const tmp = a.priority || 0;
+    a.priority = b.priority || 0;
+    b.priority = tmp;
+    if (a.priority === b.priority) { if (dir === "up") a.priority = b.priority + 1; else b.priority = a.priority + 1; }
+    renderStudioRulesList();
+  }
+
+  function studioDuplicateRule(id){
+    const rule = studioDraft.rules.find(r => r.id === id);
+    if (!rule) return;
+    let newId = id + "_copia", n = 2;
+    while (studioDraft.rules.some(r => r.id === newId)) { newId = id + "_copia" + n; n++; }
+    const clone = JSON.parse(JSON.stringify(rule));
+    clone.id = newId;
+    clone.dialog = newId;
+    clone.priority = (rule.priority || 0) - 1;
+    studioDraft.dialogs[newId] = JSON.parse(JSON.stringify(studioDraft.dialogs[rule.dialog] || { mood: "happy", phrases: [] }));
+    studioDraft.rules.push(clone);
+    renderStudioRulesList();
+  }
+
+  function renderStudioRulesList(){
+    const wrap = document.getElementById("studioRulesList");
+    const q = (document.getElementById("studioRuleSearch").value || "").toLowerCase().trim();
+    const sorted = [...studioDraft.rules].sort((a, b) => (b.priority || 0) - (a.priority || 0));
+    const filtered = sorted.filter(r => {
+      if (!q) return true;
+      const group = studioDraft.dialogs[r.dialog];
+      const text = [r.id, r.dialog, ...(group ? group.phrases.map(p => (p.title || "") + " " + (p.sub || "")) : [])].join(" ").toLowerCase();
+      return text.includes(q);
+    });
+    if (!filtered.length){
+      wrap.innerHTML = `<div class="sub-row" style="pointer-events:none"><div><div class="name">Nenhuma situação encontrada</div></div></div>`;
+      return;
+    }
+    wrap.innerHTML = filtered.map(r => {
+      const sortedIdx = sorted.indexOf(r);
+      const group = studioDraft.dialogs[r.dialog];
+      const mood = group ? studioDraft.moods[group.mood] : null;
+      const phraseCount = group ? group.phrases.length : 0;
+      const moodLabel = mood ? (mood.label || group.mood) : (group ? group.mood : "—");
+      return `<div class="sub-row studio-row${r.enabled === false ? " disabled" : ""}" data-id="${studioEsc(r.id)}">
+        <div class="studio-order-col">
+          <button type="button" class="studio-order-btn" data-dir="up" ${sortedIdx === 0 ? "disabled" : ""}>▲</button>
+          <button type="button" class="studio-order-btn" data-dir="down" ${sortedIdx === sorted.length - 1 ? "disabled" : ""}>▼</button>
+        </div>
+        <div class="studio-row-main" data-action="edit">
+          <div class="name">${studioEsc(r.id)}</div>
+          <div class="renew">prioridade ${r.priority ?? 0} · ${studioEsc(moodLabel)} · ${phraseCount} frase(s)</div>
+        </div>
+        <div class="studio-row-actions">
+          <button type="button" class="studio-toggle-pill${r.enabled !== false ? " on" : ""}" data-action="toggle"><span></span></button>
+          <button type="button" class="studio-icon-btn" data-action="duplicate" title="Duplicar">⧉</button>
+          <button type="button" class="studio-icon-btn danger" data-action="delete" title="Excluir">✕</button>
+        </div>
+      </div>`;
+    }).join("");
+  }
+  document.getElementById("studioRuleSearch").addEventListener("input", renderStudioRulesList);
+  document.getElementById("addStudioRuleBtn").addEventListener("click", () => openStudioRuleSheet(null));
+  document.getElementById("studioRulesList").addEventListener("click", (e) => {
+    const row = e.target.closest(".studio-row");
+    if (!row) return;
+    const id = row.dataset.id;
+    const orderBtn = e.target.closest(".studio-order-btn");
+    if (orderBtn){ studioSwapPriority(id, orderBtn.dataset.dir); return; }
+    const actionBtn = e.target.closest("[data-action]");
+    if (!actionBtn) return;
+    const rule = studioDraft.rules.find(r => r.id === id);
+    if (!rule) return;
+    const action = actionBtn.dataset.action;
+    if (action === "toggle"){
+      rule.enabled = rule.enabled === false ? true : false;
+      renderStudioRulesList();
+      if (navigator.vibrate) navigator.vibrate(5);
+    } else if (action === "duplicate"){
+      studioDuplicateRule(id);
+    } else if (action === "delete"){
+      showConfirm(`Excluir a situação "${id}"? Isso também remove suas frases.`, () => {
+        studioDraft.rules = studioDraft.rules.filter(r => r.id !== id);
+        delete studioDraft.dialogs[rule.dialog];
+        renderStudioRulesList();
+      });
+    } else if (action === "edit"){
+      openStudioRuleSheet(id);
+    }
+  });
+
+  function renderStudioRuleMoodPicker(){
+    const wrap = document.getElementById("studioRuleMoodPicker");
+    wrap.innerHTML = studioMoodEntries().map(m =>
+      `<div class="mood-chip${m.id === studioRuleSelectedMood ? " active" : ""}" data-mood="${studioEsc(m.id)}"><span class="dot" style="background:${m.color || "#888"}"></span>${studioEsc(m.label || m.id)}</div>`
+    ).join("");
+  }
+  document.getElementById("studioRuleMoodPicker").addEventListener("click", (e) => {
+    const chip = e.target.closest(".mood-chip");
+    if (!chip) return;
+    studioRuleSelectedMood = chip.dataset.mood;
+    renderStudioRuleMoodPicker();
+  });
+
+  function renderStudioConditions(){
+    const wrap = document.getElementById("studioRuleConditions");
+    if (!studioRuleConditionsDraft.length){
+      wrap.innerHTML = `<div class="studio-hint" style="margin:0 0 8px">Sem condições = sempre pode ativar (útil como situação "padrão", de prioridade baixa).</div>`;
+      return;
+    }
+    wrap.innerHTML = studioRuleConditionsDraft.map((c, i) => {
+      const isCategory = STUDIO_CATEGORY_METRICS.includes(c.metric);
+      return `<div class="cond-row" data-idx="${i}">
+        <div class="cond-row-fields">
+          <select data-field="metric">${STUDIO_METRICS.map(m => `<option value="${m.id}"${m.id === c.metric ? " selected" : ""}>${studioEsc(m.label)}</option>`).join("")}</select>
+          <select data-field="op">${STUDIO_OPS.map(op => `<option value="${op}"${op === c.op ? " selected" : ""}>${op}</option>`).join("")}</select>
+          <input type="number" step="any" data-field="value" value="${c.value ?? 0}" />
+          ${isCategory ? `<input type="text" data-field="category" placeholder="categoria" value="${studioEsc(c.category || "")}" />` : ""}
+          <button type="button" class="studio-icon-btn danger" data-action="removeCond">✕</button>
+        </div>
+      </div>`;
+    }).join("");
+  }
+  document.getElementById("addCondBtn").addEventListener("click", () => {
+    studioRuleConditionsDraft.push({ metric: "net", op: ">", value: 0 });
+    renderStudioConditions();
+  });
+  document.getElementById("studioRuleConditions").addEventListener("input", (e) => {
+    const row = e.target.closest(".cond-row");
+    if (!row) return;
+    const idx = Number(row.dataset.idx);
+    const field = e.target.dataset.field;
+    if (field === "value") studioRuleConditionsDraft[idx].value = Number(e.target.value);
+    else if (field === "category") studioRuleConditionsDraft[idx].category = e.target.value;
+  });
+  document.getElementById("studioRuleConditions").addEventListener("change", (e) => {
+    const row = e.target.closest(".cond-row");
+    if (!row) return;
+    const idx = Number(row.dataset.idx);
+    if (e.target.dataset.field === "metric"){ studioRuleConditionsDraft[idx].metric = e.target.value; renderStudioConditions(); }
+    else if (e.target.dataset.field === "op") studioRuleConditionsDraft[idx].op = e.target.value;
+  });
+  document.getElementById("studioRuleConditions").addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-action='removeCond']");
+    if (!btn) return;
+    studioRuleConditionsDraft.splice(Number(btn.closest(".cond-row").dataset.idx), 1);
+    renderStudioConditions();
+  });
+
+  function renderStudioPhrases(){
+    const wrap = document.getElementById("studioRulePhrases");
+    if (!studioRulePhrasesDraft.length){
+      wrap.innerHTML = `<div class="studio-hint" style="margin:0 0 8px">Adicione ao menos uma frase.</div>`;
+      return;
+    }
+    const perEntries = studioPersonalityEntries();
+    wrap.innerHTML = studioRulePhrasesDraft.map((p, i) => `
+      <div class="phrase-row" data-idx="${i}">
+        <div class="field"><label>Título</label><input type="text" data-field="title" value="${studioEsc(p.title || "")}" /></div>
+        <div class="field"><label>Subtítulo (opcional)</label><input type="text" data-field="sub" value="${studioEsc(p.sub || "")}" /></div>
+        <div class="field">
+          <label>Personalidades (todas marcadas = aparece sempre)</label>
+          <div class="personality-picker">
+            ${perEntries.map(per => `<div class="personality-chip${(!p.personality || p.personality.includes(per.id)) ? " active" : ""}" data-per="${studioEsc(per.id)}">${studioEsc(per.label || per.id)}</div>`).join("")}
+          </div>
+        </div>
+        <div class="phrase-weight-row">
+          <label style="font-size:12px; color:var(--ink-tertiary)">Peso</label>
+          <input type="number" min="1" data-field="weight" value="${p.weight || 1}" />
+          <button type="button" class="studio-icon-btn danger" data-action="removePhrase" style="margin-left:auto">✕</button>
+        </div>
+      </div>`).join("");
+  }
+  document.getElementById("addPhraseBtn").addEventListener("click", () => {
+    studioRulePhrasesDraft.push({ title: "", sub: "", weight: 1 });
+    renderStudioPhrases();
+  });
+  document.getElementById("studioRulePhrases").addEventListener("input", (e) => {
+    const row = e.target.closest(".phrase-row");
+    if (!row) return;
+    const idx = Number(row.dataset.idx);
+    const field = e.target.dataset.field;
+    if (!field) return;
+    if (field === "weight") studioRulePhrasesDraft[idx].weight = Math.max(1, Number(e.target.value) || 1);
+    else studioRulePhrasesDraft[idx][field] = e.target.value;
+  });
+  document.getElementById("studioRulePhrases").addEventListener("click", (e) => {
+    const chip = e.target.closest(".personality-chip");
+    if (chip){
+      const idx = Number(chip.closest(".phrase-row").dataset.idx);
+      const allIds = studioPersonalityEntries().map(p => p.id);
+      let current = studioRulePhrasesDraft[idx].personality ? [...studioRulePhrasesDraft[idx].personality] : [...allIds];
+      if (current.includes(chip.dataset.per)) current = current.filter(pid => pid !== chip.dataset.per);
+      else current.push(chip.dataset.per);
+      if (current.length === allIds.length) delete studioRulePhrasesDraft[idx].personality;
+      else studioRulePhrasesDraft[idx].personality = current;
+      renderStudioPhrases();
+      return;
+    }
+    const removeBtn = e.target.closest("[data-action='removePhrase']");
+    if (removeBtn) { studioRulePhrasesDraft.splice(Number(removeBtn.closest(".phrase-row").dataset.idx), 1); renderStudioPhrases(); }
+  });
+
+  document.getElementById("studioRuleRepeatable").addEventListener("click", (e) => e.currentTarget.classList.toggle("on"));
+  document.getElementById("studioRuleEnabled").addEventListener("click", (e) => e.currentTarget.classList.toggle("on"));
+
+  function openStudioRuleSheet(id){
+    studioEditingRuleId = id;
+    const isNew = !id;
+    const rule = isNew ? null : studioDraft.rules.find(r => r.id === id);
+    const group = rule ? studioDraft.dialogs[rule.dialog] : null;
+
+    document.getElementById("studioRuleSheetTitle").textContent = isNew ? "Nova situação" : "Editar situação";
+    document.getElementById("studioRuleId").value = rule ? rule.id : "";
+    document.getElementById("studioRuleId").disabled = !isNew;
+    document.getElementById("studioRulePriority").value = rule ? (rule.priority ?? 50) : 50;
+    document.getElementById("studioRuleCooldown").value = rule ? (rule.cooldown_days ?? 0) : 0;
+    document.getElementById("studioRuleMaxWeek").value = rule && rule.max_per_week != null ? rule.max_per_week : "";
+    document.getElementById("studioRuleMaxMonth").value = rule && rule.max_per_month != null ? rule.max_per_month : "";
+    document.getElementById("studioRuleRepeatable").classList.toggle("on", rule ? rule.repeatable !== false : true);
+    document.getElementById("studioRuleEnabled").classList.toggle("on", rule ? rule.enabled !== false : true);
+
+    const firstMood = studioMoodEntries()[0];
+    studioRuleSelectedMood = group ? group.mood : (firstMood ? firstMood.id : "happy");
+    renderStudioRuleMoodPicker();
+
+    studioRuleConditionsDraft = rule ? JSON.parse(JSON.stringify(rule.conditions || [])) : [];
+    renderStudioConditions();
+
+    studioRulePhrasesDraft = group ? JSON.parse(JSON.stringify(group.phrases || [])) : [{ title: "", sub: "", weight: 1 }];
+    renderStudioPhrases();
+
+    document.getElementById("studioRuleDelete").style.display = isNew ? "none" : "block";
+    openSheet(document.getElementById("studioRuleSheet"));
+  }
+  document.getElementById("studioRuleSheetClose").addEventListener("click", closeActiveSheet);
+  document.getElementById("studioRuleSave").addEventListener("click", () => {
+    const isNew = !studioEditingRuleId;
+    let id = (document.getElementById("studioRuleId").value || "").trim().toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "");
+    if (!id){ alert("Dê um identificador pra essa situação antes de salvar."); return; }
+    if (isNew && studioDraft.rules.some(r => r.id === id)){ alert("Já existe uma situação com esse identificador."); return; }
+    if (!studioRulePhrasesDraft.length || studioRulePhrasesDraft.every(p => !p.title || !p.title.trim())){ alert("Adicione ao menos uma frase com título."); return; }
+
+    const maxWeekVal = document.getElementById("studioRuleMaxWeek").value;
+    const maxMonthVal = document.getElementById("studioRuleMaxMonth").value;
+    const cleanPhrases = studioRulePhrasesDraft.filter(p => p.title && p.title.trim()).map(p => {
+      const out = { title: p.title.trim(), weight: Math.max(1, Number(p.weight) || 1) };
+      if (p.sub && p.sub.trim()) out.sub = p.sub.trim();
+      if (p.personality && p.personality.length) out.personality = p.personality;
+      return out;
+    });
+    const cleanConditions = studioRuleConditionsDraft.map(c => {
+      const out = { metric: c.metric, op: c.op, value: Number(c.value) || 0 };
+      if (STUDIO_CATEGORY_METRICS.includes(c.metric) && c.category) out.category = c.category.trim();
+      return out;
+    });
+    const ruleData = {
+      id, dialog: id,
+      priority: Number(document.getElementById("studioRulePriority").value) || 0,
+      cooldown_days: Number(document.getElementById("studioRuleCooldown").value) || 0,
+      max_per_week: maxWeekVal === "" ? null : Number(maxWeekVal),
+      max_per_month: maxMonthVal === "" ? null : Number(maxMonthVal),
+      repeatable: document.getElementById("studioRuleRepeatable").classList.contains("on"),
+      enabled: document.getElementById("studioRuleEnabled").classList.contains("on"),
+      conditions: cleanConditions
+    };
+
+    if (isNew) studioDraft.rules.push(ruleData);
+    else {
+      const idx = studioDraft.rules.findIndex(r => r.id === studioEditingRuleId);
+      if (idx > -1) studioDraft.rules[idx] = ruleData;
+    }
+    studioDraft.dialogs[id] = { mood: studioRuleSelectedMood, phrases: cleanPhrases };
+
+    closeActiveSheet();
+    renderStudioRulesList();
+    if (navigator.vibrate) navigator.vibrate(8);
+  });
+  document.getElementById("studioRuleDelete").addEventListener("click", () => {
+    const id = studioEditingRuleId;
+    if (!id) return;
+    showConfirm(`Excluir a situação "${id}"?`, () => {
+      studioDraft.rules = studioDraft.rules.filter(r => r.id !== id);
+      delete studioDraft.dialogs[id];
+      closeActiveSheet();
+      renderStudioRulesList();
+    });
+  });
+
+  // ----- Humores -----
+  function renderStudioMoodsList(){
+    const wrap = document.getElementById("studioMoodsList");
+    const entries = studioMoodEntries();
+    if (!entries.length){
+      wrap.innerHTML = `<div class="sub-row" style="pointer-events:none"><div><div class="name">Nenhum humor cadastrado</div></div></div>`;
+      return;
+    }
+    wrap.innerHTML = entries.map(m => {
+      const usedBy = studioDraft.rules.filter(r => (studioDraft.dialogs[r.dialog] || {}).mood === m.id).length;
+      return `<div class="sub-row studio-row" data-id="${studioEsc(m.id)}">
+        <div class="studio-row-main" data-action="edit">
+          <div class="name"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${m.color || "#888"};margin-right:6px;"></span>${studioEsc(m.label || m.id)}</div>
+          <div class="renew">${studioEsc(m.default_animation || "—")} · usado por ${usedBy} situação(ões)</div>
+        </div>
+        <div class="studio-row-actions">
+          <button type="button" class="studio-icon-btn danger" data-action="delete" title="Excluir">✕</button>
+        </div>
+      </div>`;
+    }).join("");
+  }
+  document.getElementById("addStudioMoodBtn").addEventListener("click", () => openStudioMoodSheet(null));
+  document.getElementById("studioMoodsList").addEventListener("click", (e) => {
+    const actionBtn = e.target.closest("[data-action]");
+    if (!actionBtn) return;
+    const id = actionBtn.closest(".studio-row").dataset.id;
+    if (actionBtn.dataset.action === "edit") openStudioMoodSheet(id);
+    else if (actionBtn.dataset.action === "delete"){
+      const usedBy = studioDraft.rules.filter(r => (studioDraft.dialogs[r.dialog] || {}).mood === id).length;
+      if (usedBy > 0){ alert(`Esse humor é usado por ${usedBy} situação(ões). Troque o humor delas antes de excluir.`); return; }
+      showConfirm(`Excluir o humor "${id}"?`, () => { delete studioDraft.moods[id]; renderStudioMoodsList(); });
+    }
+  });
+
+  function renderStudioMoodColorPicker(){
+    const wrap = document.getElementById("studioMoodColorPicker");
+    const current = (document.getElementById("studioMoodColor").value || "").toLowerCase();
+    wrap.innerHTML = "";
+    PALETTE.forEach(c => {
+      const dot = document.createElement("div");
+      dot.style.cssText = `width:28px; height:28px; border-radius:50%; background:${c.hex}; cursor:pointer; border:2px solid ${c.hex.toLowerCase() === current ? "#fff" : "transparent"};`;
+      dot.addEventListener("click", () => { document.getElementById("studioMoodColor").value = c.hex; renderStudioMoodColorPicker(); });
+      wrap.appendChild(dot);
+    });
+  }
+
+  function openStudioMoodSheet(id){
+    studioEditingMoodId = id;
+    const isNew = !id;
+    const mood = isNew ? null : studioDraft.moods[id];
+    document.getElementById("studioMoodSheetTitle").textContent = isNew ? "Novo humor" : "Editar humor";
+    document.getElementById("studioMoodId").value = isNew ? "" : id;
+    document.getElementById("studioMoodId").disabled = !isNew;
+    document.getElementById("studioMoodLabel").value = mood ? (mood.label || "") : "";
+    document.getElementById("studioMoodColor").value = mood ? (mood.color || "#D9B776") : "#D9B776";
+    renderStudioMoodColorPicker();
+    const animSel = document.getElementById("studioMoodAnimation");
+    animSel.innerHTML = studioAnimationIds().map(a => `<option value="${studioEsc(a)}">${studioEsc(a)}</option>`).join("");
+    animSel.value = mood ? (mood.default_animation || "idle") : "idle";
+    document.getElementById("studioMoodDelete").style.display = isNew ? "none" : "block";
+    openSheet(document.getElementById("studioMoodSheet"));
+  }
+  document.getElementById("studioMoodSheetClose").addEventListener("click", closeActiveSheet);
+  document.getElementById("studioMoodSave").addEventListener("click", () => {
+    const isNew = !studioEditingMoodId;
+    let id = (document.getElementById("studioMoodId").value || "").trim().toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "");
+    const label = (document.getElementById("studioMoodLabel").value || "").trim();
+    if (!id || !label){ alert("Preencha identificador e nome do humor."); return; }
+    if (isNew && studioDraft.moods[id]){ alert("Já existe um humor com esse identificador."); return; }
+    studioDraft.moods[id] = { label, color: document.getElementById("studioMoodColor").value, default_animation: document.getElementById("studioMoodAnimation").value };
+    closeActiveSheet();
+    renderStudioMoodsList();
+    renderStudioRuleMoodPicker();
+    renderStudioRulesList();
+  });
+  document.getElementById("studioMoodDelete").addEventListener("click", () => {
+    const id = studioEditingMoodId;
+    const usedBy = studioDraft.rules.filter(r => (studioDraft.dialogs[r.dialog] || {}).mood === id).length;
+    if (usedBy > 0){ alert(`Esse humor é usado por ${usedBy} situação(ões). Troque o humor delas antes de excluir.`); return; }
+    showConfirm(`Excluir o humor "${id}"?`, () => { delete studioDraft.moods[id]; closeActiveSheet(); renderStudioMoodsList(); });
+  });
+
+  // ----- Personalidade -----
+  function renderStudioActivePersonalityPicker(){
+    const wrap = document.getElementById("studioActivePersonalityPicker");
+    const active = getActiveNoriPersonality();
+    wrap.innerHTML = studioPersonalityEntries().map(p =>
+      `<div class="personality-chip${p.id === active ? " active" : ""}" data-per="${studioEsc(p.id)}">${studioEsc(p.label || p.id)}</div>`
+    ).join("");
+  }
+  document.getElementById("studioActivePersonalityPicker").addEventListener("click", (e) => {
+    const chip = e.target.closest(".personality-chip");
+    if (!chip) return;
+    localStorage.setItem(NORI_PERSONALITY_KEY, chip.dataset.per);
+    renderStudioActivePersonalityPicker();
+    window.__noriDebug.reset();
+    if (navigator.vibrate) navigator.vibrate(6);
+  });
+
+  function renderStudioPersonalitiesList(){
+    const wrap = document.getElementById("studioPersonalitiesList");
+    wrap.innerHTML = studioPersonalityEntries().map(p => `
+      <div class="sub-row studio-row" data-id="${studioEsc(p.id)}">
+        <div class="studio-row-main" data-action="edit">
+          <div class="name">${studioEsc(p.label || p.id)}</div>
+          <div class="renew">${studioEsc(p.description || "")}</div>
+        </div>
+        <div class="studio-row-actions">
+          <button type="button" class="studio-icon-btn danger" data-action="delete" title="Excluir">✕</button>
+        </div>
+      </div>`).join("");
+  }
+  document.getElementById("addStudioPersonalityBtn").addEventListener("click", () => openStudioPersonalitySheet(null));
+  document.getElementById("studioPersonalitiesList").addEventListener("click", (e) => {
+    const actionBtn = e.target.closest("[data-action]");
+    if (!actionBtn) return;
+    const id = actionBtn.closest(".studio-row").dataset.id;
+    if (actionBtn.dataset.action === "edit") openStudioPersonalitySheet(id);
+    else if (actionBtn.dataset.action === "delete"){
+      showConfirm(`Excluir a personalidade "${id}"? Frases marcadas só pra ela deixarão de aparecer.`, () => {
+        delete studioDraft.personalities.personalities[id];
+        if (studioDraft.personalities.active === id) studioDraft.personalities.active = "equilibrado";
+        renderStudioPersonalitiesList();
+        renderStudioActivePersonalityPicker();
+      });
+    }
+  });
+
+  function openStudioPersonalitySheet(id){
+    studioEditingPersonalityId = id;
+    const isNew = !id;
+    const per = isNew ? null : studioDraft.personalities.personalities[id];
+    document.getElementById("studioPersonalitySheetTitle").textContent = isNew ? "Nova personalidade" : "Editar personalidade";
+    document.getElementById("studioPersonalityId").value = isNew ? "" : id;
+    document.getElementById("studioPersonalityId").disabled = !isNew;
+    document.getElementById("studioPersonalityLabel").value = per ? (per.label || "") : "";
+    document.getElementById("studioPersonalityDescription").value = per ? (per.description || "") : "";
+    document.getElementById("studioPersonalityDelete").style.display = isNew ? "none" : "block";
+    openSheet(document.getElementById("studioPersonalitySheet"));
+  }
+  document.getElementById("studioPersonalitySheetClose").addEventListener("click", closeActiveSheet);
+  document.getElementById("studioPersonalitySave").addEventListener("click", () => {
+    const isNew = !studioEditingPersonalityId;
+    let id = (document.getElementById("studioPersonalityId").value || "").trim().toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "");
+    const label = (document.getElementById("studioPersonalityLabel").value || "").trim();
+    if (!id || !label){ alert("Preencha identificador e nome da personalidade."); return; }
+    if (isNew && studioDraft.personalities.personalities[id]){ alert("Já existe uma personalidade com esse identificador."); return; }
+    studioDraft.personalities.personalities[id] = { label, description: (document.getElementById("studioPersonalityDescription").value || "").trim() };
+    closeActiveSheet();
+    renderStudioPersonalitiesList();
+    renderStudioActivePersonalityPicker();
+  });
+  document.getElementById("studioPersonalityDelete").addEventListener("click", () => {
+    const id = studioEditingPersonalityId;
+    showConfirm(`Excluir a personalidade "${id}"?`, () => {
+      delete studioDraft.personalities.personalities[id];
+      if (studioDraft.personalities.active === id) studioDraft.personalities.active = "equilibrado";
+      closeActiveSheet();
+      renderStudioPersonalitiesList();
+      renderStudioActivePersonalityPicker();
+    });
+  });
+
+  // ----- Simulador -----
+  document.getElementById("simulateBtn").addEventListener("click", () => {
+    const metrics = {
+      net: Number(document.getElementById("simNet").value) || 0,
+      income: Number(document.getElementById("simIncome").value) || 0,
+      expense: Number(document.getElementById("simExpense").value) || 0,
+      goals_count: Number(document.getElementById("simGoalsCount").value) || 0,
+      goals_completed: Number(document.getElementById("simGoalsCompleted").value) || 0,
+      investments_total: Number(document.getElementById("simInvestTotal").value) || 0,
+      expense_change_pct: Number(document.getElementById("simExpenseChange").value) || 0,
+      ledger_count: Number(document.getElementById("simLedgerCount").value) || 0
+    };
+    metrics.net_pct = metrics.income > 0 ? metrics.net / metrics.income : 0;
+    const simCategoryPct = Number(document.getElementById("simCategoryPct").value) || 0;
+
+    const getMetric = (cond) => {
+      if (cond.category){
+        if (cond.metric === "category_expense_pct") return simCategoryPct;
+        if (cond.metric === "category_expense") return metrics.expense * simCategoryPct;
+        if (cond.metric === "category_count") return Math.round(metrics.ledger_count * simCategoryPct);
+        return 0;
+      }
+      return metrics[cond.metric];
+    };
+    const evalCond = (c) => {
+      const v = getMetric(c);
+      switch (c.op){
+        case ">": return v > c.value;
+        case ">=": return v >= c.value;
+        case "<": return v < c.value;
+        case "<=": return v <= c.value;
+        case "==": return v === c.value;
+        default: return false;
+      }
+    };
+
+    const sorted = [...studioDraft.rules].filter(r => r.enabled !== false).sort((a, b) => (b.priority || 0) - (a.priority || 0));
+    const match = sorted.find(r => (r.conditions || []).every(evalCond));
+    const resultEl = document.getElementById("simulateResult");
+    resultEl.style.display = "block";
+    if (!match){
+      resultEl.innerHTML = `<div class="title">Nenhuma situação bateu</div><div class="sub">Nenhuma regra ativa combina com esses valores.</div>`;
+      return;
+    }
+    const group = studioDraft.dialogs[match.dialog] || { phrases: [] };
+    const phrase = group.phrases[0] || { title: "(sem frase cadastrada)", sub: "" };
+    const mood = studioDraft.moods[group.mood];
+    resultEl.innerHTML = `<div class="rule-id">${studioEsc(match.id)} · prioridade ${match.priority ?? 0} · humor ${studioEsc(mood ? (mood.label || group.mood) : group.mood)}</div>
+      <div class="title">${studioEsc(phrase.title)}</div>
+      <div class="sub">${studioEsc(phrase.sub || "")}</div>
+      <div class="sub" style="margin-top:8px; opacity:.6; font-size:11px;">Exibindo a frase de maior peso do grupo — o app sorteia entre todas as frases da situação.</div>`;
+  });
+
+  // ----- Exportar -----
+  function studioDownloadJson(filename, obj){
+    const blob = new Blob([JSON.stringify(obj, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+  document.getElementById("studioExportBtn").addEventListener("click", () => {
+    if (!studioDraft){ alert("Abra o Nori Studio primeiro."); return; }
+    studioDownloadJson("rules.json", {
+      _readme: "Cada regra decide QUANDO o Nori fala — nunca o texto. O texto mora em dialogs.json, no grupo apontado por 'dialog'. Veja o README.md da pasta web/nori/ para o guia completo.",
+      rules: studioDraft.rules
+    });
+    studioDownloadJson("dialogs.json", studioDraft.dialogs);
+    studioDownloadJson("moods.json", studioDraft.moods);
+    studioDownloadJson("personalities.json", studioDraft.personalities);
+    alert("4 arquivos baixados: rules.json, dialogs.json, moods.json e personalities.json.\n\nPra publicar: substitua os arquivos correspondentes dentro da pasta web/nori/ no seu projeto e rode o subir-para-github.bat.");
+  });
 
   // ---------- Settings: reset data ----------
   document.getElementById("resetDataRow").addEventListener("click", () => {

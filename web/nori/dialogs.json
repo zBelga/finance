@@ -1,0 +1,114 @@
+{
+  "_readme": "Cada chave aqui é um GRUPO de diálogo, referenciado pelo campo 'dialog' de uma regra (rules.json) ou de um evento (events.json). Cada grupo tem um 'mood' padrão e uma lista de 'phrases'. O app sorteia UMA frase por peso ('weight': quanto maior, mais frequente) sempre que o grupo é ativado pela primeira vez — a frase escolhida fica fixa enquanto a mesma regra continuar ativa, e só é sorteada de novo quando a situação muda. Frases podem usar variáveis como {amount} e {category} — veja variables.json. Frases podem opcionalmente ter 'personality': [...] para só aparecer em certos perfis (personalities.json); sem esse campo, a frase serve para todos os perfis.",
+
+  "saldo_negativo": {
+    "mood": "danger",
+    "phrases": [
+      { "title": "Você entrou no vermelho.", "sub": "Hora de frear os gastos.", "weight": 3 },
+      { "title": "Seu saldo ficou negativo este mês.", "sub": "Vamos dar um jeito nisso juntos?", "weight": 2 },
+      { "title": "Gastando mais do que ganhando.", "sub": "Bora rever o que dá pra cortar?", "weight": 2 },
+      { "title": "O saldo tá no vermelho.", "sub": "{expense} em despesas contra {income} de receita.", "weight": 1 },
+      { "title": "Foco em economizar agora.", "sub": "Reverter isso é o primeiro passo.", "weight": 1, "personality": ["motivador"] },
+      { "title": "Isso não tá bom.", "sub": "Sério, dá pra parar de gastar um pouco?", "weight": 1, "personality": ["bravo"] }
+    ]
+  },
+
+  "sem_reserva": {
+    "mood": "emergency",
+    "phrases": [
+      { "title": "Sua próxima meta deve ser criar uma reserva.", "sub": "Qualquer valor já ajuda a começar.", "weight": 3 },
+      { "title": "Ainda não vi nenhuma meta por aqui.", "sub": "Que tal começar com uma reserva de emergência?", "weight": 2 },
+      { "title": "Imprevistos acontecem.", "sub": "Uma reserva de emergência é um bom primeiro passo.", "weight": 1 }
+    ]
+  },
+
+  "meta_concluida": {
+    "mood": "goal",
+    "phrases": [
+      { "title": "Parabéns! Você concluiu uma meta.", "sub": "Assim que se constrói patrimônio.", "weight": 3 },
+      { "title": "Meta batida!", "sub": "Hora de comemorar essa conquista.", "weight": 2 },
+      { "title": "Você chegou lá!", "sub": "Que tal definir a próxima meta agora?", "weight": 1 }
+    ]
+  },
+
+  "too_much_uber": {
+    "mood": "warning",
+    "phrases": [
+      { "title": "Uber de novo?", "sub": "Seu motorista já virou amigo?", "weight": 3, "emoji": "🚗" },
+      { "title": "Será que esse gasto valeu a pena?", "sub": "Talvez uma caminhada ajude sua meta.", "weight": 2 },
+      { "title": "Você já gastou bastante com Uber.", "sub": "Vale reavaliar esse hábito.", "weight": 2 },
+      { "title": "{category} tá pesando no orçamento.", "sub": "Você já gastou {amount} com isso este mês.", "weight": 1 },
+      { "title": "Sério que foi de Uber de novo?", "sub": "Você tá gastando à toa.", "weight": 2, "personality": ["bravo"] },
+      { "title": "Bora dar um tempo do Uber hoje?", "sub": "Seu bolso agradece. 😄", "weight": 2, "personality": ["engracado", "motivador"] }
+    ]
+  },
+
+  "gastos_subindo": {
+    "mood": "warning",
+    "phrases": [
+      { "title": "Seus gastos aumentaram este mês.", "sub": "Vale dar uma olhada nas categorias.", "weight": 3 },
+      { "title": "Essa semana veio mais gastadora.", "sub": "Nada grave, só fique de olho.", "weight": 2 },
+      { "title": "O ritmo de despesas subiu.", "sub": "Bom momento pra revisar o orçamento.", "weight": 1 }
+    ]
+  },
+
+  "sobra_para_investir": {
+    "mood": "investment",
+    "phrases": [
+      { "title": "Seu dinheiro pode render mais.", "sub": "Considere investir parte da sua sobra.", "weight": 3 },
+      { "title": "Sobrou uma boa parte do seu dinheiro.", "sub": "Já pensou em investir esse valor?", "weight": 2 },
+      { "title": "Dinheiro parado não rende.", "sub": "Vale a pena dar uma olhada nos seus investimentos.", "weight": 1 }
+    ]
+  },
+
+  "tudo_azul": {
+    "mood": "happy",
+    "phrases": [
+      { "title": "Você está no azul.", "sub": "Continue assim.", "weight": 3 },
+      { "title": "Suas finanças estão em ordem.", "sub": "Mandando bem!", "weight": 2 },
+      { "title": "Tudo tranquilo por aqui.", "sub": "Continue de olho nos seus números.", "weight": 1 }
+    ]
+  },
+
+  "evento_primeiro_lancamento": {
+    "mood": "curious",
+    "phrases": [
+      { "title": "Seu primeiro lançamento!", "sub": "Vamos acompanhar suas finanças juntos a partir de agora.", "weight": 1 }
+    ]
+  },
+
+  "evento_primeira_meta": {
+    "mood": "proud",
+    "phrases": [
+      { "title": "Sua primeira meta criada!", "sub": "Todo grande objetivo começa com o primeiro passo.", "weight": 1 }
+    ]
+  },
+
+  "evento_meta_concluida_especial": {
+    "mood": "celebration",
+    "phrases": [
+      { "title": "Meta concluída!", "sub": "Isso merece uma comemoração.", "weight": 1 }
+    ]
+  },
+
+  "evento_natal": {
+    "mood": "funny",
+    "phrases": [
+      { "title": "Feliz Natal! 🎄", "sub": "Que tal fechar o ano com as contas em dia?", "weight": 1 }
+    ]
+  },
+
+  "evento_ano_novo": {
+    "mood": "proud",
+    "phrases": [
+      { "title": "Feliz Ano Novo!", "sub": "Um novo ano, novas metas financeiras.", "weight": 1 }
+    ]
+  },
+
+  "evento_black_friday": {
+    "mood": "curious",
+    "phrases": [
+      { "title": "Black Friday chegando.", "sub": "Vale revisar sua meta antes de sair comprando.", "weight": 1 }
+    ]
+  }
+}

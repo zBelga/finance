@@ -1,0 +1,13 @@
+{
+  "_readme": "Perfis de personalidade filtram QUAIS frases de um grupo entram no sorteio, sem duplicar nenhuma regra. Uma frase em dialogs.json com 'personality': ['bravo'] só aparece quando o perfil ativo é 'bravo'. Frases sem o campo 'personality' aparecem em qualquer perfil (é o padrão hoje pra manter compatibilidade com as frases já existentes). 'active' abaixo é só o perfil padrão de fábrica — a pessoa pode trocar isso (guardado no localStorage do aparelho) assim que a tela 'Nori Studio' existir (Fase 2).",
+
+  "active": "equilibrado",
+  "personalities": {
+    "equilibrado":  { "label": "Equilibrado",  "description": "Tom neutro e direto (padrão)." },
+    "motivador":    { "label": "Motivador",    "description": "Incentiva e encoraja, sem julgar." },
+    "engracado":    { "label": "Engraçado",    "description": "Bem-humorado, brincalhão." },
+    "bravo":        { "label": "Bravo",        "description": "Direto e um pouco ríspido sobre maus hábitos." },
+    "professor":    { "label": "Professor",    "description": "Explicativo, educa sobre finanças." },
+    "minimalista":  { "label": "Minimalista",  "description": "Frases curtas, sem enrolação." }
+  }
+}
