@@ -475,6 +475,14 @@
   .cat-chip{ display:flex; align-items:center; gap:6px; padding:8px 12px; border-radius:var(--radius-pill); background:var(--bg-elevated-2); border:1.5px solid transparent; font-size:13px; color:var(--ink-secondary); cursor:pointer; transition: all .15s; }
   .cat-chip.active{ border-color:currentColor; background:rgba(255,255,255,.06); color:var(--ink-primary); }
 
+  .icon-picker-trigger{ display:flex; align-items:center; gap:10px; width:100%; padding:12px 14px; border-radius:12px; border:none; background:var(--bg-elevated-2); color:var(--ink-primary); font-size:14px; font-family:inherit; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+  .icon-picker-preview{ font-size:20px; line-height:1; width:28px; height:28px; display:flex; align-items:center; justify-content:center; border-radius:8px; background:var(--bg-elevated-1); flex-shrink:0; }
+  .icon-picker-grid{ display:grid; grid-template-columns:repeat(7, 1fr); gap:6px; max-height:180px; overflow-y:auto; margin-top:8px; padding:10px; border-radius:12px; background:var(--bg-elevated-2); }
+  .icon-grid-item{ width:100%; aspect-ratio:1; border:none; border-radius:8px; background:var(--bg-elevated-1); font-size:19px; display:flex; align-items:center; justify-content:center; cursor:pointer; -webkit-tap-highlight-color:transparent; transition: background .12s, transform .12s; }
+  .icon-grid-item:active{ transform:scale(.88); background:rgba(255,255,255,.08); }
+  .icon-grid-item.active{ background:var(--gold); }
+
+
   .save-btn{
     position:relative; overflow:hidden;
     width:100%; border:none; padding:15px 0; border-radius:var(--radius-pill); font-size:16px; font-weight:700;
@@ -865,6 +873,16 @@
     </section>
 
     <section style="margin-bottom:28px">
+      <div class="section-header"><h2 style="margin:0">Personalização</h2></div>
+      <div class="sub-list glass">
+        <div class="sub-row" style="pointer-events:none">
+          <div class="sub-icon" style="background:rgba(183,156,255,.14); color:#B79CFF"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r="1" fill="currentColor" stroke="none"/><path d="M8 15c1 1 2.5 1.5 4 1.5s3-.5 4-1.5"/></svg></div>
+          <div><div class="name">Situações do Nori</div><div class="renew">Editável no arquivo web/nori-config.json</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section style="margin-bottom:28px">
       <div class="section-header"><h2 style="margin:0">Conta</h2></div>
       <div class="sub-list glass">
         <div class="sub-row" style="pointer-events:none">
@@ -964,8 +982,14 @@
     <input type="text" id="catName" placeholder="Ex: Restaurante" autocomplete="off" />
   </div>
   <div class="field">
-    <label>Ícone (toque e escolha um emoji do teclado)</label>
-    <input type="text" id="catIcon" placeholder="🍔" maxlength="4" />
+    <label>Ícone</label>
+    <button type="button" class="icon-picker-trigger" id="catIconTrigger">
+      <span class="icon-picker-preview" id="catIconPreview">🏷️</span>
+      <span>Escolher ícone</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:auto; opacity:.5"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="icon-picker-grid" id="catIconGrid" style="display:none;"></div>
+    <input type="text" id="catIcon" value="🏷️" style="display:none;" />
   </div>
   <div class="field">
     <label>Cor</label>
@@ -1088,11 +1112,20 @@
   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   const AUTH_DEFAULT_CATEGORIES = [
-    { key: "alimentacao", label: "Alimentação", icon: "🛒", hex: "#3DDC91", bg: "rgba(61,220,145,.14)" },
-    { key: "transporte",  label: "Transporte",  icon: "🚗", hex: "#6FB8FF", bg: "rgba(111,184,255,.14)" },
-    { key: "moradia",     label: "Moradia",      icon: "🏠", hex: "#D9B776", bg: "rgba(217,183,118,.14)" },
-    { key: "lazer",       label: "Lazer",        icon: "🎬", hex: "#B79CFF", bg: "rgba(183,156,255,.14)" },
-    { key: "outros",      label: "Outros",       icon: "📦", hex: "#FF7A6E", bg: "rgba(255,122,110,.14)" }
+    { key: "alimentacao",  label: "Alimentação",  icon: "🍔", hex: "#D9B776", bg: "rgba(217,183,118,.14)" },
+    { key: "mercado",      label: "Mercado",       icon: "🛒", hex: "#3DDC91", bg: "rgba(61,220,145,.14)" },
+    { key: "uber",         label: "Uber",          icon: "🚗", hex: "#6FB8FF", bg: "rgba(111,184,255,.14)" },
+    { key: "transporte",   label: "Transporte",    icon: "🚌", hex: "#B79CFF", bg: "rgba(183,156,255,.14)" },
+    { key: "moradia",      label: "Moradia",       icon: "🏠", hex: "#FF7A6E", bg: "rgba(255,122,110,.14)" },
+    { key: "contas",       label: "Contas",        icon: "💡", hex: "#D9B776", bg: "rgba(217,183,118,.14)" },
+    { key: "saude",        label: "Saúde",         icon: "💊", hex: "#3DDC91", bg: "rgba(61,220,145,.14)" },
+    { key: "lazer",        label: "Lazer",         icon: "🎬", hex: "#6FB8FF", bg: "rgba(111,184,255,.14)" },
+    { key: "compras",      label: "Compras",       icon: "🛍️", hex: "#B79CFF", bg: "rgba(183,156,255,.14)" },
+    { key: "educacao",     label: "Educação",      icon: "🎓", hex: "#FF7A6E", bg: "rgba(255,122,110,.14)" },
+    { key: "assinaturas",  label: "Assinaturas",   icon: "📱", hex: "#D9B776", bg: "rgba(217,183,118,.14)" },
+    { key: "viagem",       label: "Viagem",        icon: "✈️", hex: "#3DDC91", bg: "rgba(61,220,145,.14)" },
+    { key: "pets",         label: "Pets",          icon: "🐶", hex: "#6FB8FF", bg: "rgba(111,184,255,.14)" },
+    { key: "outros",       label: "Outros",        icon: "📦", hex: "#B79CFF", bg: "rgba(183,156,255,.14)" }
   ];
 
   function dbCategoryToJs(row){ return { key: row.key, label: row.label, icon: row.icon, hex: row.hex, bg: row.bg }; }
@@ -1100,6 +1133,33 @@
   function dbGoalToJs(row){ return { id: row.id, label: row.label, icon: row.icon, target: Number(row.target), current: Number(row.current) }; }
   function dbInvestToJs(row){ return { id: row.id, label: row.label, value: Number(row.value), changePct: Number(row.change_pct) }; }
   function dbCardToJs(row){ return { id: row.id, label: row.label, last4: row.last4, used: Number(row.used), limit: Number(row.credit_limit), colorIdx: row.color_idx }; }
+
+  // Frases/situações do Nori: sempre lidas de web/nori-config.json, que é a fonte
+  // única da verdade (sobrescreve qualquer coisa salva antes). Edite esse arquivo
+  // e suba pro GitHub pra mudar o que o Nori fala.
+  const FALLBACK_NORI_STATES = [
+    { title: "Você está no azul.", sub: "Continue assim.", mood: "happy", enabled: true, conditions: [] }
+  ];
+  async function fetchNoriConfig(){
+    try {
+      const res = await fetch("./nori-config.json", { cache: "no-store" });
+      if (!res.ok) throw new Error("nori-config.json não encontrado");
+      const json = await res.json();
+      const situations = Array.isArray(json) ? json : (json.situations || []);
+      if (!situations.length) throw new Error("nori-config.json vazio");
+      return situations.map((s, i) => ({
+        id: i + 1,
+        title: s.title || "",
+        sub: s.sub || "",
+        mood: s.mood || "happy",
+        enabled: s.enabled !== false,
+        conditions: Array.isArray(s.conditions) ? s.conditions : []
+      }));
+    } catch (e) {
+      console.warn("Usando situações padrão do Nori (nori-config.json não pôde ser lido):", e);
+      return FALLBACK_NORI_STATES.map((s, i) => ({ id: i + 1, ...s }));
+    }
+  }
 
   async function fetchAllUserData(){
     const [ledgerRes, catRes, goalsRes, investRes, cardsRes] = await Promise.all([
@@ -1211,7 +1271,8 @@
       async function proceedToLoading(user){
         if (resolved) return;
         showView(loadingView);
-        const data = await fetchAllUserData();
+        const [data, noriStates] = await Promise.all([fetchAllUserData(), fetchNoriConfig()]);
+        data.noriStates = noriStates;
         splash.classList.add("leaving");
         setTimeout(() => { splash.style.display = "none"; }, 550);
         resolved = true;
@@ -1706,9 +1767,50 @@
     });
   }
 
+  // ---------- Category icon picker ----------
+  const CATEGORY_ICONS = [
+    "🍔","🍕","🍜","🌮","🍎","☕","🍺","🍷","🛒","🥐",
+    "🚗","🚕","🚌","🚲","⛽","🚉","✈️","🧳","🏖️","🛵",
+    "🏠","💡","🔧","🛋️","🧹","🔑","📶",
+    "💊","🏥","💪","🧴","🦷",
+    "🎬","🎮","🎉","🎵","📚","🎧","⚽",
+    "🛍️","👕","👟","💄",
+    "🎓","✏️",
+    "📱","💻","🖨️",
+    "💼","📈","🏦","💳",
+    "🐶","🐱","🐾",
+    "🎁","💰","🧾","📦","🌐","☂️","🏷️"
+  ];
+  function renderCatIconGrid(){
+    const wrap = document.getElementById("catIconGrid");
+    wrap.innerHTML = "";
+    const current = document.getElementById("catIcon").value;
+    CATEGORY_ICONS.forEach(emoji => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "icon-grid-item" + (emoji === current ? " active" : "");
+      btn.textContent = emoji;
+      btn.addEventListener("click", () => {
+        document.getElementById("catIcon").value = emoji;
+        document.getElementById("catIconPreview").textContent = emoji;
+        document.getElementById("catIconGrid").style.display = "none";
+        if (navigator.vibrate) navigator.vibrate(6);
+      });
+      wrap.appendChild(btn);
+    });
+  }
+  document.getElementById("catIconTrigger").addEventListener("click", () => {
+    const grid = document.getElementById("catIconGrid");
+    const opening = grid.style.display === "none";
+    if (opening) renderCatIconGrid();
+    grid.style.display = opening ? "grid" : "none";
+  });
+
   document.getElementById("addCatBtn").addEventListener("click", () => {
     document.getElementById("catName").value = "";
-    document.getElementById("catIcon").value = "";
+    document.getElementById("catIcon").value = "🏷️";
+    document.getElementById("catIconPreview").textContent = "🏷️";
+    document.getElementById("catIconGrid").style.display = "none";
     document.getElementById("catName").style.borderColor = "";
     selectedColorIdx = 1;
     renderColorPicker();
@@ -2126,54 +2228,75 @@
   });
 
   // ---------- Nori (mascote) ----------
-  const NORI_STATES = {
-    happy: { title: "Você está no azul.", sub: "Continue assim." },
-    warning: { title: "Seus gastos aumentaram este mês.", sub: "Vale dar uma olhada nas categorias." },
-    danger: { title: "Você entrou no vermelho.", sub: "Hora de frear os gastos." },
-    goal: { title: "Parabéns! Você concluiu uma meta.", sub: "Assim que se constrói patrimônio." },
-    emergency: { title: "Sua próxima meta deve ser criar uma reserva.", sub: "Qualquer valor já ajuda a começar." },
-    investment: { title: "Seu dinheiro pode render mais.", sub: "Considere investir parte da sua sobra." }
-  };
-  const NORI_EYE_COLOR = {
+  // As situações e frases do Nori vêm sempre de web/nori-config.json (ver fetchNoriConfig),
+  // carregado antes do runAuthGate e guardado em __auth.noriStates.
+  const NORI_MOOD_EYE_COLOR = {
     happy: "#3DDC91", warning: "#D9B776", danger: "#FF7A6E",
     goal: "#D9B776", emergency: "#6FB8FF", investment: "#B79CFF"
   };
+  let noriStates = __auth.noriStates;
 
-  function computeNoriState(){
-    if (ledger.length === 0) return "happy";
+  function computeNoriMetrics(){
     const income = computeIncome();
     const expense = computeExpense();
     const net = income - expense;
-    if (net < 0) return "danger";
-    if (goals.length === 0) return "emergency";
-    if (goals.some(g => g.target > 0 && g.current >= g.target)) return "goal";
     const wk = periodRanges("week");
     const curWk = sumRange(wk.start, wk.end);
     const prevWk = sumRange(wk.prevStart, wk.prevEnd);
-    if (prevWk.expense > 0 && curWk.expense > prevWk.expense * 1.15) return "warning";
     const investTotal = investments.reduce((s, i) => s + i.value, 0);
-    if (income > 0 && (net / income) >= 0.5 && investTotal > 0) return "investment";
-    return "happy";
+    const goalsCompleted = goals.filter(g => g.target > 0 && g.current >= g.target).length;
+    return {
+      net, income, expense,
+      net_pct: income > 0 ? (net / income) : 0,
+      goals_count: goals.length,
+      goals_completed: goalsCompleted,
+      investments_total: investTotal,
+      expense_change_pct: prevWk.expense > 0 ? (curWk.expense / prevWk.expense) : 0,
+      ledger_count: ledger.length
+    };
+  }
+
+  function evalNoriCondition(cond, metrics){
+    const v = metrics[cond.metric];
+    if (v === undefined) return false;
+    switch (cond.op) {
+      case ">": return v > cond.value;
+      case ">=": return v >= cond.value;
+      case "<": return v < cond.value;
+      case "<=": return v <= cond.value;
+      case "==": return v === cond.value;
+      default: return false;
+    }
+  }
+
+  function computeNoriState(){
+    const metrics = computeNoriMetrics();
+    const active = noriStates.filter(s => s.enabled !== false);
+    for (const s of active) {
+      const conds = s.conditions || [];
+      if (conds.length === 0 || conds.every(c => evalNoriCondition(c, metrics))) return s;
+    }
+    return { id: 0, title: "Tudo certo por aqui.", sub: "Continue acompanhando suas finanças.", mood: "happy" };
   }
 
   let currentNoriState = null;
   function applyNoriState(state){
     const card = document.getElementById("noriCard");
-    const cfg = NORI_STATES[state];
-    card.dataset.state = state;
-    document.getElementById("noriTitle").textContent = cfg.title;
-    document.getElementById("noriSub").textContent = cfg.sub;
-    document.getElementById("noriEyeL").setAttribute("fill", NORI_EYE_COLOR[state]);
-    document.getElementById("noriEyeR").setAttribute("fill", NORI_EYE_COLOR[state]);
+    const mood = state.mood || "happy";
+    card.dataset.state = mood;
+    document.getElementById("noriTitle").textContent = state.title;
+    document.getElementById("noriSub").textContent = state.sub;
+    document.getElementById("noriEyeL").setAttribute("fill", NORI_MOOD_EYE_COLOR[mood]);
+    document.getElementById("noriEyeR").setAttribute("fill", NORI_MOOD_EYE_COLOR[mood]);
     document.querySelectorAll(".nori-prop").forEach(p => p.classList.remove("active"));
-    const propId = "noriProp" + state.charAt(0).toUpperCase() + state.slice(1);
+    const propId = "noriProp" + mood.charAt(0).toUpperCase() + mood.slice(1);
     const propEl = document.getElementById(propId);
     if (propEl) propEl.classList.add("active");
   }
 
   function renderNori(){
     const state = computeNoriState();
-    if (state === currentNoriState) { applyNoriState(state); return; }
+    if (currentNoriState && state.id === currentNoriState.id) { applyNoriState(state); return; }
     const isFirstRender = currentNoriState === null;
     currentNoriState = state;
     const textEl = document.getElementById("noriText");

@@ -1,0 +1,91 @@
+{
+  "_readme": [
+    "Este arquivo controla as frases e as situações do Nori (o mascote do Aurum).",
+    "Ele SEMPRE tem prioridade: o que estiver aqui é o que o app mostra, pra qualquer conta.",
+    "Depois de editar, salve e rode o subir-para-github.bat pra publicar.",
+    "",
+    "'situations' é uma lista, em ordem de prioridade: o app percorre de cima pra baixo",
+    "e usa a PRIMEIRA situação cujas 'conditions' baterem. Deixe 'conditions' como uma",
+    "lista vazia [] numa situação (normalmente a última) pra ela ser a situação padrão,",
+    "usada quando nenhuma outra bater.",
+    "",
+    "Cada situação tem:",
+    "  title      -> frase principal (obrigatória)",
+    "  sub        -> frase secundária (opcional)",
+    "  mood       -> humor visual do Nori: happy | warning | danger | goal | emergency | investment",
+    "  enabled    -> true/false (situações com false são ignoradas)",
+    "  conditions -> lista de regras, todas precisam ser verdadeiras (E lógico). Cada regra tem:",
+    "                  metric -> uma das métricas abaixo",
+    "                  op     -> um dos operadores abaixo",
+    "                  value  -> o número de comparação",
+    "",
+    "Métricas disponíveis (metric):",
+    "  net                 -> saldo do mês em R$ (receita - despesa)",
+    "  net_pct             -> saldo dividido pela receita, de 0 a 1 (0.5 = 50%)",
+    "  income              -> receita total em R$",
+    "  expense             -> despesa total em R$",
+    "  goals_count         -> quantidade de metas cadastradas",
+    "  goals_completed     -> quantidade de metas já concluídas",
+    "  investments_total   -> total investido em R$",
+    "  expense_change_pct  -> despesa desta semana dividida pela da semana passada (1.15 = +15%)",
+    "  ledger_count        -> quantidade de lançamentos no extrato",
+    "",
+    "Operadores disponíveis (op): > , >= , < , <= , =="
+  ],
+
+  "situations": [
+    {
+      "title": "Você entrou no vermelho.",
+      "sub": "Hora de frear os gastos.",
+      "mood": "danger",
+      "enabled": true,
+      "conditions": [
+        { "metric": "net", "op": "<", "value": 0 }
+      ]
+    },
+    {
+      "title": "Sua próxima meta deve ser criar uma reserva.",
+      "sub": "Qualquer valor já ajuda a começar.",
+      "mood": "emergency",
+      "enabled": true,
+      "conditions": [
+        { "metric": "goals_count", "op": "==", "value": 0 }
+      ]
+    },
+    {
+      "title": "Parabéns! Você concluiu uma meta.",
+      "sub": "Assim que se constrói patrimônio.",
+      "mood": "goal",
+      "enabled": true,
+      "conditions": [
+        { "metric": "goals_completed", "op": ">=", "value": 1 }
+      ]
+    },
+    {
+      "title": "Seus gastos aumentaram este mês.",
+      "sub": "Vale dar uma olhada nas categorias.",
+      "mood": "warning",
+      "enabled": true,
+      "conditions": [
+        { "metric": "expense_change_pct", "op": ">", "value": 1.15 }
+      ]
+    },
+    {
+      "title": "Seu dinheiro pode render mais.",
+      "sub": "Considere investir parte da sua sobra.",
+      "mood": "investment",
+      "enabled": true,
+      "conditions": [
+        { "metric": "net_pct", "op": ">=", "value": 0.5 },
+        { "metric": "investments_total", "op": ">", "value": 0 }
+      ]
+    },
+    {
+      "title": "Você está no azul.",
+      "sub": "Continue assim.",
+      "mood": "happy",
+      "enabled": true,
+      "conditions": []
+    }
+  ]
+}
